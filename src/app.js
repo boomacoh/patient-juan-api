@@ -14,5 +14,7 @@ require('./services/sequelize');
 
 app.use('/patient-juan', require('./routes/main'));
 app.use('/patient-juan/test', require('./routes/test'));
+app.use('/patient-juan/patients', require('./routes/patient'));
+
 
 module.exports = app;

@@ -1,3 +1,7 @@
 require('dotenv').config({path: './.env'});
+const Sequelize = require('sequelize');
+const Patient = require('./src/models/patient.model');
 
-console.log(global.sequelize);
+const john = Patient.findAll({firstName: 'Juan'});
+
+console.log(john);
