@@ -1,7 +1,8 @@
 const Sequelize = require('sequelize');
+const Test = require('./test.model');
 
 const Patient = sequelize.define('patient', {
-    patientId: { type: Sequelize.UUID, allowNull: false, primaryKey: true, defaultValue: Sequelize.UUIDV4 },
+    patientId: { type: Sequelize.INTEGER(11), allowNull: false, primaryKey: true, autoIncrement: true },
     firstName: { type: Sequelize.STRING(255), allowNull: false },
     middleName: Sequelize.STRING(255),
     lastName: { type: Sequelize.STRING(255), allowNull: false },
@@ -17,7 +18,7 @@ const Patient = sequelize.define('patient', {
     bloodType: Sequelize.STRING(50),
     philhealthId: Sequelize.STRING(50),
     withHMO: Sequelize.BOOLEAN,
-    mipID: Sequelize.STRING(50),
+    mipId: Sequelize.STRING(50),
     memberId: Sequelize.STRING(255),
     mailingAddress: Sequelize.STRING(255),
     contactNo1: Sequelize.STRING(50),
@@ -31,7 +32,11 @@ const Patient = sequelize.define('patient', {
     referringPhysId: Sequelize.INTEGER(11),
     referringPhysFullName: Sequelize.STRING(255)
 }, {
-    timestamps: true
+    timestamps: true,
 });
+
+Patient.hasMany(Test, { foreignKey: 'patientId' });
+//hasOne -> targetModel
+//belongsTo -> sourceModel
 
 module.exports = Patient;

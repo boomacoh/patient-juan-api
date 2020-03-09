@@ -1,8 +1,6 @@
 const Sequelize = require('sequelize');
 const config = require('../../config');
 
-Sequelize.Promise = global.Promise;
-
 const sequelize = new Sequelize(config.dbName, config.dbUser, config.dbPassword, {
   host: config.dbHost,
   dialect: config.dialect,
@@ -17,7 +15,9 @@ const sequelize = new Sequelize(config.dbName, config.dbUser, config.dbPassword,
 
 sequelize.sync({ force: true, alter: true })
   .then(() => console.log('Database re-synced!'))
-  .catch(err => console.log('Database sync error: ', err));
+  .catch(err => console.log('Database sync error: ', err))
+  // .finally(() => sequelize.close());
 
-global.sequelize = sequelize;
+
 module.exports = sequelize;
+global.sequelize = sequelize;
