@@ -1,10 +1,12 @@
-const Sequelize = require('sequelize');
-const crypto = require('crypto');
+// const Sequelize = require('sequelize');
+// const crypto = require('crypto');
+import Sequelize from 'sequelize';
+import crypto from 'crypto';
 
 const User = sequelize.define('user', {
     userId: { type: Sequelize.INTEGER(11), allowNull: false, primaryKey: true, autoIncrement: true },
     email: { type: Sequelize.STRING(255), allowNull: false, unique: true },
-    hash: Sequelize.STRING,
+    hash: Sequelize.TEXT,
     salt: Sequelize.STRING
 });
 
