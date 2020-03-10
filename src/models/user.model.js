@@ -1,13 +1,15 @@
-// const Sequelize = require('sequelize');
-// const crypto = require('crypto');
-import Sequelize from 'sequelize';
-import crypto from 'crypto';
+const Sequelize = require('sequelize');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+const config = require('../config');
 
 const User = sequelize.define('user', {
     userId: { type: Sequelize.INTEGER(11), allowNull: false, primaryKey: true, autoIncrement: true },
-    email: { type: Sequelize.STRING(255), allowNull: false, unique: true },
-    hash: Sequelize.TEXT,
-    salt: Sequelize.STRING
+    email: { type: Sequelize.STRING(255), allowNull: false, unique: { args: true, msg: 'That email is already taken' }, validate: { isEmail: { args: true, msg: 'That is not a valid email address!' } } },
+    access: { type: Sequelize.ENUM({ values: ['physician', 'clinic-staff', 'patient'] }), allowNull: false },
+    hash: Sequelize.STRING(1500),
+    salt: Sequelize.STRING(255),
+    verified: { type: Sequelize.BOOLEAN, defaultValue: false, allowNull: false }
 });
 
 User.prototype.setPassword = function (password) {
@@ -21,9 +23,19 @@ User.prototype.validatePassword = function (password) {
 }
 
 User.prototype.generateJWT = function () {
-    var today = new Date();
-    var expiration = new Date();
+    const today = new Date();
+    const expiration = new Date();
     expiration.setDate(today.getDate() + 10);
+
+    return jwt.sign({
+        userId: this.userId,
+        access: this.access,
+        expiration: parseInt(expiration.getTime() / 1000, 10)
+    }, config.jwtSecret);
+}
+
+User.prototype.toAuthJson = function () {
+    return { token: this.generateJWT() };
 }
 
 module.exports = User;

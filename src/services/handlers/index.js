@@ -21,18 +21,14 @@ function respondWithResult(res, statusCode) {
 function handleError(res, statusCode) {
     statusCode = statusCode || 500;
     return function (err) {
-        res.status(statusCode).send(err);
+        res.status(statusCode).send(err.errors);
     };
 }
 
 function handleErrorMsg(res, statusCode, errorMsg) {
     return res
         .status(statusCode || 200)
-        .json({
-            errors: {
-                message: errorMsg ? errorMsg : 'OK!'
-            }
-        });
+        .json(errorMsg ? errorMsg : 'OK!');
 }
 
 module.exports = { handleEntityNotFound, respondWithResult, handleError, handleErrorMsg };
