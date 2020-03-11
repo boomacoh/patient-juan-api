@@ -3,11 +3,32 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 
+const accessLevels = ['physician', 'clinic-staff', 'patient'];
+
 const User = sequelize.define('user', {
-    userId: { type: Sequelize.INTEGER(11), allowNull: false, primaryKey: true, autoIncrement: true },
-    email: { type: Sequelize.STRING(255), allowNull: false, unique: { args: true, msg: 'That email is already taken' }, validate: { isEmail: { args: true, msg: 'That is not a valid email address!' } } },
-    access: { type: Sequelize.ENUM({ values: ['physician', 'clinic-staff', 'patient'] }), allowNull: false },
-    hash: Sequelize.STRING(1500),
+    userId: {
+        type: Sequelize.INTEGER(11),
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    email: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+        unique: { args: true, msg: 'That email is already taken' },
+        validate: { isEmail: { args: true, msg: 'That is not a valid email address!' } }
+    },
+    access: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+        set(value){
+            this.setDataValue('access', value.join(';'));
+        },
+        get() {
+            return (this.getDataValue('access').split(';'));
+        }
+    },
+    hash: Sequelize.STRING(2000),
     salt: Sequelize.STRING(255),
     verified: { type: Sequelize.BOOLEAN, defaultValue: false, allowNull: false }
 });
@@ -22,7 +43,7 @@ User.prototype.validatePassword = function (password) {
     return this.hash === hash;
 }
 
-User.prototype.generateJWT = function () {
+User.prototype.createTokenSignature = function () {
     const today = new Date();
     const expiration = new Date();
     expiration.setDate(today.getDate() + 10);
@@ -30,12 +51,12 @@ User.prototype.generateJWT = function () {
     return jwt.sign({
         userId: this.userId,
         access: this.access,
-        expiration: parseInt(expiration.getTime() / 1000, 10)
+        exp: parseInt(expiration.getTime() / 1000, 10)
     }, config.jwtSecret);
 }
 
-User.prototype.toAuthJson = function () {
-    return { token: this.generateJWT() };
+User.prototype.generateToken = function () {
+    return { token: this.createTokenSignature() };
 }
 
 module.exports = User;

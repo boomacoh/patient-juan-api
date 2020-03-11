@@ -1,22 +1,7 @@
-const crypto = require('crypto');
+let array = ['system', 'clinic:doctor', 'clinic:staff'];
+let x = array.join(' ');
+let y = x.split(' ');
 
-
-
-
-let plainPassword = 'passwordx';
-let hash = "08d2a49674a8975f1e4aa54d1fca446c1148bf8fb17bd27a0b5a880acd785493602d596effe42904f6b43d505fe7fd9bbe7d0165c034476929ddd3180a2d980452c8b3fabf9fd0ff0327383a77ca6de52613a0f01d5bc759efb22ab069fdb0112a58b4dafce4e686605ec3dbf9fa3563690d34e28f847b7edc21471d395367f4c0947055d32ca30a4d99dbe3a35dd71881b5724d1f0cf663851b7621fc47e5a752b1f947412d3bf9cb0a67b9d5999be4d6a83f2f43db3c54232e7f54fb516891d12caadedc5a6a420e74a4d7c2b12d8ce36561e066f429ec3e7c4322ebb8b4984728189ae7135efaea8442e9f873b09fbb6e83043af330ae06637f00339e90443a5b740f15891ae1016806b88acfc1948db2cc6225c1742275a53504498089d0c2b62d3c948bb859f498d997c8dbc6ec35c5f3c1ef28179736b1855def3534597e4ef80cea84fc43da490004972656a61af97f25c188f4d583425eab674d22381a5284207cbc0ab5e78528b6d4c83e4ecfe2c7710d8ba4f045c08118835d16261f02386dfda9aa1bddcd08fa42498da464bcb9789fcedc32c59b06bb8c63ba9c7c654550d809405e213c000c7219eabf504e518389975ec6c86d0e0975fc96bed0b91c4963619b5fcf99fad26642537c739e7ee242d9b8704872210059ce527389f2f9d8afd200f7bef2e69a504a15ee0f88533bab887a96056c39e0576838d7";
-let salt = "b78871a56b3a4859d958fafe02ce8974";
-
-function setPassword(password){
-    salt = crypto.randomBytes(16).toString('hex');
-    hash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');
-}
-
-function validatePassword(password){
-    let hashx = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');
-    return hash === hashx;
-}
-
-x = validatePassword(plainPassword);
-console.log(x);
+console.log(typeof x, x);
+console.log(typeof y, y);
 

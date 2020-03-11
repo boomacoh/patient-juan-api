@@ -5,49 +5,20 @@ const NodeMailer = require('../../utility/mailer');
 const config = require('../../config');
 
 const controller = {
-    getEntries: async (req, res) => {
-        console.log(req);
-        return await User.findAll({ attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] } })
-            .then(handleEntityNotFound(res))
-            .then((users) => res.status(200).send(users))
-            .catch(handleError(res));
-    },
-    getEntry: async (req, res) => {
-        const { params: { userId } } = req;
-        return await User.findByPk(userId, { attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] } })
-            .then(handleEntityNotFound(res))
-            .then(user => res.status(200).send(user))
-            .catch(handleError(res));
-    },
-    login: async (req, res, next) => {
-        const { body: { email, password } } = req;
-        if (!email) return handleErrorMsg(res, 422, 'Email is required!');
-        if (!password) return handleErrorMsg(res, 422, 'Password is required!');
-
-        return passport.authenticate('local', { session: true }, (err, passportUser, info) => {
-            if (err) return next(info);
-            if (passportUser) {
-                const user = passportUser;
-                user.token = passportUser.generateJWT();
-                return res.status(200).send(user.toAuthJson());
-            }
-            return res.status(401).send(info);
-        })(req, res, next);
-
-    },
     register: async (req, res) => {
         const { body: { email, password, access } } = req;
+
         if (!email) return handleErrorMsg(res, 422, 'Email must not be empty!');
         if (!password) return handleErrorMsg(res, 422, 'Password must not be empty!');
         if (!access) return handleErrorMsg(res, 422, 'Access must not be empty!');
 
-        const newUser = User.build({
+        const newUser = await User.build({
             email: email,
             password: password,
             access: access
         });
 
-        newUser.setPassword(password);
+        await newUser.setPassword(password);
 
         return await newUser.save()
             .then(handleEntityNotFound(res))
@@ -68,6 +39,43 @@ const controller = {
             })
             .then(respondWithResult(res))
             .catch(handleError(res))
+    },
+    getEntries: async (req, res) => {
+        console.log(req.headers);
+        return await User.findAll({ attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] } })
+            .then(handleEntityNotFound(res))
+            .then((users) => res.status(200).send(users))
+            .catch(handleError(res));
+    },
+    getEntry: async (req, res) => {
+        const { params: { userId } } = req;
+        return await User.findByPk(userId, { attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] } })
+            .then(handleEntityNotFound(res))
+            .then(user => res.status(200).send(user))
+            .catch(handleError(res));
+    },
+    update: async (req, res) => {
+
+    },
+    verifyEmail: async (req, res) => {
+        const { params: { userId, email } } = req;
+
+    },
+    login: async (req, res, next) => {
+        const { body: { email, password } } = req;
+        if (!email) return handleErrorMsg(res, 422, 'Email is required!');
+        if (!password) return handleErrorMsg(res, 422, 'Password is required!');
+
+        return passport.authenticate('local', { session: true }, (err, passportUser, info) => {
+            if (err) return next(info);
+            if (passportUser) {
+                const user = passportUser;
+                user.token = passportUser.createTokenSignature();
+                return res.status(200).send(user.generateToken());
+            }
+            return res.status(401).send(info);
+        })(req, res, next);
+
     }
 }
 
