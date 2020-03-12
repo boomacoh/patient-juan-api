@@ -3,8 +3,6 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 
-const accessLevels = ['physician', 'clinic-staff', 'patient'];
-
 const User = sequelize.define('user', {
     userId: {
         type: Sequelize.INTEGER(11),

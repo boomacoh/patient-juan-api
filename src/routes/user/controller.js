@@ -41,15 +41,15 @@ const controller = {
             .catch(handleError(res))
     },
     getEntries: async (req, res) => {
-        console.log(req.headers);
+        
         return await User.findAll({ attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] } })
             .then(handleEntityNotFound(res))
             .then((users) => res.status(200).send(users))
             .catch(handleError(res));
     },
     getEntry: async (req, res) => {
-        const { params: { userId } } = req;
-        return await User.findByPk(userId, { attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] } })
+
+        return await User.findOne(condition, { attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] } })
             .then(handleEntityNotFound(res))
             .then(user => res.status(200).send(user))
             .catch(handleError(res));
