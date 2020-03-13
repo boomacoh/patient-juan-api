@@ -7,8 +7,6 @@ const Institution = require('../../models//institution.model');
 const Specialization = require('../../models/specialization.model');
 const UserInstitution = require('../../models/user-institution.model');
 
-
-
 const controller = {
   getAll: (req, res) => {
     Test.findAll({

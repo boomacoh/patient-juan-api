@@ -7,76 +7,28 @@ const config = require('../../config');
 
 const controller = {
   getEntries: async (req, res) => {
+    const { query: { institutionId, email } } = req;
+    const condition = {};
+    if (institutionId) condition['institutionId'] = institutionId;
+    if (email) condition['email'] = email;
+
     await Invitation.findAll()
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
   getEntry: async (req, res, next) => {
-    const { body: { email, clinic } } = req;
-    await Invitation.findOne({ email: email, clinic: clinic })
+    console.log(req.body);
+    const { body: { email, institutionId } } = req;
+    const condition = {}
+    if (email) condition['email'] = email;
+    if (institutionId) condition['institutionId'] = institutionId;
+    await Invitation.findOne({ where: condition })
       .then(handleEntityNotFound(res))
       .then(user => {
-        if (!user) next();
-        return res.status(400).send('User already invited in selected clinic');
+        if (user) return res.status(400).send(user);
+        next();
       })
-      .catch(handleError(res));
-  },
-  checkInUsers: async (req, res, next) => {
-    const { body: { email } } = req;
-
-    await User.findOne({ email: email }, {include: [Institution]})
-      .then(handleEntityNotFound(res))
-      .then(user => {
-        if (user) {
-         res.send(user);
-        }
-        next()
-      })
-      .catch(handleError(res));
-  },
-  sendInvite: async (req, res, next) => {
-    const { body: { email, clinic, invitedBy, access } } = req;
-
-    await Invitation.findOne({ email: email, clinic: clinic })
-      .then(handleEntityNotFound(res))
-      .then(tempUser => {
-        if (tempUser) {
-          res.status(500).send('You have already invited that person!')
-        }
-
-      })
-      .catch(handleError(res))
-
-    const tempUser = await Invitation.build({
-      email: email,
-      clinic: clinic,
-      invitedBy: invitedBy,
-      access: access
-    });
-
-    let invitationToken = await tempUser.generateToken();
-
-    return await tempUser.save()
-      .then(handleEntityNotFound(res))
-      .then(tempUser => {
-
-        const mailer = new NodeMailer(tempUser.email);
-
-        const message = {
-          username: tempUser.email.split('@')[0],
-          invitedBy: tempUser.invitedBy,
-          link: `http://localhost:3000/patient-juan/invitations/accept/${invitationToken.token}`
-        };
-
-        mailer
-          .setTemplate('invitation', message)
-          .setSubject(`Welcome to ${tempUser.clinic}`)
-          .sendHtml();
-
-        return tempUser;
-      })
-      .then(respondWithResult(res))
       .catch(handleError(res));
   },
   accept: async (req, res) => {
@@ -101,20 +53,6 @@ const controller = {
     //       .catch(err => res.status(500).send(err));
     //   })
     //   .catch(handleError(res));
-  },
-  nextOne: (req, res, next) => {
-    console.log('This is req1', req.body);
-    const newEmail = 'liandra@gmail.com';
-    res.locals.anotherEmail = newEmail;
-    next()
-  },
-  nextThree: (req, res, next) => {
-    console.log('This is req3', req.body)
-    res.send(req.body);
-  },
-  nextTwo: (req, res, next) => {
-    console.log('This is req2', JSON.stringify(res.locals));
-    next();
   }
 }
 

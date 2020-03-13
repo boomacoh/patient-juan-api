@@ -7,7 +7,7 @@ const statuses = ['pending', 'approved', 'cancelled'];
 const Invitation = sequelize.define('invitation', {
   id: { type: Sequelize.INTEGER(11), allowNull: false, primaryKey: true, autoIncrement: true },
   email: { type: Sequelize.STRING, allowNull: false, validate: { isEmail: { args: true, msg: 'Email is invalid!' } } },
-  clinic: { type: Sequelize.STRING, allowNull: false },
+  institutionId: { type: Sequelize.STRING, allowNull: false },
   access: {
     type: Sequelize.STRING,
     set(value) {
@@ -29,7 +29,7 @@ Invitation.prototype.createTokenSignature = function () {
   return jwt.sign({
     id: this.id,
     email: this.email,
-    clinic: this.clinic,
+    institutionId: this.institutionId,
     access: this.access,
     exp: parseInt(expiration.getTime() / 1000, 10)
   }, config.jwtSecret);

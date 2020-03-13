@@ -4,15 +4,14 @@ const UserInstitution = require('../../models//user-institution.model');
 
 const { handleEntityNotFound, handleError, respondWithResult, handleErrorMsg } = require('../../services/handlers');
 
-
 const controller = {
   getEntries: async (req, res) => {
     await Institution.findAll({
-      include: [{ model: User, where: { userId: 1 } }]
+      include: [User]
     })
       .then(handleEntityNotFound(res))
       .then(institutions => {
-        res.status(200).send(institutions);
+        return res.status(200).send(institutions);
       })
       .catch(handleError(res));
   },
