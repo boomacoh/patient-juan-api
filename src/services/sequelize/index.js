@@ -10,7 +10,8 @@ const sequelize = new Sequelize(config.dbName, config.dbUser, config.dbPassword,
     min: 0,
     acquire: 30000,
     idle: 10000
-  }
+  },
+  logging: false
 });
 
 sequelize.sync({ force: true, alter: true })
