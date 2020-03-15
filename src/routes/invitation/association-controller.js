@@ -3,6 +3,7 @@ const User = require('../../models/user.model');
 const Invitation = require('../../models/invitation.model');
 const { handleEntityNotFound, handleError, respondWithResult, handleErrorMsg } = require('../../services/handlers');
 const NodeMailer = require('../../utility/mailer');
+const config = require('../../config');
 
 const controller = {
   checkEmailInClinic: async (req, res, next) => {
@@ -25,24 +26,8 @@ const controller = {
       })
       .catch(err => console.log(err));
   },
-  checkIfSystemUser: async (req, res, next) => {
-    const { body: { email } } = req;
-    await User.findOne({ where: { email: email } })
-      .then(user => {
-        if (user) {
-          res.locals.isSystemUser = true;
-          console.log('isSystemUser', res.locals.isSystemUser);
-          return next();
-        }
-        res.locals.isSystemUser = false;
-        console.log('isSystemUser', res.locals.isSystemUser);
-        return next();
-      })
-      .catch(err => console.log(err));
-  },
   sendInvite: async (req, res) => {
     const { body: { email, institutionId, clinicName, access, invitedBy } } = req;
-    const isSystemUser = res.locals.isSystemUser;
 
     const invitation = await Invitation.build({
       email: email,
@@ -61,12 +46,7 @@ const controller = {
         const message = {
           username: invited.email.split('@')[0],
           invitedBy: invited.invitedBy,
-        }
-
-        if (isSystemUser) {
-          message.link = `system-user-link/${invitationToken.token}`;
-        } else {
-          message.link = 'new-user-link';
+          link: `${config.inviteVerificationLink}/${invitationToken.token}`
         }
 
         mailer

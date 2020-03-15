@@ -11,7 +11,7 @@ const sequelize = new Sequelize(config.dbName, config.dbUser, config.dbPassword,
     acquire: 30000,
     idle: 10000
   },
-  logging: false
+  // logging: false
 });
 
 sequelize.sync({ force: true, alter: true })

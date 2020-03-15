@@ -11,6 +11,6 @@ router.get('/:userId', auth.optional, controller.getEntry);
 
 
 router.get('/verify/:invitationToken', auth.optional, association.verify);
-router.post('/', auth.optional, association.checkEmailInClinic, association.checkInInvites, association.checkIfSystemUser, association.sendInvite);
+router.post('/', auth.optional, association.checkEmailInClinic, association.checkInInvites, association.sendInvite);
 
 module.exports = router;

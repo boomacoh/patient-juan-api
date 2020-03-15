@@ -19,7 +19,7 @@ const User = sequelize.define('user', {
     access: {
         type: Sequelize.STRING(255),
         allowNull: false,
-        set(value){
+        set(value) {
             this.setDataValue('access', value.join(';'));
         },
         get() {
@@ -29,6 +29,12 @@ const User = sequelize.define('user', {
     hash: Sequelize.STRING(2000),
     salt: Sequelize.STRING(255),
     verified: { type: Sequelize.BOOLEAN, defaultValue: false, allowNull: false }
+}, {
+    scopes: {
+        verified: {
+            where: { verified: true }
+        }
+    }
 });
 
 User.prototype.setPassword = function (password) {

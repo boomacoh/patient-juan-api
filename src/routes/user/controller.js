@@ -1,13 +1,15 @@
 const User = require('../../models/user.model');
+const Institution = require('../../models/institution.model');
 const { respondWithResult, handleEntityNotFound, handleError, handleErrorMsg } = require('../../services/handlers');
+
 
 const controller = {
     getEntries: async (req, res) => {
 
-        return await User.findAll({ attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] } })
+        return await User.findAll({ attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] }, include: [{ model: Institution, through: { attributes: ['createdAt']} }] })
             .then(handleEntityNotFound(res))
             .then((users) => {
-                console.log(Object.keys(users.__proto__));
+                console.table(Object.keys(users.__proto__));
                 return res.status(200).send(users)
             })
             .catch(err => console.log(err));

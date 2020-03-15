@@ -19,7 +19,7 @@ const Institution = sequelize.define('institution', {
   }
 });
 
-Institution.belongsToMany(User, { through: 'user-institutions', sourceKey: 'institutionId', foreignKey: 'institutionId'});
-User.belongsToMany(Institution, { through: 'user-institutions', sourceKey: 'userId', foreignKey: 'userId'});
+Institution.belongsToMany(User, { through: 'user-institution', sourceKey: 'institutionId', foreignKey: 'institutionId'});
+User.belongsToMany(Institution, { through: 'user-institution', sourceKey: 'userId', foreignKey: 'userId'});
 
 module.exports = Institution;

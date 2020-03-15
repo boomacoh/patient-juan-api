@@ -28,7 +28,10 @@ const config = {
   dialect: getEnvEntry('DB_DIALECT'),
   jwtSecret: getEnvEntry('JWT_SECRET'),
   emailerAccount: getEnvEntry('EMAILER_ACCOUNT'),
-  sendEmail: getEnvBoolean('SEND_EMAIL')
+  inviteVerificationLink: getEnvEntry('INVITE_VERIFICATION_LINK'),
+  emailVerificationLink: getEnvEntry('EMAIL_VERIFICATION_LINK'),
+  sendEmail: getEnvBoolean('SEND_EMAIL'),
+
 }
 
 module.exports = config;

@@ -4,6 +4,8 @@ const UserInstitution = sequelize.define('user-institution', {
   userInstitutionId: { type: Sequelize.INTEGER(11), allowNull: false, primaryKey: true, autoIncrement: true },
   userId: { type: Sequelize.INTEGER(11) },
   institutionId: { type: Sequelize.INTEGER(11) }
+}, {
+  freezeTableName: true
 });
 
 

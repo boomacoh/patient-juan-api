@@ -12,36 +12,30 @@ const controller = {
     if (!password) return handleErrorMsg(res, 422, 'Password must not be empty!');
     if (!access) return handleErrorMsg(res, 422, 'Access must not be empty!');
 
-    const newUser = await User.build({
+    await User.create({
       email: email,
       password: password,
       access: access
-    });
-
-    await newUser.setPassword(password);
-
-    return await newUser.save()
+    })
       .then(handleEntityNotFound(res))
       .then(user => {
+        user.setPassword(password);
         const mailer = new NodeMailer(user.email);
-
         const message = {
           email: user.email,
           link: `this-link`
         }
-
         mailer
           .setTemplate('verify-email', message)
           .setSubject('Verify Email Address')
           .sendHtml();
-
         return user;
       })
-      .then(respondWithResult(res))
+      .then(respondWithResult(res, 201))
       .catch(handleError(res))
   },
   verifyEmail: async (req, res) => {
-    
+
   },
   login: async (req, res, next) => {
     const { body: { email, password } } = req;
