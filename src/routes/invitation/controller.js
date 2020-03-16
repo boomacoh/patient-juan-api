@@ -30,29 +30,6 @@ const controller = {
         next();
       })
       .catch(handleError(res));
-  },
-  accept: async (req, res) => {
-    res.status(301).redirect('http://www.google.com/' + req.params.invitationToken);
-
-
-    // res.json(req.params.invitationToken);
-
-    // await Invitation.findByPk(payload.id)
-    //   .then(handleEntityNotFound(res))
-    //   .then(tempUser => {
-    //     const email = tempUser.email;
-    //     const access = tempUser.access;
-    //     const clinic = tempUser.clinic;
-
-    //     tempUser.status = 'approved';
-    //     return tempUser.save()
-    //       .then(updated => {
-    //         console.log(updated);
-    //         return res.status(301).redirect(`http://localhost:3000/patient-juan/${email}/${access}/${clinic}`);
-    //       })
-    //       .catch(err => res.status(500).send(err));
-    //   })
-    //   .catch(handleError(res));
   }
 }
 

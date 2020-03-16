@@ -6,7 +6,7 @@ const Specialization = sequelize.define('specialization', {
   description: Sequelize.STRING
 });
 
-Specialization.belongsToMany(UserInstitution, { through: 'assignment-line', sourceKey: 'code', foreignKey: 'code' });
-UserInstitution.belongsToMany(Specialization, { through: 'assignment-line', sourceKey: 'userInstitutionId', foreignKey: 'userInstitutionId' });
+// Specialization.belongsToMany(UserInstitution, { through: 'assignment-line', sourceKey: 'code', foreignKey: 'code' });
+// UserInstitution.belongsToMany(Specialization, { through: 'assignment-line', sourceKey: 'userInstitutionId', foreignKey: 'userInstitutionId' });
 
 module.exports = Specialization;

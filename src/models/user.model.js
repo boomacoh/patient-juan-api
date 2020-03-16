@@ -16,16 +16,6 @@ const User = sequelize.define('user', {
         unique: { args: true, msg: 'That email is already taken' },
         validate: { isEmail: { args: true, msg: 'That is not a valid email address!' } }
     },
-    access: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-        set(value) {
-            this.setDataValue('access', value.join(';'));
-        },
-        get() {
-            return (this.getDataValue('access').split(';'));
-        }
-    },
     hash: Sequelize.STRING(2000),
     salt: Sequelize.STRING(255),
     verified: { type: Sequelize.BOOLEAN, defaultValue: false, allowNull: false }
@@ -49,12 +39,11 @@ User.prototype.validatePassword = function (password) {
 
 User.prototype.createTokenSignature = function () {
     const today = new Date();
-    const expiration = new Date();
-    expiration.setDate(today.getDate() + 10);
+    const expiration = new Date(today);
+    expiration.setDate(today.getDate() + 1);
 
     return jwt.sign({
         userId: this.userId,
-        access: this.access,
         exp: parseInt(expiration.getTime() / 1000, 10)
     }, config.jwtSecret);
 }

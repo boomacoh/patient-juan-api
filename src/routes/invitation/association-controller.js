@@ -1,9 +1,11 @@
 const Institution = require('../../models/institution.model');
 const User = require('../../models/user.model');
 const Invitation = require('../../models/invitation.model');
+const UserInstitution = require('../../models/user-institution.model');
 const { handleEntityNotFound, handleError, respondWithResult, handleErrorMsg } = require('../../services/handlers');
 const NodeMailer = require('../../utility/mailer');
 const config = require('../../config');
+const decode = require('jwt-decode');
 
 const controller = {
   checkEmailInClinic: async (req, res, next) => {
@@ -29,24 +31,20 @@ const controller = {
   sendInvite: async (req, res) => {
     const { body: { email, institutionId, clinicName, access, invitedBy } } = req;
 
-    const invitation = await Invitation.build({
+    await Invitation.create({
       email: email,
       institutionId: institutionId,
       access: access,
       invitedBy: invitedBy
-    });
-
-    const invitationToken = await invitation.generateToken();
-
-    return await invitation.save()
+    })
       .then(invited => {
-
+        const invitationToken = invited.generateToken();
         const mailer = new NodeMailer(invited.email);
 
         const message = {
           username: invited.email.split('@')[0],
           invitedBy: invited.invitedBy,
-          link: `${config.inviteVerificationLink}/${invitationToken.token}`
+          link: `${config.apiUrl}/invitations/verify/${invitationToken.token}`
         }
 
         mailer
@@ -59,8 +57,42 @@ const controller = {
       .then(respondWithResult(res, 201))
       .catch(err => console.log(err));
   },
-  verify: async (req, res) => {
-    console.log('invitation verified!!!');
+  verifyEmail: async (req, res, next) => {
+    const { params: { token } } = req;
+    const decodedToken = decode(token);
+
+    await User.findOne({ where: { email: decodedToken.email } })
+      .then(systemUser => {
+
+        // console.log(Object.keys(user.__proto__));
+
+        if (!systemUser) {
+
+          const mailer = new NodeMailer();
+          const message = {
+            // link: `${config.clientUrl}/signup/:email/:institutionId/:verified`
+            link: `${config.clientUrl}/signup/${decodedToken.email}/${decodedToken.institutionId}/${true}`
+          }
+
+          return message;
+        }
+
+        systemUser.addInstitution(decodedToken.institutionId, { through: { access: decodedToken.access } })
+          .then(success => {
+            return res.status(201).send(success);
+          })
+          .catch(err => console.log(err));
+      })
+      .then(respondWithResult(res))
+      .catch(err => console.log(err));
+  },
+  signUpInvite: async (req, res) => {
+
+    const mailer = new NodeMailer();
+
+    const message = {
+
+    }
   }
 
 }
