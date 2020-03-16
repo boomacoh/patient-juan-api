@@ -3,39 +3,61 @@ const { handleEntityNotFound, handleErrorMsg, handleError, respondWithResult } =
 const passport = require('passport');
 const NodeMailer = require('../../utility/mailer');
 const config = require('../../config');
+const decode = require('jwt-decode');
 
 const controller = {
   register: async (req, res) => {
-    const { body: { email, password, access } } = req;
+    const { body: { email, password, access, confirmPassword } } = req;
 
     if (!email) return handleErrorMsg(res, 422, 'Email must not be empty!');
     if (!password) return handleErrorMsg(res, 422, 'Password must not be empty!');
-    if (!access) return handleErrorMsg(res, 422, 'Access must not be empty!');
+    if (!confirmPassword) return handleErrorMsg(res, 422, 'Confirm Password must not be empty!');
+    if (password !== confirmPassword) return handleErrorMsg(res, 422, 'Passwords do not match!');
 
-    await User.create({
+    newUser = await User.build({
       email: email,
       password: password,
-      access: access
-    })
+    });
+
+    await newUser.setPassword(password);
+
+    await newUser.save()
       .then(handleEntityNotFound(res))
       .then(user => {
-        user.setPassword(password);
+        const signupToken = user.generateToken()
+
         const mailer = new NodeMailer(user.email);
         const message = {
           email: user.email,
-          link: `this-link`
+          link: `${config.apiUrl}/users/auth/verify-email/${signupToken.token}`
         }
+
         mailer
           .setTemplate('verify-email', message)
           .setSubject('Verify Email Address')
           .sendHtml();
+
         return user;
       })
       .then(respondWithResult(res, 201))
       .catch(handleError(res))
   },
   verifyEmail: async (req, res) => {
+    const { params: { token } } = req;
+    const decodedToken = decode(token);
 
+    await User.findByPk(decodedToken.userId)
+      .then(handleEntityNotFound(res))
+      .then(user => {
+        if (user.verified == false) {
+          user.verified = true;
+          user.save();
+          return res.render('success', { message: 'Account successfully verified!' });
+        }
+        return res.render('error', { message: 'Account is already verified!' });
+      
+      })
+      .catch(err => console.log(err));
   },
   login: async (req, res, next) => {
     const { body: { email, password } } = req;

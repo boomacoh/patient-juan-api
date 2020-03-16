@@ -23,9 +23,10 @@ const Invitation = sequelize.define('invitation', {
 
 Invitation.prototype.createTokenSignature = function () {
   const today = new Date();
-  const expiration = new Date();
-  expiration.setTime(today.getHours() + 2);
-
+  const expiration = new Date(today);
+  // expiration.setDate(today.getDate() + 1);
+  expiration.setMinutes(today.getMinutes() + 2);
+ 
   return jwt.sign({
     id: this.id,
     email: this.email,

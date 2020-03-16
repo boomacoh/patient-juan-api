@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const User = require('../models/user.model');
+const UserInstitution = require('../models/user-institution.model');
 
 const Institution = sequelize.define('institution', {
   institutionId: { type: Sequelize.INTEGER(11), allowNull: false, primaryKey: true, autoIncrement: true },
@@ -19,7 +20,7 @@ const Institution = sequelize.define('institution', {
   }
 });
 
-Institution.belongsToMany(User, { through: 'user-institution', sourceKey: 'institutionId', foreignKey: 'institutionId'});
-User.belongsToMany(Institution, { through: 'user-institution', sourceKey: 'userId', foreignKey: 'userId'});
+Institution.belongsToMany(User, { through: UserInstitution, sourceKey: 'institutionId', foreignKey: 'institutionId'});
+User.belongsToMany(Institution, { through: UserInstitution, sourceKey: 'userId', foreignKey: 'userId'});
 
 module.exports = Institution;

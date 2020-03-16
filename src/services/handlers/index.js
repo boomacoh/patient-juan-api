@@ -21,7 +21,10 @@ function respondWithResult(res, statusCode) {
 function handleError(res, statusCode) {
     statusCode = statusCode || 500;
     return function (err) {
-        res.status(statusCode).send(err.errors);
+        if (err instanceof Object) {
+            return res.status(statusCode).send(err.errors[0].message);
+        }
+        return res.status(statusCode).send(err.errors);
     };
 }
 
