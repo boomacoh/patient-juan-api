@@ -1,4 +1,5 @@
 const User = require('../../models/user.model');
+const Institution = require('../../models/institution.model');
 const { handleEntityNotFound, handleErrorMsg, handleError, respondWithResult } = require('../../services/handlers');
 const passport = require('passport');
 const NodeMailer = require('../../utility/mailer');
@@ -7,13 +8,14 @@ const decode = require('jwt-decode');
 
 const controller = {
   register: async (req, res) => {
-    const { body: { email, password, access, confirmPassword } } = req;
+    const { body: { email, password, confirmPassword, registeredName } } = req;
 
     if (!email) return handleErrorMsg(res, 422, 'Email must not be empty!');
     if (!password) return handleErrorMsg(res, 422, 'Password must not be empty!');
     if (!confirmPassword) return handleErrorMsg(res, 422, 'Confirm Password must not be empty!');
     if (password !== confirmPassword) return handleErrorMsg(res, 422, 'Passwords do not match!');
 
+    await Institution
     newUser = await User.build({
       email: email,
       password: password,
@@ -23,9 +25,17 @@ const controller = {
 
     await newUser.save()
       .then(handleEntityNotFound(res))
-      .then(user => {
-        const signupToken = user.generateToken()
+      .then(async user => {
 
+        console.log(Object.keys(user.__proto__));
+
+        const inst = await Institution.create({ registeredName: registeredName })
+          .then(institution => institution)
+          .catch(err => console.log(err));
+
+        await user.addInstitution(inst);
+
+        const signupToken = user.generateToken();
         const mailer = new NodeMailer(user.email);
         const message = {
           email: user.email,
@@ -55,7 +65,7 @@ const controller = {
           return res.render('success', { message: 'Account successfully verified!' });
         }
         return res.render('error', { message: 'Account is already verified!' });
-      
+
       })
       .catch(err => console.log(err));
   },
