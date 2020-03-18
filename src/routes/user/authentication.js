@@ -47,13 +47,11 @@ const controller = {
       })
       .then(respondWithResult(res, 201))
       .catch(handleError(res));
-      // .catch(err => console.log(err));
+    // .catch(err => console.log(err));
   },
   join: async (req, res) => {
     const { body: { email, password, access, institutionId, confirmPassword } } = req;
 
-    if (!password) return;
-    console.log(typeof institutionId);
     if (password !== confirmPassword) res.render('member-signup', { data: req.body, message: 'Passwords do not match!', class: 'danger' })
 
     const member = await User.build({
@@ -67,7 +65,12 @@ const controller = {
       .then(user => {
 
         user.addInstitution(institutionId, { through: { access: access } })
-          .then(assignment => { return res.send(assignment) })
+          .then(assignment => {
+            setTimeout(() => {
+              return res.redirect('http://google.com');
+            }, 3000);
+            // res.render('message', { message: 'Account Successfully created! Redirecting to App...', class: 'success' });
+          })
           .catch(err => console.log(err));
       })
       .then(respondWithResult(res))
@@ -83,9 +86,9 @@ const controller = {
         if (user.verified == false) {
           user.verified = true;
           user.save();
-          return res.render('success', { message: 'Account successfully verified!' });
+          return res.render('message', { message: 'Account successfully verified!', class: "success" });
         }
-        return res.render('error', { message: 'Account is already verified!' });
+        return res.render('message', { message: 'Account is already verified!', class: 'danger' });
 
       })
       .catch(err => console.log(err));

@@ -48,7 +48,7 @@ const controller = {
         if (decodedToken.exp < today) {
           invitation.status = 'expired';
           invitation.save();
-          return res.render('error', { message: 'This Invitation has expired or invalid!', code: 500 });
+          return res.render('message', { message: 'This Invitation has expired or invalid!', class: 'danger' });
         }
         invitation.status = 'approved';
         invitation.save();

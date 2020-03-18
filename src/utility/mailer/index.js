@@ -9,17 +9,21 @@ class Nodemailer {
     this.recepient = recepient;
     const emailerAccount = config.emailerAccount.split(':');
     const transporter = nodemailer.createTransport({
-      // service: 'gmail',
-      host: 'smtp.mailtrap.io',
-      port: 2525,
+      service: 'gmail',
+      // host: 'smtp.mailtrap.io',
+      // port: 2525,
+      // auth: {
+      //   user: emailerAccount[0],
+      //   pass: emailerAccount[1]
+      // }
       auth: {
-        user: emailerAccount[0],
-        pass: emailerAccount[1]
+        user: 'wittywalletapp@gmail.com',
+        pass: 'wittywalletteam'
       }
     });
     this.email = new Email({
       message: {
-        from: 'no-reply@patientjuan.com'
+        from: 'wittywalletapp@gmail.com'
       },
       send: config.sendEmail,
       preview: false,
