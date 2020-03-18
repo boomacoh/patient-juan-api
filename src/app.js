@@ -3,9 +3,11 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const logger = require('morgan');
 const path = require('path');
+const expresshbs = require('express-handlebars');
 
 const app = express();
 
+app.engine('hbs', expresshbs({ extname: '.hbs'}));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 

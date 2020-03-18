@@ -1,6 +1,6 @@
 const controller = {
   home: (req, res) => {
-    res.send({message: 'Welcome to my API'});
+    res.render('home', { title: 'Welcome to Patient Juan' });
   }
 }
 

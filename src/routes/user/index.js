@@ -10,7 +10,7 @@ router.get('/', auth.required, checkPermission([['system']]), controller.getEntr
 router.get('/:userId', auth.required, checkPermission([['system']]), controller.getEntry);
 
 //auth
-router.get('/auth/verify-email/:token', globalController.checkTokenExpiry, authentication.verifyEmail);
+router.get('/auth/verify/:email', globalController.checkTokenExpiry, authentication.verify);
 router.post('/auth/login', authentication.login);
 router.post('/auth/register', authentication.register);
 

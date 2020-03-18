@@ -2,10 +2,10 @@ const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 
-const statuses = ['pending', 'approved', 'cancelled'];
+const statuses = ['pending', 'approved', 'cancelled', 'expired'];
 
 const Invitation = sequelize.define('invitation', {
-  id: { type: Sequelize.INTEGER(11), allowNull: false, primaryKey: true, autoIncrement: true },
+  invitationId: { type: Sequelize.UUID, allowNull: false, primaryKey: true, defaultValue: Sequelize.UUIDV1 },
   email: { type: Sequelize.STRING, allowNull: false, validate: { isEmail: { args: true, msg: 'Email is invalid!' } } },
   institutionId: { type: Sequelize.STRING, allowNull: false },
   access: {
@@ -18,7 +18,16 @@ const Invitation = sequelize.define('invitation', {
     }
   },
   status: { type: Sequelize.ENUM({ values: statuses }), allowNull: false, defaultValue: 'pending', validate: { isIn: { args: [statuses] } } },
-  invitedBy: { type: Sequelize.STRING, allowNull: false }
+  invitedBy: { type: Sequelize.STRING, allowNull: false },
+  token: { type: Sequelize.STRING(2000), allowNull: false }
+}, {
+  scopes: {
+    pending: {
+      where: {
+        status: 'pending'
+      }
+    }
+  }
 });
 
 Invitation.prototype.createTokenSignature = function () {
@@ -26,12 +35,9 @@ Invitation.prototype.createTokenSignature = function () {
   const expiration = new Date(today);
   // expiration.setDate(today.getDate() + 1);
   expiration.setMinutes(today.getMinutes() + 2);
- 
+
   return jwt.sign({
-    id: this.id,
-    email: this.email,
-    institutionId: this.institutionId,
-    access: this.access,
+    invitationId: this.invitationId,
     exp: parseInt(expiration.getTime() / 1000, 10)
   }, config.jwtSecret);
 }

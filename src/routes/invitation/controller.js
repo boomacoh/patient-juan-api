@@ -7,29 +7,62 @@ const config = require('../../config');
 
 const controller = {
   getEntries: async (req, res) => {
-    const { query: { institutionId, email } } = req;
-    const condition = {};
-    if (institutionId) condition['institutionId'] = institutionId;
-    if (email) condition['email'] = email;
+    const { query: { email, institutionId, invitationId } } = req;
+    const condition = {}
 
-    await Invitation.findAll()
+    if (invitationId) condition['invitationId'] = invitationId;
+    if (email) condition['email'] = email;
+    if (institutionId) condition['institutionId'] = institutionId;
+
+    await Invitation.findAll({ where: { condition } })
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
   getEntry: async (req, res, next) => {
-    console.log(req.body);
-    const { body: { email, institutionId } } = req;
-    const condition = {}
-    if (email) condition['email'] = email;
-    if (institutionId) condition['institutionId'] = institutionId;
-    await Invitation.findOne({ where: condition })
+
+    await Invitation.findByPk()
       .then(handleEntityNotFound(res))
       .then(user => {
-        if (user) return res.status(400).send(user);
-        next();
+        if (user) return res.send(user);
       })
       .catch(handleError(res));
+  },
+  create: async (req, res) => {
+    const { body: { email, institutionId, clinicName, access, invitedBy } } = req;
+
+    const newInvite = await Invitation.build({
+      email: email,
+      institutionId: institutionId,
+      access: access,
+      invitedBy: invitedBy
+    });
+
+    let token = await newInvite.generateToken();
+    newInvite.token = token.token;
+
+    await newInvite.save()
+      .then(invited => {
+        const mailer = new NodeMailer(invited.email);
+
+        const message = {
+          username: invited.email.split('@')[0],
+          invitedBy: invited.invitedBy,
+          link: `${config.apiUrl}/invitations/verify/${invited.invitationId}`
+        }
+
+        mailer
+          .setTemplate('invitation', message)
+          .setSubject(`Invitation from ${invitedBy}`)
+          .sendHtml();
+
+        return message;
+      })
+      .then(respondWithResult(res, 201))
+      .catch(err => console.log(err));
+  },
+  destroy: async (req, res) => {
+    
   }
 }
 

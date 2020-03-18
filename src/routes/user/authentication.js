@@ -15,8 +15,7 @@ const controller = {
     if (!confirmPassword) return handleErrorMsg(res, 422, 'Confirm Password must not be empty!');
     if (password !== confirmPassword) return handleErrorMsg(res, 422, 'Passwords do not match!');
 
-    await Institution
-    newUser = await User.build({
+    const newUser = await User.build({
       email: email,
       password: password,
     });
@@ -24,16 +23,12 @@ const controller = {
     await newUser.setPassword(password);
 
     await newUser.save()
-      .then(handleEntityNotFound(res))
-      .then(async user => {
+      .then(async (user) => {
 
-        console.log(Object.keys(user.__proto__));
+        // console.log(Object.keys(user.__proto__));
 
-        const inst = await Institution.create({ registeredName: registeredName })
-          .then(institution => institution)
-          .catch(err => console.log(err));
-
-        await user.addInstitution(inst);
+        let inst = await Institution.findOrCreate({ where: { registeredName: registeredName } });
+        await user.addInstitution(inst[0], { through: { access: ['system'] } });
 
         const signupToken = user.generateToken();
         const mailer = new NodeMailer(user.email);
@@ -50,9 +45,9 @@ const controller = {
         return user;
       })
       .then(respondWithResult(res, 201))
-      .catch(handleError(res))
+      .catch(err => console.log(err));
   },
-  verifyEmail: async (req, res) => {
+  verify: async (req, res) => {
     const { params: { token } } = req;
     const decodedToken = decode(token);
 

@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 
 const UserInstitution = sequelize.define('user-institution', {
-  assignmentId: { type: Sequelize.INTEGER(11), allowNull: false, primaryKey: true, autoIncrement: true },
+  assignmentId: { type: Sequelize.UUIDV4, allowNull: false, primaryKey: true, default: Sequelize.UUIDV4 },
   userId: { type: Sequelize.INTEGER(11), allowNull: false },
   institutionId: { type: Sequelize.INTEGER(11), allowNull: false },
   access: {

@@ -14,85 +14,69 @@ const controller = {
     await Institution.findOne({ where: { institutionId: institutionId }, attributes: ['registeredName'], include: [{ model: User, attributes: ['email'], where: { email: email } }] })
       .then(results => {
         if (!results) return next();
-        next('User already exists in this clinic');
+        next('User is already a member of this clinic');
       })
       .catch(err => console.log(err));
   },
   checkInInvites: async (req, res, next) => {
     const { body: { email, institutionId } } = req
 
-    await Invitation.findOne({ where: { email: email, institutionId: institutionId } })
+    await Invitation
+      .scope('pending')
+      .findOne({ where: { email: email, institutionId: institutionId } })
       .then(result => {
-        if (!result) return next();
-        next('User is already invited!');
-      })
-      .catch(err => console.log(err));
-  },
-  sendInvite: async (req, res) => {
-    const { body: { email, institutionId, clinicName, access, invitedBy } } = req;
-
-    await Invitation.create({
-      email: email,
-      institutionId: institutionId,
-      access: access,
-      invitedBy: invitedBy
-    })
-      .then(invited => {
-        const invitationToken = invited.generateToken();
-        const mailer = new NodeMailer(invited.email);
-
-        const message = {
-          username: invited.email.split('@')[0],
-          invitedBy: invited.invitedBy,
-          link: `${config.apiUrl}/invitations/verify/${invitationToken.token}`
+        if (!result) {
+          return next();
         }
-
-        mailer
-          .setTemplate('invitation', message)
-          .setSubject(`Invitation from ${invitedBy}`)
-          .sendHtml();
-
-        return message;
+        next('User already has a pending invitation from this clinic!');
       })
-      .then(respondWithResult(res, 201))
       .catch(err => console.log(err));
   },
-  verifyEmail: async (req, res, next) => {
-    const { params: { token } } = req;
-    const decodedToken = decode(token);
+  verify: async (req, res, next) => {
+    const { params: { invitationId } } = req;
 
-    await User.findOne({ where: { email: decodedToken.email } })
+    await Invitation
+      .scope('pending')
+      .findByPk(invitationId)
+      .then(handleEntityNotFound(res))
+      .then(invitation => {
+        res.locals.invitation = invitation;
+
+        const decodedToken = decode(invitation.token);
+        const today = parseInt(new Date().getTime() / 1000, 10);
+
+        if (decodedToken.exp < today) {
+          invitation.status = 'expired';
+          invitation.save();
+          return res.render('error', { message: 'This Invitation has expired or invalid!', code: 500 });
+        }
+        return next()
+      })
+      .catch(err => console.log(err));
+  },
+  assign: async (req, res, next) => {
+    const invitation = res.locals.invitation;
+
+    await User.findOne({ where: { email: invitation.email } })
       .then(systemUser => {
 
         // console.log(Object.keys(user.__proto__));
 
         if (!systemUser) {
 
-          const mailer = new NodeMailer();
-          const message = {
-            // link: `${config.clientUrl}/signup/:email/:institutionId/:verified`
-            link: `${config.clientUrl}/signup/${decodedToken.email}/${decodedToken.institutionId}/${true}`
-          }
+          const message = 'Redirect to Signup page!';
 
           return message;
         }
 
-        systemUser.addInstitution(decodedToken.institutionId, { through: { access: decodedToken.access } })
-          .then(success => {
-            return res.status(201).send(success);
+        systemUser.addInstitution(invitation.institutionId, { through: { access: invitation.access } })
+          .then(assignment => {
+            return assignment;
           })
           .catch(err => console.log(err));
       })
       .then(respondWithResult(res))
       .catch(err => console.log(err));
-  },
-  signUpInvite: async (req, res) => {
-
-    const mailer = new NodeMailer();
-
-    const message = {
-
-    }
   }
 
 }

@@ -3,14 +3,12 @@ const router = express.Router();
 const controller = require('./controller');
 const association = require('./association-controller');
 const { auth, checkPermission } = require('../../services/auth/jwt');
-const globalController = require('../../utility/controllers');
-
 
 router.get('/', auth.optional, controller.getEntries);
-router.get('/:userId', auth.optional, controller.getEntry);
+router.get('/:invitationId', auth.optional, controller.getEntry);
 
 
-router.get('/verify/:token', auth.optional, globalController.checkTokenExpiry, association.verifyEmail);
-router.post('/', auth.optional, association.checkEmailInClinic, association.checkInInvites, association.sendInvite);
+router.get('/verify/:invitationId', auth.optional, association.verify, association.assign);
+router.post('/', auth.optional, association.checkEmailInClinic, association.checkInInvites, controller.create);
 
 module.exports = router;
