@@ -14,7 +14,7 @@ const controller = {
     await Institution.findOne({ where: { institutionId: institutionId }, attributes: ['registeredName'], include: [{ model: User, attributes: ['email'], where: { email: email } }] })
       .then(results => {
         if (!results) return next();
-        next('User is already a member of this clinic');
+        next(res.send('User is already a member of this clinic'));
       })
       .catch(err => console.log(err));
   },
@@ -28,7 +28,7 @@ const controller = {
         if (!result) {
           return next();
         }
-        next('User already has a pending invitation from this clinic!');
+        next(res.send('User already has a pending invitation from this clinic!'));
       })
       .catch(err => console.log(err));
   },
@@ -50,6 +50,8 @@ const controller = {
           invitation.save();
           return res.render('error', { message: 'This Invitation has expired or invalid!', code: 500 });
         }
+        invitation.status = 'approved';
+        invitation.save();
         return next()
       })
       .catch(err => console.log(err));
@@ -58,7 +60,7 @@ const controller = {
     const invitation = res.locals.invitation;
     console.log(typeof invitation.institutionId);
     await User.findOne({ where: { email: invitation.email } })
-      .then(systemUser => {
+      .then(async (systemUser) => {
 
         // console.log(Object.keys(user.__proto__));
 
@@ -68,11 +70,8 @@ const controller = {
           return res.render('member-signup', { data: { email: invitation.email, access: invitation.access, institutionId: invitation.institutionId } });
         }
 
-        systemUser.addInstitution(invitation.institutionId, { through: { access: invitation.access } })
-          .then(assignment => {
-            return assignment;
-          })
-          .catch(err => console.log(err));
+        const assignment = await systemUser.addInstitution(invitation.institutionId, { through: { access: invitation.access } });
+        return assignment;
       })
       .then(respondWithResult(res))
       .catch(err => console.log(err));

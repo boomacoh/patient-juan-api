@@ -46,7 +46,8 @@ const controller = {
         return user;
       })
       .then(respondWithResult(res, 201))
-      .catch(err => console.log(err));
+      .catch(handleError(res));
+      // .catch(err => console.log(err));
   },
   join: async (req, res) => {
     const { body: { email, password, access, institutionId, confirmPassword } } = req;
