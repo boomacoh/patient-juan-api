@@ -56,7 +56,7 @@ const controller = {
   },
   assign: async (req, res, next) => {
     const invitation = res.locals.invitation;
-
+    console.log(typeof invitation.institutionId);
     await User.findOne({ where: { email: invitation.email } })
       .then(systemUser => {
 
@@ -64,9 +64,8 @@ const controller = {
 
         if (!systemUser) {
 
-          const message = 'Redirect to Signup page!';
-
-          return message;
+          //redirect to member signup
+          return res.render('member-signup', { data: { email: invitation.email, access: invitation.access, institutionId: invitation.institutionId } });
         }
 
         systemUser.addInstitution(invitation.institutionId, { through: { access: invitation.access } })

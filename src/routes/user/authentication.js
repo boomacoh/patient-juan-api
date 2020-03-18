@@ -14,6 +14,7 @@ const controller = {
     if (!password) return handleErrorMsg(res, 422, 'Password must not be empty!');
     if (!confirmPassword) return handleErrorMsg(res, 422, 'Confirm Password must not be empty!');
     if (password !== confirmPassword) return handleErrorMsg(res, 422, 'Passwords do not match!');
+    if (!registeredName) return handleErrorMsg(res, 422, 'Please provide a name for your clinic!');
 
     const newUser = await User.build({
       email: email,
@@ -45,6 +46,30 @@ const controller = {
         return user;
       })
       .then(respondWithResult(res, 201))
+      .catch(err => console.log(err));
+  },
+  join: async (req, res) => {
+    const { body: { email, password, access, institutionId, confirmPassword } } = req;
+
+    if (!password) return;
+    console.log(typeof institutionId);
+    if (password !== confirmPassword) res.render('member-signup', { data: req.body, message: 'Passwords do not match!', class: 'danger' })
+
+    const member = await User.build({
+      email: email,
+      password: password,
+      verified: true
+    });
+
+    await member.setPassword(password);
+    await member.save()
+      .then(user => {
+
+        user.addInstitution(institutionId, { through: { access: access } })
+          .then(assignment => { return res.send(assignment) })
+          .catch(err => console.log(err));
+      })
+      .then(respondWithResult(res))
       .catch(err => console.log(err));
   },
   verify: async (req, res) => {

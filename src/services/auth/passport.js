@@ -11,9 +11,9 @@ passport.use(new LocalStrategy({
       if (!user || !user.validatePassword(password)) {
         return done(null, false, 'User not found!');
       }
-      // if (user.verified === false) {
-      //   return done(null, false, `The email; ${user.email} is not verified! Please check your email to continue the account verification process`);
-      // }
+      if (user.verified === false) {
+        return done(null, false, `Account not verified!`);
+      }
       return done(null, user);
     })
     .catch(done);

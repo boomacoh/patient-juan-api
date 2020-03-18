@@ -13,6 +13,7 @@ router.get('/:userId', auth.required, checkPermission([['system']]), controller.
 router.get('/auth/verify/:email', globalController.checkTokenExpiry, authentication.verify);
 router.post('/auth/login', authentication.login);
 router.post('/auth/register', authentication.register);
+router.post('/auth/join', authentication.join);
 
 
 module.exports = router;
