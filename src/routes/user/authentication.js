@@ -52,7 +52,7 @@ const controller = {
   join: async (req, res) => {
     const { body: { email, password, access, institutionId, confirmPassword } } = req;
 
-    if (password !== confirmPassword) res.render('member-signup', { data: req.body, message: 'Passwords do not match!', class: 'danger' })
+    if (password !== confirmPassword) res.render('member-signup', { data: req.body, message: 'Passwords do not match!', class: 'danger' });
 
     const member = await User.build({
       email: email,
@@ -67,9 +67,8 @@ const controller = {
         user.addInstitution(institutionId, { through: { access: access } })
           .then(assignment => {
             setTimeout(() => {
-              return res.redirect('http://google.com');
+              return res.redirect(`${config.clientUrl}/login/${user.email}`);
             }, 3000);
-            // res.render('message', { message: 'Account Successfully created! Redirecting to App...', class: 'success' });
           })
           .catch(err => console.log(err));
       })

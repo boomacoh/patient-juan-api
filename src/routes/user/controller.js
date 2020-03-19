@@ -6,7 +6,7 @@ const { respondWithResult, handleEntityNotFound, handleError, handleErrorMsg } =
 const controller = {
     getEntries: async (req, res) => {
 
-        return await User.findAll({ attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] }, include: [{ model: Institution, through: { attributes: ['createdAt']} }] })
+        return await User.findAll({ attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] }, include: [{ model: Institution, through: { attributes: ['createdAt'] } }] })
             .then(handleEntityNotFound(res))
             .then((users) => {
                 console.table(Object.keys(users.__proto__));
@@ -27,6 +27,12 @@ const controller = {
     update: async (req, res) => {
         const { params: { userId } } = req;
         const user = req.body;
+    },
+    destroy: async (req, res) => {
+        const { params: { userId } } = req;
+        await User.delete({where: {userId: userId}})
+        .then(respondWithResult(res, 204))
+        .catch(handleError(res));
     }
 }
 
