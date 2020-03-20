@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const Patient = require('../models/patient.model');
 
-const PersonalSocialHistory = sequelize.define('personal-social-history', {
+const PersonalSocialHistory = sequelize.define('personal_social_history', {
     pasHistoryId: Sequelize.INTEGER(11),
     patientId: Sequelize.INTEGER(11)
 });

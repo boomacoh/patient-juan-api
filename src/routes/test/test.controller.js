@@ -1,7 +1,7 @@
 const { handleEntityNotFound, handleError, respondWithResult } = require('../../services/handlers');
 
 const User = require('../../models/user.model');
-const UserProfile = require('../../models/user-profile.model');
+const UserProfile = require('../../models/profile.model');
 const Test = require('../../models/test.model');
 const Patient = require('../../models/patient.model');
 const Institution = require('../../models//institution.model');

@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const User = require('./user.model');
 
-const UserProfile = sequelize.define('user-profile', {
+const Profile = sequelize.define('profile', {
   profileId: { type: Sequelize.INTEGER(11), allowNull: false, autoIncrement: true, primaryKey: true },
   fullName: { type: Sequelize.VIRTUAL, get() { return `${this.firstName} ${this.lastName}` } },
   firstName: {
@@ -36,7 +36,7 @@ const UserProfile = sequelize.define('user-profile', {
   tinNo: Sequelize.STRING
 })
 
-User.hasOne(UserProfile, { foreignKey: 'userId' });
-UserProfile.belongsTo(User, { foreignKey: 'userId' });
+User.hasOne(Profile, { foreignKey: 'userId' });
+Profile.belongsTo(User, { foreignKey: 'userId' });
 
-module.exports = UserProfile;
+module.exports = Profile;

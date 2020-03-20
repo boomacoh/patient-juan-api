@@ -1,12 +1,14 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('../../models/user.model');
+const Institution = require('../../models/institution.model');
 
 passport.use(new LocalStrategy({
   usernameField: 'email',
   passwordField: 'password',
 }, (email, password, done) => {
-  User.findOne({ email: email })
+  User
+    .findOne({ where: { email: email }})
     .then((user) => {
       if (!user || !user.validatePassword(password)) {
         return done(null, false, 'User not found!');
