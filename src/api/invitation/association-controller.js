@@ -14,7 +14,7 @@ const controller = {
     await Institution.findOne({ where: { institutionId: institutionId }, attributes: ['registeredName'], include: [{ model: User, attributes: ['email'], where: { email: email } }] })
       .then(results => {
         if (!results) return next();
-        next(res.send('User is already a member of this clinic'));
+        next(res.status(500).send('User is already a member of this clinic'));
       })
       .catch(err => console.log(err));
   },
@@ -28,7 +28,7 @@ const controller = {
         if (!result) {
           return next();
         }
-        next(res.send('User already has a pending invitation from this clinic!'));
+        next(res.status(500).send('User already has a pending invitation from this clinic!'));
       })
       .catch(err => console.log(err));
   },

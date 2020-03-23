@@ -45,10 +45,18 @@ const controller = {
       .then(invited => {
         const mailer = new NodeMailer(invited.email);
 
+        const x = access.map(a => {
+          if (a === 'system') return 'Administrator';
+          if (a === 'clinic:doctor') return 'Physician';
+          if (a === 'clinic:staff') return 'Clinic Staff';
+        });
+
         const message = {
           username: invited.email.split('@')[0],
           invitedBy: invited.invitedBy,
-          link: `${config.apiUrl}/invitations/verify/${invited.invitationId}`
+          link: `${config.apiUrl}/invitations/verify/${invited.invitationId}`,
+          clinicName: clinicName,
+          access: x
         }
 
         mailer

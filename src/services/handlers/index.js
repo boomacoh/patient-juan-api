@@ -26,6 +26,7 @@ function handleError(res, statusCode) {
 }
 
 function handleErrorMsg(res, statusCode, errorMsg) {
+    console.log(JSON.stringify(res));
     return res
         .status(statusCode || 200)
         .json(errorMsg ? errorMsg : 'OK!');

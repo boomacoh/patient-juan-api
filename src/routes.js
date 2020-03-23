@@ -8,4 +8,5 @@ module.exports = (app) => {
   app.use('/me', require('./api/user/me'))
   app.use('/invitations', require('./api/invitation'));
   app.use('/institutions', require('./api/institution'));
+  app.use('/profiles', require('./api/profile'));
 }
