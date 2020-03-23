@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const controller = require('./me.controller');
 const { auth, checkPermission } = require('../../../services/auth/jwt');
-const globalController = require('../../../utility/controllers');
 
 router.get('/', auth.required, controller.me);
 router.post('/change-password', auth.required, controller.changePassword);

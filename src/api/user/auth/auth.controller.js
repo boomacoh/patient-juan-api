@@ -26,7 +26,7 @@ const controller = {
     await newUser.save()
       .then(async (user) => {
 
-        // console.log(Object.keys(user.__proto__));
+        console.log(Object.keys(user.__proto__));
 
         let inst = await Institution.findOrCreate({ where: { registeredName: registeredName } });
         await user.addInstitution(inst[0], { through: { access: ['system'] } });
@@ -34,8 +34,8 @@ const controller = {
         const signupToken = user.generateToken();
         const mailer = new NodeMailer(user.email);
         const message = {
-          email: user.email,
-          link: `${config.apiUrl}/users/auth/verify-email/${signupToken.token}`
+          username: user.email.split('@')[0],
+          link: `${config.apiUrl}/auth/verify/${signupToken.token}`
         }
 
         mailer

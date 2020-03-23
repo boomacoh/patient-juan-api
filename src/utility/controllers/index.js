@@ -8,7 +8,7 @@ const controller = {
 
     if (decodedToken.exp < today) {
       res.locals.isTokenExpired = true;
-      return res.render('error', { message: 'The token seems to be invalid or expired!' });
+      return res.render('message', { message: 'The token seems to be invalid or expired!' });
     }
     
     res.locals.isTokenExpired = false;

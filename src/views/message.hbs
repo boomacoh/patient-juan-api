@@ -1,3 +1,12 @@
-<div class="alert alert-{{class}}">
-    {{message}}
-</div>
+<div class="container mt-5">
+    <div class="card card-primary border-dark mx-auto mt-5" style="max-width: 40%;">
+        <div class="card-body">
+            <div class="alert alert-{{class}} text-center">
+                <h4>{{message}}</h4>
+            </div>
+            <h5 class="text-center">You may now close this page.</h5>
+            {{!-- {{#if class=="success"}} --}}
+            <h5 class="text-center">Or proceed to <a href="#" class="text-dark">Patient Juan</a></h5>
+            {{!-- {{/if}} --}}
+        </div>
+    </div>
