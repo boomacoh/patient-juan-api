@@ -14,14 +14,15 @@ const controller = {
     if (email) condition['email'] = email;
     if (institutionId) condition['institutionId'] = institutionId;
 
-    await Invitation.findAll({ where: { condition } })
+    await Invitation.findAll()
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
-      .catch(handleError(res));
+      .catch(err => console.log(err));
+    // .catch(handleError(res));
   },
   getEntry: async (req, res, next) => {
-
-    await Invitation.findByPk()
+    const { params: { invitationId } } = req;
+    await Invitation.findByPk(invitationId)
       .then(handleEntityNotFound(res))
       .then(user => {
         if (user) return res.send(user);
@@ -70,7 +71,7 @@ const controller = {
       .catch(err => console.log(err));
   },
   destroy: async (req, res) => {
-    
+
   }
 }
 

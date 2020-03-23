@@ -18,7 +18,7 @@ const User = sequelize.define('user', {
     },
     hash: Sequelize.STRING(2000),
     salt: Sequelize.STRING(255),
-    verified: { type: Sequelize.BOOLEAN, defaultValue: true, allowNull: false }
+    verified: { type: Sequelize.BOOLEAN, defaultValue: false, allowNull: false }
 }, {
     scopes: {
         verified: {

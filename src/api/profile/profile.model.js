@@ -4,7 +4,7 @@ const config = require('../../config');
 
 const Profile = sequelize.define('profile', {
   profileId: { type: Sequelize.INTEGER(11), allowNull: false, autoIncrement: true, primaryKey: true },
-  fullName: { type: Sequelize.VIRTUAL, get() { return `${this.firstName} ${this.lastName}` } },
+  fullName: { type: Sequelize.VIRTUAL, get() { return `${this.firstName} ${this.lastName} ${this.suffix ? this.suffix : ''}` } },
   firstName: {
     type: Sequelize.STRING(255), allowNull: false,
     set(value) {
@@ -19,7 +19,7 @@ const Profile = sequelize.define('profile', {
   },
   middleName: {
     type: Sequelize.STRING(255),
-    set() {
+    set(value) {
       this.setDataValue('middleName', value.charAt(0).toUpperCase() + value.slice(1));
     }
   },

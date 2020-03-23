@@ -5,8 +5,10 @@ const Profile = require('../../profile/profile.model');
 
 const view = (data, profile, institution) => {
   const user = {
-    userId: data.userId,
-    profile: data.profile,
+    userInfo: {
+      userId: data.userId,
+      fullName: data.fullName,
+    },
     institution: {
       institutionId: data.institutionId,
       access: data.access
@@ -22,14 +24,14 @@ const view = (data, profile, institution) => {
 const controller = {
   me: async (req, res) => {
     const { payload: { userId } } = req;
+    console.log(req.payload);
 
     return await User.findOne({ where: { userId: userId, verified: true }, include: [Profile, Institution] })
       .then(handleEntityNotFound(res))
       .then(me => {
-
         data = {
           userId: me.userId,
-          profile: me.profile ? { firstName: me.profile.firstName, lastName: me.profile.lastName } : null,
+          fullName: me.profile ? me.profile.fullName : null,
           institutionId: me.institutions[0].institutionId,
           access: me.institutions[0].user_institution.access
         }

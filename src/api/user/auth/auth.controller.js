@@ -52,7 +52,7 @@ const controller = {
   join: async (req, res) => {
     const { body: { email, password, access, institutionId, confirmPassword } } = req;
 
-    if (password !== confirmPassword) res.render('member-signup', { data: req.body, message: 'Passwords do not match!', class: 'danger' });
+    if (password !== confirmPassword) return res.render('member-signup', { data: req.body, message: 'Passwords do not match!', class: 'danger' });
 
     const member = await User.build({
       email: email,
