@@ -39,7 +39,17 @@ const Profile = sequelize.define('profile', {
     type: Sequelize.STRING, set(value) {
       this.setDataValue('image', `${config.apiUrl}/images/profile/${value}`);
     }
-  }
+  },
+  contactNo: {
+    type: Sequelize.STRING, 
+    set(value) {
+      this.setDataValue('contactNo', value.join(';'));
+    },
+    get(){
+      return this.getDataValue('contactNo').split(';');
+    }
+  },
+  address: Sequelize.STRING
 })
 
 User.hasOne(Profile, { foreignKey: 'userId' });

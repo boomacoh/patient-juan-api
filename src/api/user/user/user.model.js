@@ -18,7 +18,8 @@ const User = sequelize.define('user', {
     },
     hash: Sequelize.STRING(2000),
     salt: Sequelize.STRING(255),
-    verified: { type: Sequelize.BOOLEAN, defaultValue: false, allowNull: false }
+    verified: { type: Sequelize.BOOLEAN, defaultValue: false, allowNull: false },
+    verifyToken: { type: Sequelize.STRING(1000) }
 }, {
     scopes: {
         verified: {
@@ -44,6 +45,16 @@ User.prototype.createTokenSignature = function () {
 
     return jwt.sign({
         userId: this.userId,
+        exp: parseInt(expiration.getTime() / 1000, 10)
+    }, config.jwtSecret);
+}
+
+User.prototype.createVerifyToken = function () {
+    const today = new Date();
+    const expiration = new Date(today);
+    expiration.setDate(today.getDate() + 1);
+
+    return jwt.sign({
         exp: parseInt(expiration.getTime() / 1000, 10)
     }, config.jwtSecret);
 }

@@ -5,10 +5,8 @@ const Profile = require('../../profile/profile.model');
 
 const view = (data, profile, institution) => {
   const user = {
-    userInfo: {
-      userId: data.userId,
-      fullName: data.fullName,
-    },
+    userId: data.userId,
+    fullName: data.fullName,
     institution: {
       institutionId: data.institutionId,
       access: data.access

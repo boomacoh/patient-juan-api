@@ -22,6 +22,8 @@ const controller = {
     });
 
     await newUser.setPassword(password);
+    const token = await newUser.createVerifyToken();
+    newUser.verifyToken = token;
 
     await newUser.save()
       .then(async (user) => {
@@ -35,7 +37,8 @@ const controller = {
         const mailer = new NodeMailer(user.email);
         const message = {
           username: user.email.split('@')[0],
-          link: `${config.apiUrl}/auth/verify/${signupToken.token}`
+          link: `${config.apiUrl}/auth/verify/${user.email}`
+          // link: `${config.apiUrl}/auth/verify/${signupToken.token}`
         }
 
         mailer
@@ -47,7 +50,7 @@ const controller = {
       })
       .then(respondWithResult(res, 201))
       // .catch(handleError(res));
-    .catch(err => console.log(err));
+      .catch(err => console.log(err));
   },
   join: async (req, res) => {
     const { body: { email, password, access, institutionId, confirmPassword } } = req;
@@ -76,16 +79,22 @@ const controller = {
       .catch(err => console.log(err));
   },
   verify: async (req, res) => {
-    const { params: { token } } = req;
-    const decodedToken = decode(token);
+    const { params: { email } } = req;
 
-    await User.findByPk(decodedToken.userId)
+    await User.findOne({ where: { email: email } })
       .then(handleEntityNotFound(res))
       .then(user => {
+        const decodedToken = decode(user.verifyToken);
+        const today = parseInt(new Date().getTime() / 1000, 10);
+
+        if (decodedToken.exp < today) {
+          return res.render('message', { message: 'The token seems to be invalid or expired!' });
+        }
+
         if (user.verified == false) {
           user.verified = true;
           user.save();
-          return res.render('message', { message: 'Account successfully verified!', class: "success" });
+          return res.render('message', { message: 'Account successfully verified!', class: "success", email: user.email });
         }
         return res.render('message', { message: 'Account is already verified!', class: 'danger' });
 
