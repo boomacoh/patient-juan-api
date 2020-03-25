@@ -19,14 +19,16 @@ function respondWithResult(res, statusCode) {
 }
 
 function handleError(res, statusCode) {
+    
     statusCode = statusCode || 500;
     return function (err) {
-        return res.status(statusCode).send(err.errors);
+        console.log(err);
+        // return res.status(statusCode).send(err.errors);
+        return res.status(statusCode).send(err);
     };
 }
 
 function handleErrorMsg(res, statusCode, errorMsg) {
-    console.log(JSON.stringify(res));
     return res
         .status(statusCode || 200)
         .json(errorMsg ? errorMsg : 'OK!');

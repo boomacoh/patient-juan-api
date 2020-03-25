@@ -58,7 +58,7 @@ const controller = {
   },
   assign: async (req, res, next) => {
     const invitation = res.locals.invitation;
-    console.log(typeof invitation.institutionId);
+    
     await User.findOne({ where: { email: invitation.email } })
       .then(async (systemUser) => {
 

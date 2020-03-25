@@ -13,7 +13,13 @@
 // console.log(x);
 
 const access = ['system', 'clinic:doctor', 'clinic:staff'];
+const requiredRole = ['clinic:doctor', 'system'];
+const myRoles = ['clinic:staff', 'system'];
+
+const isPermitted = requiredRole.some(role => myRoles.includes(role));
+
+console.log(isPermitted);
 
 
 
-console.log(x);
+// console.log(x);
