@@ -2,19 +2,18 @@ const User = require('../user/user.model');
 const { handleEntityNotFound, respondWithResult, handleError, handleErrorMsg } = require('../../../services/handlers');
 const Institution = require('../../institution/institution.model');
 const Profile = require('../../profile/profile.model');
+const moment = require('moment');
 
-const view = (data, profile, institution) => {
+const view = (data) => {
   const user = {
-    userId: data.userId,
-    fullName: data.fullName,
-    institution: {
-      institutionId: data.institutionId,
-      access: data.access
-    }
+    userInfo: data.userInfo,
+    institution: data.institution,
+    sessionToken: data.sessionToken
   }
 
-  if (!profile) delete me.profile;
-  if (!institution) delete me.institutions;
+  if (!user.userInfo) delete user.userInfo;
+  if (!user.institution) delete user.institutions;
+  if (!user.sessionToken) delete user.sessionToken;
 
   return user;
 }
@@ -22,22 +21,33 @@ const view = (data, profile, institution) => {
 const controller = {
   me: async (req, res) => {
     const { payload: { userId } } = req;
-    console.log(req.payload);
+    console.log(req.headers)
 
-    return await User.findOne({ where: { userId: userId, verified: true }, include: [Profile, Institution] })
+    return await User
+      .scope('verified')
+      .findOne({ where: { userId: userId }, include: [{ model: Profile }, { model: Institution, through: { where: { isDefault: true } } }] })
       .then(handleEntityNotFound(res))
       .then(me => {
+
         data = {
-          userId: me.userId,
-          fullName: me.profile ? me.profile.fullName : null,
-          institutionId: me.institutions[0].institutionId,
-          access: me.institutions[0].user_institution.access
+          userInfo: {
+            userId: me.userId,
+            fullName: me.profile ? me.profile.fullName : null,
+            email: me.email,
+            created: moment(me.createdAt).format('MMMM DD, YYYY'),
+            updated: moment().to(me.updatedAt)
+          },
+          institution: {
+            institutionId: me.institutions[0].institutionId,
+            access: me.institutions[0].user_institution.access,
+            registeredName: me.institutions[0].registeredName,
+            memberSince: moment(me.institutions[0].user_institution.createdAt).format('MMMM DD, YYYY')
+          }
         }
 
-        res.status(200).send(view(data, true, true));
-
+        res.status(200).send(view(data));
       })
-      .catch(err => console.log(err));
+      .catch(handleError(res));
   },
   changePassword: async (req, res) => {
     const { body: { currentPassword, newPassword, repeatNewPassword } } = req;
@@ -70,6 +80,30 @@ const controller = {
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res, 202))
       .catch(handleError(res))
+  },
+  switchInstitution: async (req, res) => {
+    // const { payload: { userId } } = req;
+    const userId = 1;
+    const { params: { institutionId } } = req;
+
+    return await User
+      .findOne({ where: { userId: userId }, include: [{ model: Institution, where: { institutionId: institutionId } }] })
+      .then(handleEntityNotFound(res))
+      .then(me => {
+
+        const token = me.generateToken(me.institutions[0].user_institution.access);
+
+        const data = {
+          institution: {
+            insitutionId: me.institutions[0].institutionId,
+            access: me.institutions[0].user_institution.access,
+            registeredName: me.institutions[0].registeredName
+          },
+          sessionToken: token
+        }
+        res.status(200).send(view(data));
+      })
+      .catch(handleError(res));
   }
 }
 

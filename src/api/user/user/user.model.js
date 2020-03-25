@@ -38,14 +38,15 @@ User.prototype.validatePassword = function (password) {
     return this.hash === hash;
 }
 
-User.prototype.createTokenSignature = function () {
+User.prototype.createTokenSignature = function (access) {
     const today = new Date();
     const expiration = new Date(today);
     expiration.setDate(today.getDate() + 1);
 
     return jwt.sign({
         userId: this.userId,
-        exp: parseInt(expiration.getTime() / 1000, 10)
+        exp: parseInt(expiration.getTime() / 1000, 10),
+        access: access
     }, config.jwtSecret);
 }
 
@@ -59,8 +60,8 @@ User.prototype.createVerifyToken = function () {
     }, config.jwtSecret);
 }
 
-User.prototype.generateToken = function () {
-    return { token: this.createTokenSignature() };
+User.prototype.generateToken = function (access) {
+    return { token: this.createTokenSignature(access) };
 }
 
 module.exports = User;
