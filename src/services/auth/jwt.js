@@ -15,7 +15,7 @@ const tokenFromHeaders = (req) => {
   return null;
 }
 
-const auth = {
+const jwtAuth = {
   required: jwt({
     secret: config.jwtSecret,
     userProperty: 'payload',
@@ -33,4 +33,4 @@ const checkPermission = function (permission) {
   return guard.check(permission);
 }
 
-module.exports = { auth, checkPermission };
+module.exports = { jwtAuth, checkPermission };
