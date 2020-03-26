@@ -52,6 +52,7 @@ const controller = {
               tinNo: me.profile.tinNo,
               image: me.profile.image,
               address: me.profile.address,
+              contactNo: me.profile.contactNo,
               createdAt: moment(me.profile.createdAt).format('MMMM DD, YYYY'),
               updatedAt: moment().to(me.profile.updatedAt)
             } : null,
