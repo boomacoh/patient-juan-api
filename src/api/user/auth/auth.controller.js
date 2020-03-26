@@ -8,7 +8,7 @@ const decode = require('jwt-decode');
 
 const controller = {
   register: async (req, res) => {
-    const { body: { email, password, confirmPassword, registeredName } } = req;
+    const { body: { email, password, confirmPassword, registeredName, access } } = req;
 
     if (!email) return handleErrorMsg(res, 422, 'Email must not be empty!');
     if (!password) return handleErrorMsg(res, 422, 'Password must not be empty!');
@@ -31,7 +31,7 @@ const controller = {
         console.log(Object.keys(user.__proto__));
 
         let inst = await Institution.findOrCreate({ where: { registeredName: registeredName } });
-        await user.addInstitution(inst[0], { through: { access: ['system'], isDefault: true } });
+        await user.addInstitution(inst[0], { through: { access: access, isDefault: true } });
 
         const signupToken = user.generateToken();
         const mailer = new NodeMailer(user.email);

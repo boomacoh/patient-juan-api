@@ -25,17 +25,36 @@ const controller = {
 
     return await User
       .scope('verified')
-      .findOne({ where: { userId: userId }, include: [{ model: Profile }, { model: Institution, through: { where: { isDefault: true } } }] })
+      .findOne({ where: { userId: userId }, include: [{ model: Profile, attributes: { exclude: ['userId'] } }, { model: Institution, through: { where: { isDefault: true } } }] })
       .then(handleEntityNotFound(res))
       .then(me => {
 
-        data = {
+        const data = {
           userInfo: {
             userId: me.userId,
-            fullName: me.profile ? me.profile.fullName : null,
             email: me.email,
-            created: moment(me.createdAt).format('MMMM DD, YYYY'),
-            updated: moment().to(me.updatedAt)
+            profile: me.profile ? {
+              fullName: me.profile.fullName,
+              firstName: me.profile.firstName,
+              lastName: me.profile.lastName,
+              middleName: me.profile.middleName,
+              suffix: me.profile.suffix,
+              nickname: me.profile.nickname,
+              birthdate: moment(me.profile.birthdate).format('MMMM DD, YYYY'),
+              sex: me.profile.sex,
+              civilStatus: me.profile.civilStatus,
+              nationality: me.profile.nationality,
+              citizenship: me.profile.citizenship,
+              religion: me.profile.religion,
+              bloodType: me.profile.bloodType,
+              philhealthId: me.profile.philhealthId,
+              PRCLicenseNo: me.profile.PRCLicenseNo,
+              tinNo: me.profile.tinNo,
+              image: me.profile.image,
+              address: me.profile.address,
+              createdAt: moment(me.profile.createdAt).format('MMMM DD, YYYY'),
+              updatedAt: moment().to(me.profile.updatedAt)
+            } : null,
           },
           institution: {
             institutionId: me.institutions[0].institutionId,
@@ -44,7 +63,7 @@ const controller = {
             memberSince: moment(me.institutions[0].user_institution.createdAt).format('MMMM DD, YYYY')
           }
         }
-
+       
         res.status(200).send(view(data));
       })
       .catch(handleError(res));
