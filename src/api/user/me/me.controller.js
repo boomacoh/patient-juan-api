@@ -3,17 +3,20 @@ const { handleEntityNotFound, respondWithResult, handleError, handleErrorMsg } =
 const Institution = require('../../institution/institution.model');
 const Profile = require('../../profile/profile.model');
 const moment = require('moment');
+const UploadImage = require('../../../utility/image-uploader/upload');
 
 const view = (data) => {
   const user = {
     userInfo: data.userInfo,
     institution: data.institution,
-    sessionToken: data.sessionToken
+    sessionToken: data.sessionToken,
+    profile: data.profile
   }
 
   if (!user.userInfo) delete user.userInfo;
   if (!user.institution) delete user.institutions;
   if (!user.sessionToken) delete user.sessionToken;
+  if (!user.profile) delete user.profile;
 
   return user;
 }
@@ -54,7 +57,7 @@ const controller = {
               address: me.profile.address,
               contactNo: me.profile.contactNo,
               createdAt: moment(me.profile.createdAt).format('MMMM DD, YYYY'),
-              updatedAt: moment().to(me.profile.updatedAt)
+              updatedAt: moment(me.profile.updatedAt).fromNow()
             } : null,
           },
           institution: {
@@ -64,7 +67,7 @@ const controller = {
             memberSince: moment(me.institutions[0].user_institution.createdAt).format('MMMM DD, YYYY')
           }
         }
-       
+
         res.status(200).send(view(data));
       })
       .catch(handleError(res));
@@ -124,7 +127,32 @@ const controller = {
         res.status(200).send(view(data));
       })
       .catch(handleError(res));
+  },
+  getProfile: async (req, res) => {
+    const { payload: { userId } } = req;
+    await Profile.findOne({ where: { userId: userId } })
+      .then(handleEntityNotFound(res))
+      .then(profile => {
+        res.status(200).send(profile);
+      })
+      .catch(handleError(res));
+  },
+  updateProfileImage: async (req, res) => {
+    console.log(req.file);
+    const { payload: { userId } } = req;
+
+    return await Profile.findOne({ where: { userId: userId } })
+      .then(handleEntityNotFound(res))
+      .then(profile => {
+        const upload = new UploadImage(req.file);
+        const image = upload.saveImage();
+        profile.image = image;
+        profile.save();
+        return res.status(200).send(profile);
+      })
+      .catch(handleError(res));
   }
+
 }
 
 
