@@ -63,6 +63,7 @@ typings/
 
 .DS_Store
 public/.DS_Store
+src/public/images
 
 playground
 src/playground
