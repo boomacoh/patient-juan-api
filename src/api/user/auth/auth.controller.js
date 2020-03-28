@@ -28,7 +28,7 @@ const controller = {
     await newUser.save()
       .then(async (user) => {
 
-        console.log(Object.keys(user.__proto__));
+        // console.log(Object.keys(user.__proto__));
 
         let inst = await Institution.findOrCreate({ where: { registeredName: registeredName } });
         await user.addInstitution(inst[0], { through: { access: access, isDefault: true } });

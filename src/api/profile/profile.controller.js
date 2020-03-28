@@ -27,10 +27,10 @@ const controller = {
   create: async (req, res) => {
     return await Profile.create(req.body)
       .then(profile => {
-        console.log(Object.keys(profile.__proto__));
+        // console.log(Object.keys(profile.__proto__));
         res.send(profile);
       })
-      .catch(err => console.log(err));
+      .catch(handleError(res));
       // .catch(handleError(res));
   }
 

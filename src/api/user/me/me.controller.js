@@ -4,6 +4,8 @@ const Institution = require('../../institution/institution.model');
 const Profile = require('../../profile/profile.model');
 const moment = require('moment');
 const UploadImage = require('../../../utility/image-uploader/upload');
+const fs = require('fs');
+const path = require('path');
 
 const view = (data) => {
   const user = {
@@ -138,17 +140,26 @@ const controller = {
       .catch(handleError(res));
   },
   updateProfileImage: async (req, res) => {
-    console.log(req.file);
     const { payload: { userId } } = req;
 
     return await Profile.findOne({ where: { userId: userId } })
       .then(handleEntityNotFound(res))
       .then(profile => {
+        if (profile.image) {
+          let oldImage = profile.image.split('/');
+          fs.unlinkSync(path.join(__dirname, '../../../public/images/profile/', oldImage[oldImage.length - 1]));
+        }
         const upload = new UploadImage(req.file);
-        const image = upload.saveImage();
-        profile.image = image;
-        profile.save();
-        return res.status(200).send(profile);
+        upload.saveImage()
+          .then(image => {
+            profile.image = image.filename;
+            profile.save();
+
+            return res.status(200).send(profile);
+          })
+          .catch(err => {
+            return res.status(500).send(err);
+          });
       })
       .catch(handleError(res));
   }
