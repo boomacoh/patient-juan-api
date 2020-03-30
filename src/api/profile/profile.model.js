@@ -49,6 +49,15 @@ const Profile = sequelize.define('profile', {
       return this.getDataValue('contactNo').split(';');
     }
   },
+  specializations: {
+    type: Sequelize.STRING,
+    set(value){
+      this.setDataValue('specializations', value.join(';'))
+    },
+    get(){
+      return this.getDataValue('specializations').split(';');
+    }
+  },
   address: Sequelize.STRING
 })
 
