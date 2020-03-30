@@ -1,3 +1,5 @@
+const sequelizeError = require('sequelize').BaseError;
+
 function handleEntityNotFound(res) {
     return function (entity) {
         if (!entity) {
@@ -19,19 +21,19 @@ function respondWithResult(res, statusCode) {
 }
 
 function handleError(res, statusCode) {
-    
     statusCode = statusCode || 500;
     return function (err) {
-        console.log(err);
-        // return res.status(statusCode).send(err.errors);
+        if(err instanceof sequelizeError){
+            err = err.errors[0].message
+        }
         return res.status(statusCode).send(err);
     };
 }
 
 function handleErrorMsg(res, statusCode, errorMsg) {
     return res
-        .status(statusCode || 200)
-        .json(errorMsg ? errorMsg : 'OK!');
+        .status(statusCode || 500)
+        .json(errorMsg ? errorMsg : 'Error!');
 }
 
 module.exports = { handleEntityNotFound, respondWithResult, handleError, handleErrorMsg };
