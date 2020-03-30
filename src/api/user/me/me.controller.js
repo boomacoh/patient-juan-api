@@ -26,7 +26,6 @@ const view = (data) => {
 const controller = {
   me: async (req, res) => {
     const { payload: { userId } } = req;
-    console.log(req.headers)
 
     return await User
       .scope('verified')
@@ -40,26 +39,7 @@ const controller = {
             email: me.email,
             profile: me.profile ? {
               fullName: me.profile.fullName,
-              firstName: me.profile.firstName,
-              lastName: me.profile.lastName,
-              middleName: me.profile.middleName,
-              suffix: me.profile.suffix,
-              nickname: me.profile.nickname,
-              birthdate: moment(me.profile.birthdate).format('MMMM DD, YYYY'),
-              sex: me.profile.sex,
-              civilStatus: me.profile.civilStatus,
-              nationality: me.profile.nationality,
-              citizenship: me.profile.citizenship,
-              religion: me.profile.religion,
-              bloodType: me.profile.bloodType,
-              philhealthId: me.profile.philhealthId,
-              PRCLicenseNo: me.profile.PRCLicenseNo,
-              tinNo: me.profile.tinNo,
-              image: me.profile.image,
-              address: me.profile.address,
-              contactNo: me.profile.contactNo,
-              createdAt: moment(me.profile.createdAt).format('MMMM DD, YYYY'),
-              updatedAt: moment(me.profile.updatedAt).fromNow()
+              specializations: me.profile.specializations
             } : null,
           },
           institution: {
@@ -135,6 +115,7 @@ const controller = {
     await Profile.findOne({ where: { userId: userId } })
       .then(handleEntityNotFound(res))
       .then(profile => {
+
         res.status(200).send(profile);
       })
       .catch(handleError(res));
