@@ -4,7 +4,7 @@ const controller = {
   },
   toClient: (req, res, next) => {
     const { params: { email } } = req;
-    return res.status(301).redirect(`http://localhost:4200/login?email=${email}`);
+    return res.status(301).redirect(`http://localhost:4200/auth/login?email=${email}`);
     // return next()
   }
 }

@@ -26,6 +26,7 @@ function handleError(res, statusCode) {
         if(err instanceof sequelizeError){
             err = err.errors[0].message
         }
+        console.log(err);
         return res.status(statusCode).send(err);
     };
 }

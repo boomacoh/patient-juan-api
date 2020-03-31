@@ -4,7 +4,7 @@ const { handleEntityNotFound, handleError, handleErrorMsg, respondWithResult } =
 
 const controller = {
   getAll: async (req, res) => {
-    return await Profile.findAll()
+    return await Profile.findAll({include: User})
       .then(handleEntityNotFound(res))
       .then((profiles) => {
         return res.send(profiles);

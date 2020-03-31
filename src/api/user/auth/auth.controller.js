@@ -85,7 +85,7 @@ const controller = {
           const decodedToken = decode(user.verifyToken);
           const today = parseInt(new Date().getTime() / 1000, 10);
 
-          if (decodedToken.exp < today) {
+          if (!decodedToken || decodedToken.exp < today) {
             return res.render('message', { message: 'The token seems to be invalid or expired!', class: 'danger' });
           }
 

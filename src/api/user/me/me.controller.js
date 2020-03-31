@@ -39,7 +39,8 @@ const controller = {
             email: me.email,
             profile: me.profile ? {
               fullName: me.profile.fullName,
-              specializations: me.profile.specializations
+              specializations: me.profile.specializations,
+              image: me.profile.image
             } : null,
           },
           institution: {
@@ -102,7 +103,8 @@ const controller = {
           institution: {
             insitutionId: me.institutions[0].institutionId,
             access: me.institutions[0].user_institution.access,
-            registeredName: me.institutions[0].registeredName
+            registeredName: me.institutions[0].registeredName,
+            memberSince: moment(me.institutions[0].user_institution.createdAt).format('MMMM DD, YYYY')
           },
           sessionToken: token
         }
@@ -116,14 +118,26 @@ const controller = {
       .then(handleEntityNotFound(res))
       .then(profile => {
 
-        res.status(200).send(profile);
+        const data = {
+          profile: {
+            fullName: profile.fullName,
+            birthdate: profile.birthdate,
+            contactNo: profile.contactNo,
+            address: profile.address,
+            civilStatus: profile.civilStatus,
+            image: profile.image,
+            createdAt: moment(profile.createdAt).format('MMMM DD, YYYY'),
+            updatedAt: moment(profile.updatedAt).fromNow()
+          }
+        }
+        res.status(200).send(view(data));
       })
       .catch(handleError(res));
   },
   updateProfileImage: async (req, res) => {
     const { payload: { userId } } = req;
 
-    return await Profile.findOne({ where: { userId: userId } })
+    return await Profile.findOne({ where: { userId: userId }, include: [{ model: User }] })
       .then(handleEntityNotFound(res))
       .then(profile => {
         if (profile.image) {
@@ -136,7 +150,19 @@ const controller = {
             profile.image = image.filename;
             profile.save();
 
-            return res.status(200).send(profile);
+            const data = {
+              userInfo: {
+                userId: profile.user.userId,
+                email: profile.user.email,
+                profile: {
+                  fullName: profile.fullName,
+                  specializations: profile.specializations,
+                  image: profile.image
+                }
+              }
+            }
+
+            return res.status(200).send(view(data));
           })
           .catch(err => {
             return res.status(500).send(err);
