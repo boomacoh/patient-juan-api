@@ -41,27 +41,27 @@ const Profile = sequelize.define('profile', {
     }
   },
   contactNo: {
-    type: Sequelize.STRING, 
+    type: Sequelize.STRING,
     set(value) {
       this.setDataValue('contactNo', value.join(';'));
     },
-    get(){
+    get() {
       return this.getDataValue('contactNo').split(';');
     }
   },
   specializations: {
     type: Sequelize.STRING,
-    set(value){
+    set(value) {
       this.setDataValue('specializations', value.join(';'))
     },
-    get(){
+    get() {
       return this.getDataValue('specializations').split(';');
     }
   },
   address: Sequelize.STRING
 })
 
-User.hasOne(Profile, { foreignKey: 'userId' });
-Profile.belongsTo(User, { foreignKey: 'userId' });
+User.hasOne(Profile, { foreignKey: { name: 'userId', unique: { args: true, msg: 'User already has existing profile' } } });
+Profile.belongsTo(User, { foreignKey: { name: 'userId', unique: { args: true, msg: 'User already has existing profile' } } });
 
 module.exports = Profile;
