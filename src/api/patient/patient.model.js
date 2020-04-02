@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const Test = require('../test/test.model');
+const Institution = require('../institution/institution.model');
 
 const Patient = sequelize.define('patient', {
     patientId: { type: Sequelize.INTEGER(11), allowNull: false, primaryKey: true, autoIncrement: true },
@@ -8,7 +9,7 @@ const Patient = sequelize.define('patient', {
     lastName: { type: Sequelize.STRING(255), allowNull: false },
     fullName: { type: Sequelize.VIRTUAL, get() { return `${this.firstName} ${this.lastName}` } },
     suffix: Sequelize.STRING(50),
-    nickname: Sequelize.STRING(255),
+    nickname: { type: Sequelize.STRING(255) },
     birthdate: { type: Sequelize.DATEONLY, allowNull: false },
     sex: Sequelize.STRING(50),
     civilStatus: Sequelize.STRING(50),
@@ -35,7 +36,9 @@ const Patient = sequelize.define('patient', {
     timestamps: true,
 });
 
-Patient.hasMany(Test, { foreignKey: 'patientId' });
+// Patient.hasMany(Test, { foreignKey: 'patientId' });
+Patient.belongsTo(Institution, { foreignKey: { name: 'institutionId', allowNull: false } });
+Institution.hasMany(Patient, { foreignKey: { name: 'institutionId', allowNull: false } });
 //hasOne -> targetModel
 //belongsTo -> sourceModel
 
