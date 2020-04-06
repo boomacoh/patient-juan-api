@@ -19,21 +19,47 @@ const Patient = sequelize.define('patient', {
     bloodType: Sequelize.STRING(50),
     philhealthId: Sequelize.STRING(50),
     withHMO: Sequelize.BOOLEAN,
-    mipId: Sequelize.STRING(50),
+    mipId: Sequelize.INTEGER,
     memberId: Sequelize.STRING(255),
     mailingAddress: Sequelize.STRING(255),
-    contactNo1: Sequelize.STRING(50),
-    contactNo2: Sequelize.STRING(50),
-    contactNo3: Sequelize.STRING(50),
+    contactNo: Sequelize.STRING,
     email: Sequelize.STRING(255),
     emergencyContactFullName: Sequelize.STRING(255),
-    emergencyContactNo1: Sequelize.STRING(50),
-    emergencyContactNo2: Sequelize.STRING(50),
-    emergencyContactRelationship: Sequelize.STRING(50),
+    emergencyContactRelationship: Sequelize.STRING,
+    emergencyContactNo: Sequelize.STRING,
     referringPhysId: Sequelize.INTEGER(11),
     referringPhysFullName: Sequelize.STRING(255)
 }, {
-    timestamps: true,
+    setterMethods: {
+        firstName(value) {
+            this.setDataValue('firstName', value.charAt(0).toUpperCase() + value.slice(1));
+        },
+        lastName(value) {
+            this.setDataValue('lastName', value.charAt(0).toUpperCase() + value.slice(1))
+        },
+        middleName(value) {
+            if (value) return this.setDataValue('firstName', value.charAt(0).toUpperCase() + value.slice(1))
+            this.setDataValue('middleName', null)
+        },
+        contactNo(value) {
+            if (value) return this.setDataValue('contactNo', value.join(';'));
+            this.setDataValue('contactNo', null)
+        },
+        emergencyContactNo(value) {
+            if (value) return this.setDataValue('emergencyContactNo', value.join(';'));
+            this.setDataValue('emergencyContactNo', null)
+        }
+    },
+    getterMethods: {
+        contactNo() {
+            contactNos = this.getDataValue('contactNo');
+            if (contactNos) return contactNos.split(';');
+        },
+        emergencyContactNo() {
+            contactNos = this.getDataValue('emergencyContacNo');
+            if (contactNos) return contactNos.split(';');
+        }
+    }
 });
 
 // Patient.hasMany(Test, { foreignKey: 'patientId' });
