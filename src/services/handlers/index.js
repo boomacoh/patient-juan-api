@@ -27,7 +27,7 @@ function handleError(res, statusCode) {
             err = err.errors[0].message
         }
         console.log(err);
-        return res.status(statusCode).send(err);
+        return res.status(statusCode).json(err);
     };
 }
 

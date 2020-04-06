@@ -125,6 +125,7 @@ const controller = {
             contactNo: profile.contactNo,
             address: profile.address,
             civilStatus: profile.civilStatus,
+            sex: profile.sex,
             image: profile.image,
             createdAt: moment(profile.createdAt).format('MMMM DD, YYYY'),
             updatedAt: moment(profile.updatedAt).fromNow()
