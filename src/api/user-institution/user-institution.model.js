@@ -5,18 +5,19 @@ const UserInstitution = sequelize.define('user_institution', {
   userId: { type: Sequelize.INTEGER(11), allowNull: false },
   institutionId: { type: Sequelize.INTEGER(11), allowNull: false },
   isDefault: { type: Sequelize.BOOLEAN, defaultValue: false, allowNull: false },
-  access: {
-    type: Sequelize.STRING(255),
-    allowNull: false,
-    set(value) {
+  access: { type: Sequelize.STRING(255), allowNull: false }
+}, {
+  freezeTableName: true,
+  setterMethods: {
+    access(value) {
       this.setDataValue('access', value.join(';'));
-    },
-    get() {
+    }
+  },
+  getterMethods: {
+    access() {
       return this.getDataValue('access').split(';');
     }
   }
-}, {
-  freezeTableName: true
 });
 
 

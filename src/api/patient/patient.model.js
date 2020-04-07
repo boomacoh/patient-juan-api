@@ -9,7 +9,7 @@ const Patient = sequelize.define('patient', {
     lastName: { type: Sequelize.STRING(255), allowNull: false },
     fullName: { type: Sequelize.VIRTUAL, get() { return `${this.firstName} ${this.lastName}` } },
     suffix: Sequelize.STRING(50),
-    nickname: { type: Sequelize.STRING(255) },
+    nickname: Sequelize.STRING(255),
     birthdate: { type: Sequelize.DATEONLY, allowNull: false },
     sex: Sequelize.STRING(50),
     civilStatus: Sequelize.STRING(50),
@@ -38,8 +38,12 @@ const Patient = sequelize.define('patient', {
             this.setDataValue('lastName', value.charAt(0).toUpperCase() + value.slice(1))
         },
         middleName(value) {
-            if (value) return this.setDataValue('firstName', value.charAt(0).toUpperCase() + value.slice(1))
+            if (value) return this.setDataValue('middleName', value.charAt(0).toUpperCase() + value.slice(1))
             this.setDataValue('middleName', null)
+        },
+        nickname(value) {
+            if (value) return this.setDataValue('nickname', value.charAt(0).toUpperCase() + value.slice(1))
+            this.setDataValue('nickname', null)
         },
         contactNo(value) {
             if (value) return this.setDataValue('contactNo', value.join(';'));
@@ -56,7 +60,7 @@ const Patient = sequelize.define('patient', {
             if (contactNos) return contactNos.split(';');
         },
         emergencyContactNo() {
-            contactNos = this.getDataValue('emergencyContacNo');
+            contactNos = this.getDataValue('emergencyContactNo');
             if (contactNos) return contactNos.split(';');
         }
     }

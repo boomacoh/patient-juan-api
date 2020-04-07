@@ -8,15 +8,7 @@ const Invitation = sequelize.define('invitation', {
   invitationId: { type: Sequelize.UUID, allowNull: false, primaryKey: true, defaultValue: Sequelize.UUIDV1 },
   email: { type: Sequelize.STRING, allowNull: false, validate: { isEmail: { args: true, msg: 'Email is invalid!' } } },
   institutionId: { type: Sequelize.STRING, allowNull: false },
-  access: {
-    type: Sequelize.STRING,
-    set(value) {
-      this.setDataValue('access', value.join(';'));
-    },
-    get() {
-      return this.getDataValue('access').split(';');
-    }
-  },
+  access: { type: Sequelize.STRING, allowNull: false },
   status: { type: Sequelize.ENUM({ values: statuses }), allowNull: false, defaultValue: 'pending', validate: { isIn: { args: [statuses] } } },
   invitedBy: { type: Sequelize.STRING, allowNull: false },
   token: { type: Sequelize.STRING(2000), allowNull: false }
@@ -26,6 +18,16 @@ const Invitation = sequelize.define('invitation', {
       where: {
         status: 'pending'
       }
+    }
+  },
+  setterMethods: {
+    access(value) {
+      this.setDataValue('access', value.join(';'));
+    }
+  },
+  getterMethods: {
+    access() {
+      return this.getDataValue('access').split(';');
     }
   }
 });
