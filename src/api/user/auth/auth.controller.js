@@ -33,7 +33,6 @@ const controller = {
         let inst = await Institution.findOrCreate({ where: { registeredName: registeredName } });
         await user.addInstitution(inst[0], { through: { access: access, isDefault: true } });
 
-        const signupToken = user.generateToken();
         const mailer = new NodeMailer(user.email);
         const message = {
           username: user.email.split('@')[0],
@@ -49,7 +48,7 @@ const controller = {
       })
       .then(respondWithResult(res, 201))
       .catch(handleError(res));
-},
+  },
   join: async (req, res) => {
     const { body: { email, password, access, institutionId, confirmPassword } } = req;
 
@@ -71,53 +70,56 @@ const controller = {
               return res.redirect(`${config.clientUrl}/login?email=${user.email}`);
             }, 3000);
           })
-          .catch(err => console.log(err));
+          .catch(handleError(res));
       })
       .then(respondWithResult(res))
       .catch(handlErro(res));
   },
-    verify: async (req, res) => {
-      const { params: { email } } = req;
+  verify: async (req, res) => {
+    const { params: { email } } = req;
 
-      await User.findOne({ where: { email: email } })
-        .then(handleEntityNotFound(res))
-        .then(user => {
-          const decodedToken = decode(user.verifyToken);
-          const today = parseInt(new Date().getTime() / 1000, 10);
+    await User.findOne({ where: { email: email } })
+      .then(handleEntityNotFound(res))
+      .then(user => {
+        const decodedToken = decode(user.verifyToken);
+        const today = parseInt(new Date().getTime() / 1000, 10);
 
-          if (!decodedToken || decodedToken.exp < today) {
-            return res.render('message', { message: 'The token seems to be invalid or expired!', class: 'danger' });
-          }
+        if (!decodedToken || decodedToken.exp < today) {
+          return res.render('message', { message: 'The token seems to be invalid or expired!', class: 'danger' });
+        }
 
-          if (user.verified == false) {
-            user.verified = true;
-            user.save();
-            return res.render('message', { message: 'Account successfully verified!', class: "success", email: user.email });
-          }
-          return res.render('message', { message: 'Account is already verified!', class: 'danger', email: user.email });
-        })
-        .catch(handleError(res));
-    },
-      login: async (req, res, next) => {
-        const { body: { email, password } } = req;
+        if (user.verified == false) {
+          user.verified = true;
+          user.save();
+          return res.render('message', { message: 'Account successfully verified!', class: "success", email: user.email });
+        }
+        return res.render('message', { message: 'Account is already verified!', class: 'danger', email: user.email });
+      })
+      .catch(handleError(res));
+  },
+  login: async (req, res, next) => {
+    const { body: { email, password } } = req;
 
-        if (!email) return handleErrorMsg(res, 422, 'Email is required!');
-        if (!password) return handleErrorMsg(res, 422, 'Password is required!');
+    if (!email) return handleErrorMsg(res, 422, 'Email is required!');
+    if (!password) return handleErrorMsg(res, 422, 'Password is required!');
 
-        return passport.authenticate('local', { session: true }, (err, passportUser, info) => {
-          if (err) return next(info);
-          if (passportUser) {
-            const user = passportUser;
+    return passport.authenticate('local', { session: true }, (err, passportUser, info) => {
+      if (err) return next(info);
+      if (passportUser) {
+        const user = passportUser;
 
-            // console.log(Object.keys(user.__proto__));
-            user.token = passportUser.createTokenSignature();
-            return res.status(200).send(user.generateToken(user.institutions[0].user_institution.access));
-            return res.status(200).send(user);
-            // return next();
-          }
-          return res.status(401).send(info);
-        })(req, res, next);
+        // console.log(Object.keys(user.__proto__));
+        // user.token = passportUser.createTokenSignature();
+        const institutionInfo = {
+          institutionId: user.institutions[0].institutionId,
+          access: user.institutions[0].user_institution.access
+        }
+
+        return res.status(200).send({ userId: user.userId, token: user.generateToken(institutionInfo) });
       }
+      return res.send(info.status, info.message);
+    })(req, res, next);
+  }
 }
 
 module.exports = controller;

@@ -38,7 +38,7 @@ User.prototype.validatePassword = function (password) {
     return this.hash === hash;
 }
 
-User.prototype.createTokenSignature = function (access) {
+User.prototype.createTokenSignature = function (institutionInfo) {
     const today = new Date();
     const expiration = new Date(today);
     expiration.setDate(today.getDate() + 1);
@@ -46,7 +46,8 @@ User.prototype.createTokenSignature = function (access) {
     return jwt.sign({
         userId: this.userId,
         exp: parseInt(expiration.getTime() / 1000, 10),
-        access: access
+        institutionId: institutionInfo.institutionId,
+        access: institutionInfo.access
     }, config.jwtSecret);
 }
 
@@ -60,8 +61,8 @@ User.prototype.createVerifyToken = function () {
     }, config.jwtSecret);
 }
 
-User.prototype.generateToken = function (access) {
-    return { token: this.createTokenSignature(access) };
+User.prototype.generateToken = function (institutionInfo) {
+    return this.createTokenSignature(institutionInfo);
 }
 
 module.exports = User;

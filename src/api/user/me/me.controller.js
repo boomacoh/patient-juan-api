@@ -35,8 +35,6 @@ const controller = {
 
         const data = {
           userInfo: {
-            userId: me.userId,
-            email: me.email,
             profile: me.profile ? {
               fullName: me.profile.fullName,
               specializations: me.profile.specializations,
@@ -45,7 +43,6 @@ const controller = {
           },
           institution: {
             institutionId: me.institutions[0].institutionId,
-            access: me.institutions[0].user_institution.access,
             registeredName: me.institutions[0].registeredName,
             memberSince: moment(me.institutions[0].user_institution.createdAt).format('MMMM DD, YYYY')
           }
@@ -97,16 +94,19 @@ const controller = {
       .then(handleEntityNotFound(res))
       .then(me => {
 
-        const token = me.generateToken(me.institutions[0].user_institution.access);
+        const institutionInfo = {
+          institutionId: me.institutions[0].institutionId,
+          access: me.institutions[0].user_institution.access
+        }
+        const token = me.generateToken(institutionInfo);
 
         const data = {
           institution: {
             insitutionId: me.institutions[0].institutionId,
-            access: me.institutions[0].user_institution.access,
             registeredName: me.institutions[0].registeredName,
             memberSince: moment(me.institutions[0].user_institution.createdAt).format('MMMM DD, YYYY')
           },
-          sessionToken: token
+          token: token
         }
         res.status(200).send(view(data));
       })

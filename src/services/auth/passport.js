@@ -11,10 +11,10 @@ passport.use(new LocalStrategy({
     .findOne({ where: { email: email }, include: [{ model: Institution, through: { where: { isDefault: true } } }] })
     .then((user) => {
       if (!user || !user.validatePassword(password)) {
-        return done(null, false, 'User not found!');
+        return done(null, false, { message: 'User not found!', status: 404 });
       }
-      if (user.verified === false) {
-        return done(null, false, `Account not verified!`);
+      if (!user.verified) {
+        return done(null, false, { message: 'Account not verified!', status: 401 });
       }
       return done(null, user);
     })
