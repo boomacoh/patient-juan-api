@@ -6,5 +6,6 @@ router.get('/verify/:email', controller.verify);
 router.post('/login', controller.login);
 router.post('/register', controller.register);
 router.post('/join', controller.join);
+router.post('/reset-password', controller.resetPassword);
 
 module.exports = router;

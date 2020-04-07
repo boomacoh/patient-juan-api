@@ -67,7 +67,7 @@ const controller = {
         user.addInstitution(institutionId, { through: { access: access } })
           .then(assignment => {
             setTimeout(() => {
-              return res.redirect(`${config.clientUrl}/login?email=${user.email}`);
+              return res.status(301).redirect(`${config.clientUrl}/login?email=${user.email}`);
             }, 3000);
           })
           .catch(handleError(res));
@@ -85,15 +85,30 @@ const controller = {
         const today = parseInt(new Date().getTime() / 1000, 10);
 
         if (!decodedToken || decodedToken.exp < today) {
-          return res.render('message', { message: 'The token seems to be invalid or expired!', class: 'danger' });
+          return res.render('message', { data: { message: 'The token seems to be invalid or expired!', class: 'danger' } });
         }
 
-        if (user.verified == false) {
+        if (!user.verified) {
           user.verified = true;
           user.save();
-          return res.render('message', { message: 'Account successfully verified!', class: "success", email: user.email });
+          return res.render('message', { data: { message: 'Account successfully verified!', class: "success", email: user.email } });
         }
-        return res.render('message', { message: 'Account is already verified!', class: 'danger', email: user.email });
+        return res.render('message', { data: { message: 'Account is already verified!', class: 'danger', email: user.email } });
+      })
+      .catch(handleError(res));
+  },
+  resetPassword: async (req, res) => {
+    const { body: { email, newPassword, confirmNewPassword } } = req;
+
+    if (newPassword !== confirmNewPassword) return res.render('reset-password', { data: { email: email }, message: 'Passwords do not match!', class: 'danger' });
+
+    return await User.findOne({ where: { email: email } })
+      .then(user => {
+        if (!user) return res.render('message', { data: { message: 'We cannot find the user within our database', class: 'danger' } })
+        user.setPassword(newPassword);
+        user.save()
+          .then(() => res.render('message', { data: { message: 'Password Updated!', class: 'success', email: user.email } }))
+          .catch(() => res.render('message', { data: { message: 'Something Went wrong! Could not update your password' } }));
       })
       .catch(handleError(res));
   },
