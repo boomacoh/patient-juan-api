@@ -2,11 +2,11 @@
     <div class="card card-primary border-dark mx-auto mt-5" style="max-width: 40%;">
         <div class="card-body">
             <div class="alert alert-{{class}} text-center">
-                <h4>{{message}}</h4>
+                <h4>{{data.message}}</h4>
             </div>
             <h5 class="text-center">You may now close this page.</h5>
-            {{#if email}}
-            <h5 class="text-center">Or <a href="/redirect/{{email}}">proceed to Patient Juan</a></h5>
+            {{#if data.email}}
+            <h5 class="text-center">Or <a href="/redirect/{{data.email}}">proceed to Patient Juan</a></h5>
             {{/if}}
         </div>
     </div> 
