@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('./controller');
+const controller = require('./institution.controller');
 const association = require('./association.controller');
 
 router.get('/', controller.getEntries);
