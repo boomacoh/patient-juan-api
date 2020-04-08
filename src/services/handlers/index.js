@@ -1,10 +1,10 @@
 const sequelizeError = require('sequelize').BaseError;
 
-function handleEntityNotFound(res) {
+function handleEntityNotFound(res, item="Item") {
     return function (entity) {
         if (!entity) {
-            res.status(404).end();
-            return null;
+            res.status(404).end(`${item} Not Found`);
+            return null
         }
         return entity;
     };

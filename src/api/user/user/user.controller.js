@@ -41,7 +41,6 @@ const controller = {
                 if (!user) return res.status(404).send('User not found!');
 
                 const message = {
-                    temporaryPassword: ('' + Math.random()).substring(2, 8),
                     link: `${config.apiUrl}/request-reset-password/?email=${user.email}`,
                     username: user.email.split('@')[0]
                 }
@@ -50,9 +49,8 @@ const controller = {
                     .setTemplate('reset-password', message)
                     .setSubject('Password Reset Request')
                     .sendHtml();
-                return 'Email has been sent. Check your email for instructions!';
+                return res.status(200).send('Email has been sent. Check your email for instructions!');
             })
-            .then(respondWithResult(res))
             .catch(handleError(res));
     },
 }

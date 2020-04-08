@@ -153,8 +153,6 @@ const controller = {
 
             const data = {
               userInfo: {
-                userId: profile.user.userId,
-                email: profile.user.email,
                 profile: {
                   fullName: profile.fullName,
                   specializations: profile.specializations,

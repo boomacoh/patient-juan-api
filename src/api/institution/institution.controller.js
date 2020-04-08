@@ -1,4 +1,4 @@
-const Institution = require('../institution/institution.model');
+const Institution = require('./institution.model');
 const User = require('../user/user/user.model');
 
 const { handleEntityNotFound, handleError, respondWithResult, handleErrorMsg } = require('../../services/handlers');
@@ -27,7 +27,6 @@ const controller = {
     return await institution.save()
       .then(handleEntityNotFound(res))
       .then(institution => res.status(200).send(institution))
-      .then(respondWithResult(res))
       .catch(handleError(res));
   }
 }

@@ -22,9 +22,7 @@ const User = sequelize.define('user', {
     verifyToken: { type: Sequelize.STRING(1000) }
 }, {
     scopes: {
-        verified: {
-            where: { verified: true }
-        }
+        verified: { where: { verified: true } }
     }
 });
 
