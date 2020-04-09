@@ -26,9 +26,7 @@ const Patient = sequelize.define('patient', {
     email: Sequelize.STRING(255),
     emergencyContactFullName: Sequelize.STRING(255),
     emergencyContactRelationship: Sequelize.STRING,
-    emergencyContactNo: Sequelize.STRING,
-    referringPhysId: Sequelize.INTEGER(11),
-    referringPhysFullName: Sequelize.STRING(255)
+    emergencyContactNo: Sequelize.STRING
 }, {
     setterMethods: {
         firstName(value) {
