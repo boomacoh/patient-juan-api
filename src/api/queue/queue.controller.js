@@ -22,11 +22,25 @@ const view = (data) => {
 
 const controller = {
   getAll: async (req, res) => {
-    return await Queue.findAll()
+    return await Queue
+      .scope('patient')
+      .findAll()
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
-  getQueues: async (req, res) => {
+  getOne: async (req, res) => {
+    const { params: { queueId } } = req;
+    return await Queue
+      .scope('patient')
+      .findOne({ where: { queueId: queueId } })
+      .then(handleEntityNotFound(res, 'Queue'))
+      .then(queue => {
+        // console.log(Object.keys(queue.__proto__))
+        res.send(queue);
+      })
+      .catch(handleError(res));
+  },
+  getScopes: async (req, res) => {
     const { query: { type, status, doctorId, institutionId, current } } = req;
 
     const scopes = [];
@@ -36,28 +50,16 @@ const controller = {
     if (institutionId) scopes.push({ method: ['institution', institutionId] })
     if (current) scopes.push('current')
 
-      return await Queue
-        .scope(scopes, 'patient')
-        .findAll()
-        .then(queues => {
-          res.status(200).send(queues.map(queue => { return view(queue) }))
-        })
-        .catch(err => {
-          console.log(err);
-          res.send(err)
-        });
-  },
-  getOne: async (req, res) => {
-    const { params: { queueId } } = req;
     return await Queue
-      .scope('patient')
-      .findOne({ where: { id: queueId } })
-      .then(handleEntityNotFound(res, 'Queue'))
-      .then(queue => {
-        // console.log(Object.keys(queue.__proto__))
-        res.send(queue);
+      .scope(scopes, 'patient')
+      .findAll()
+      .then(queues => {
+        res.status(200).send(queues.map(queue => { return view(queue) }))
       })
-      .catch(handleError(res));
+      .catch(err => {
+        console.log(err);
+        res.send(err)
+      });
   },
   create: async (req, res) => {
 

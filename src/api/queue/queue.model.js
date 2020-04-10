@@ -18,8 +18,8 @@ const Queue = sequelize.define('queue', {
     status: (status) => { return { where: { status: status } } },
     doctor: (doctorId) => { return { where: { doctorId: doctorId } } },
     institution: (institutionId) => { return { where: { institutionId: institutionId } } },
-    patient: { include: [{ model: Patient, attributes: ['firstName', 'lastName'], required: true }] },
-    current: { where: { date: new Date() }, order: [['queueNumber', 'ASC']] }
+    current: { where: { date: new Date() }, order: [['queueNumber', 'ASC']] },
+    patient: { include: [{ model: Patient, attributes: ['firstName', 'lastName'], required: true }] }
   }
 });
 

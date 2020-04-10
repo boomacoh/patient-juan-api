@@ -9,14 +9,10 @@ const UserInstitution = sequelize.define('user_institution', {
 }, {
   freezeTableName: true,
   setterMethods: {
-    access(value) {
-      this.setDataValue('access', value.join(';'));
-    }
+    access(value) { this.setDataValue('access', value.join(';')); }
   },
   getterMethods: {
-    access() {
-      return this.getDataValue('access').split(';');
-    }
+    access() { return this.getDataValue('access').split(';'); }
   }
 });
 

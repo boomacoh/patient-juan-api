@@ -13,7 +13,10 @@ const controller = {
         const { params: { chiefComplaintId } } = req;
         return await ChiefComplaint.findOne({ where: { chiefComplaintId: chiefComplaintId } })
             .then(handleEntityNotFound(res, 'Complaint'))
-            .then(complaint => res.status(200).send(complaint))
+            .then(complaint => {
+                console.log(Object.keys(complaint.__proto__));
+                res.status(200).send(complaint)
+            })
             .catch(handleError(res));
     },
     create: async (req, res) => {
