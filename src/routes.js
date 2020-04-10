@@ -10,4 +10,5 @@ module.exports = (app) => {
   app.use('/institutions', require('./api/institution'));
   app.use('/profiles', require('./api/profile'));
   app.use('/queues', require('./api/queue'));
+  app.use('/consultations', require('./api/consultation'));
 }
