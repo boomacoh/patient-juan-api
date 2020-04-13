@@ -6,7 +6,7 @@ const config = require('../../../config');
 
 const controller = {
     getEntries: async (req, res) => {
-        return await User.findAll({ attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] }, include: [{ model: Institution, through: { attributes: ['createdAt'] } }] })
+        return await User.findAll()
             .then(handleEntityNotFound(res))
             .then((users) => {
                 return res.status(200).send(users)

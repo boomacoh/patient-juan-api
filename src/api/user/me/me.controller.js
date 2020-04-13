@@ -29,7 +29,7 @@ const controller = {
 
     return await User
       .scope('verified')
-      .findOne({ where: { userId: userId }, include: [{ model: Profile, attributes: { exclude: ['userId'] } }, { model: Institution, through: { where: { isDefault: true } } }] })
+      .findOne({ where: { userId: userId }, include: [{ model: Institution, through: { where: { isDefault: true } } }] })
       .then(handleEntityNotFound(res))
       .then(me => {
 

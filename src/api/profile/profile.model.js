@@ -55,7 +55,4 @@ const Profile = sequelize.define('profile', {
   }
 })
 
-User.hasOne(Profile, { foreignKey: { name: 'userId', unique: { args: true, msg: 'User already has existing profile' } } });
-Profile.belongsTo(User, { foreignKey: { name: 'userId', unique: { args: true, msg: 'User already has existing profile' } } });
-
 module.exports = Profile;

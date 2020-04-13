@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const config = require('../../../config');
+const Profile = require('../../profile/profile.model');
 
 const User = sequelize.define('user', {
     userId: {
@@ -21,6 +22,11 @@ const User = sequelize.define('user', {
     verified: { type: Sequelize.BOOLEAN, defaultValue: false, allowNull: false },
     verifyToken: { type: Sequelize.STRING(1000) }
 }, {
+    defaultScope: {
+        include: [
+            { model: Profile, attributes: { exclude: ['createdAt', 'updatedAt', 'userId'] } }
+        ]
+    },
     scopes: {
         verified: { where: { verified: true } }
     }
@@ -62,5 +68,8 @@ User.prototype.createVerifyToken = function () {
 User.prototype.generateToken = function (institutionInfo) {
     return this.createTokenSignature(institutionInfo);
 }
+
+User.hasOne(Profile, { foreignKey: { name: 'userId', unique: { args: true, msg: 'User already has existing profile' } } });
+Profile.belongsTo(User, { foreignKey: { name: 'userId', unique: { args: true, msg: 'User already has existing profile' } } });
 
 module.exports = User;
