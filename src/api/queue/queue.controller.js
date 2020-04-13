@@ -32,7 +32,7 @@ const controller = {
     const { params: { queueId } } = req;
     return await Queue
       .scope('patient')
-      .findOne({ where: { queueId: queueId } })
+      .findByPk(queueId)
       .then(handleEntityNotFound(res, 'Queue'))
       .then(queue => {
         // console.log(Object.keys(queue.__proto__))
@@ -61,6 +61,13 @@ const controller = {
         res.send(err)
       });
   },
+  update: async (req, res) => {
+    const { params: { queueId } } = req;
+    return await Queue
+      .update(req.body, { where: { queueId: queueId } })
+      .then(() => res.json('queue Updated'))
+      .catch(handleError(res));
+  },
   create: async (req, res) => {
 
     return await Queue.count({ where: { date: req.body.date, type: req.body.type } })
@@ -78,14 +85,7 @@ const controller = {
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
-  count: async (req, res) => {
 
-    Queue.count({ where: { date: new Date() } })
-      .then(count => {
-        return res.json(`There are ${count} items`);
-      })
-      .catch(handleError(res));
-  }
 }
 
 module.exports = controller;
