@@ -1,13 +1,17 @@
 const Sequelize = require('sequelize');
-const Patient = require('../patient/patient.model');
+const { Allergies, FamilyMedicalHistory, Medication, ObGyneHistory, PastMedicalHistory, SocialPersonalHistory, Surgeries } = require('./histories');
 
-const MedicalHistory = sequelize.define('medical_history', {
-    medHistoryId: Sequelize.INTEGER(11),
-    patientId: Sequelize.INTEGER(11)
+const MedicalHistory = sequelize.define('medicalHistory', {
+    medicalHistoryId: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
+}, {
+    defaultScope: { include: [{ all: true }] }
 });
 
-MedicalHistory.belongsTo(Patient, { foreignKey: 'patientId' })
+MedicalHistory.hasOne(PastMedicalHistory, { foreignKey: 'medicalHistoryId' });
+MedicalHistory.hasOne(FamilyMedicalHistory, { foreignKey: 'medicalHistoryId' });
+MedicalHistory.hasOne(ObGyneHistory, { foreignKey: 'medicalHistoryId' });
+MedicalHistory.hasOne(SocialPersonalHistory, { foreignKey: 'medicalHistoryId' });
 
-module.exports = MedicalHistory;
+module.exports = { MedicalHistory };
 
 

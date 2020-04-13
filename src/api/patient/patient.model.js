@@ -64,7 +64,6 @@ const Patient = sequelize.define('patient', {
     }
 });
 
-// Patient.hasMany(Test, { foreignKey: 'patientId' });
 Patient.belongsTo(Institution, { foreignKey: { name: 'institutionId', allowNull: false } });
 Institution.hasMany(Patient, { foreignKey: { name: 'institutionId', allowNull: false } });
 //hasOne -> targetModel
