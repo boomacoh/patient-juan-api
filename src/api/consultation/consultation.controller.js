@@ -1,4 +1,6 @@
 const Consultation = require('./consultation.model');
+const Hpi = require('../history-of-present-illness/hpi.model');
+const ChiefComplaint = require('../chief-complaint/chief-complaint.model');
 const { handleErrorMsg, handleEntityNotFound, respondWithResult, handleError } = require('../../services/handlers');
 const moment = require('moment');
 
@@ -30,8 +32,14 @@ const controller = {
       .catch(handleError(res));
   },
   create: async (req, res) => {
+    const { body: { chiefComplaint, queueId, hpis, patientId } } = req;
     return await Consultation
-      .create(req.body)
+      .create({
+        queueId: queueId,
+        patientId: patientId,
+        chiefComplaint: { chiefComplaint: chiefComplaint },
+        hpis: hpis
+      }, { include: [ChiefComplaint, Hpi] })
       .then(respondWithResult(res))
       .catch(handleError(res));
   },

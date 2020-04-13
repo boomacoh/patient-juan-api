@@ -11,4 +11,5 @@ module.exports = (app) => {
   app.use('/profiles', require('./api/profile'));
   app.use('/queues', require('./api/queue'));
   app.use('/consultations', require('./api/consultation'));
+  app.use('/medical-history', require('./api/medical-history'));
 }
