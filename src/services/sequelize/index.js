@@ -16,9 +16,9 @@ const sequelize = new Sequelize(config.dbName, config.dbUser, config.dbPassword,
 
 // require('../../api/models');
 
-sequelize.sync({ force: true, alter: true })
-  .then(() => console.log('Database re-synced!'))
-  .catch(err => console.log('Database sync error: ', err))
+// sequelize.sync({ force: true, alter: true })
+//   .then(() => console.log('Database re-synced!'))
+//   .catch(err => console.log('Database sync error: ', err))
   // .finally(() => sequelize.close());
 
 

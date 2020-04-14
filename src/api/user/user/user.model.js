@@ -29,7 +29,8 @@ const User = sequelize.define('user', {
     },
     scopes: {
         verified: { where: { verified: true } },
-        profile: { include: [{ model: Profile, attributes: { exclude: ['userId'] } }] }
+        profile: { include: [{ model: Profile, attributes: { exclude: ['userId'] } }] },
+        type(type) { return { include: [{ model: Profile, where: { type: type } }] } }
     }
 });
 

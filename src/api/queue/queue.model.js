@@ -5,7 +5,7 @@ const moment = require('moment');
 
 const Queue = sequelize.define('queue', {
   queueId: { type: Sequelize.UUID, allowNull: false, defaultValue: Sequelize.UUIDV1, primaryKey: true },
-  doctorId: { type: Sequelize.INTEGER(11), },
+  physicianId: { type: Sequelize.INTEGER(11), },
   institutionId: { type: Sequelize.INTEGER(11) },
   date: { type: Sequelize.DATEONLY, allowNull: false },
   queueNumber: Sequelize.INTEGER,
@@ -16,7 +16,7 @@ const Queue = sequelize.define('queue', {
   scopes: {
     type: (type) => { return { where: { type: type } } },
     status: (status) => { return { where: { status: status } } },
-    doctor: (doctorId) => { return { where: { doctorId: doctorId } } },
+    physician: (physicianId) => { return { where: { physicianId: physicianId } } },
     institution: (institutionId) => { return { where: { institutionId: institutionId } } },
     current: { where: { date: new Date() }, order: [['queueNumber', 'ASC']] },
     patient: { include: [{ model: Patient, attributes: ['firstName', 'lastName'], required: true }] }

@@ -6,7 +6,13 @@ const config = require('../../../config');
 
 const controller = {
     getEntries: async (req, res) => {
-        return await User.findAll()
+        const { query: { type } } = req;
+        const scopes = [];
+        if (type) scopes.push({ method: ['type', type] });
+
+        return await User
+            .scope(scopes)
+            .findAll()
             .then(handleEntityNotFound(res))
             .then((users) => {
                 return res.status(200).send(users)

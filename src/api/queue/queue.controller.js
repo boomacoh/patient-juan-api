@@ -41,12 +41,12 @@ const controller = {
       .catch(handleError(res));
   },
   getScopes: async (req, res) => {
-    const { query: { type, status, doctorId, institutionId, current } } = req;
+    const { query: { type, status, physicianId, institutionId, current } } = req;
 
     const scopes = [];
     if (type) scopes.push({ method: ['type', type] });
     if (status) scopes.push({ method: ['status', status] });
-    if (doctorId) scopes.push({ method: ['doctor', doctorId] });
+    if (physicianId) scopes.push({ method: ['physician', physicianId] });
     if (institutionId) scopes.push({ method: ['institution', institutionId] })
     if (current) scopes.push('current')
 
