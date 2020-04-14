@@ -23,7 +23,8 @@ const Profile = sequelize.define('profile', {
   tinNo: Sequelize.STRING,
   image: Sequelize.STRING,
   contactNo: Sequelize.STRING,
-  address: Sequelize.STRING
+  address: Sequelize.STRING,
+  type: { type: Sequelize.STRING }
 }, {
   setterMethods: {
     names(value) {
