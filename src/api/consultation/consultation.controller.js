@@ -8,7 +8,17 @@ const moment = require('moment');
 const view = (data) => {
   const consultation = {
     consultationId: data.consultationId,
-    chiefComplaint: data.chiefComplaint
+    chiefComplaint: data.chiefComplaint.chiefComplaint,
+    hpis: data.hpis,
+    patient: {
+      patientId: data.patient.patientId,
+      fullName: data.patient.fullName,
+    },
+    physician: {
+      userId: data.physician.userId,
+      specialization: data.physician.specialization,
+      fullName: data.physician.fullName
+    }
   }
   return consultation;
 }
@@ -16,7 +26,7 @@ const controller = {
   getAll: async (req, res) => {
     return await Consultation
       .findAll()
-      .then(consultations => res.send(consultations))
+      .then(consultations => res.send(consultations.map(consultation => { return view(consultation) })))
       .catch(handleError(res));
   },
   getOne: async (req, res) => {

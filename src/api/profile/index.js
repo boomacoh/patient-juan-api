@@ -4,6 +4,7 @@ const {jwtAuth, checkPermission} = require('../../services/auth/jwt')
 
 router.get('/', controller.getAll);
 router.get('/:profileId', controller.getEntry);
+router.put('/:profileId', controller.update);
 router.delete('/:profileId', controller.destroy);
 router.post('/', controller.create);
 

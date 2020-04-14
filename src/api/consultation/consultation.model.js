@@ -19,8 +19,8 @@ Consultation.hasMany(Hpi, { foreignKey: 'consultationId' });
 Hpi.belongsTo(Consultation, { foreignKey: 'consultationId' });
 Consultation.belongsTo(Patient, { foreignKey: 'patientId' });
 Patient.hasMany(Consultation, { foreignKey: 'patientId' });
-Consultation.belongsTo(User, { as: 'Doctor', foreignKey: 'physicianId' });
-User.hasMany(Consultation, { as: 'Doctor', foreignKey: 'physicianId' });
+Consultation.belongsTo(User, { as: 'physician', foreignKey: 'physicianId' });
+User.hasMany(Consultation, { as: 'physician', foreignKey: 'physicianId' });
 
 
 module.exports = Consultation;

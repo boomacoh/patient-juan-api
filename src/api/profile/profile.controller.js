@@ -4,7 +4,7 @@ const { handleEntityNotFound, handleError, handleErrorMsg, respondWithResult } =
 
 const controller = {
   getAll: async (req, res) => {
-    return await Profile.findAll({include: User})
+    return await Profile.findAll({ include: User })
       .then(handleEntityNotFound(res))
       .then((profiles) => {
         return res.send(profiles);
@@ -18,10 +18,12 @@ const controller = {
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
-  destroy: async (req, res) => {
+  update: async (req, res) => {
     const { params: { profileId } } = req;
-    return await Profile.delete({ where: { profileId: profileId } })
-      .then(respondWithResult(res, 204))
+    return await Profile
+      .update({ where: { profileId: profileId } })
+      .then(() => { return Profile.findbyPk(profileId) })
+      .then(respondWithResult(res))
       .catch(handleError(res));
   },
   create: async (req, res) => {
@@ -31,9 +33,13 @@ const controller = {
         res.send(profile);
       })
       .catch(handleError(res));
-      // .catch(handleError(res));
-  }
-
+  },
+  destroy: async (req, res) => {
+    const { params: { profileId } } = req;
+    return await Profile.delete({ where: { profileId: profileId } })
+      .then(respondWithResult(res, 204))
+      .catch(handleError(res));
+  },
 }
 
 module.exports = controller;
