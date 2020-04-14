@@ -15,7 +15,9 @@ const controller = {
     },
     getEntry: async (req, res) => {
         const { params: { userId } } = req;
-        return await User.findByPk(userId, { attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] } })
+        return await User
+            .scope('verified', 'profile')
+            .findByPk(userId, { attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] } })
             .then(handleEntityNotFound(res))
             .then(user => {
                 return res.status(200).send(user)

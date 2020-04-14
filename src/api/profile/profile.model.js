@@ -19,10 +19,10 @@ const Profile = sequelize.define('profile', {
   bloodType: Sequelize.STRING(10),
   philhealthId: Sequelize.STRING(12),
   PRCLicenseNo: Sequelize.STRING,
+  specialization: Sequelize.STRING,
   tinNo: Sequelize.STRING,
   image: Sequelize.STRING,
   contactNo: Sequelize.STRING,
-  specialization: Sequelize.STRING,
   address: Sequelize.STRING
 }, {
   setterMethods: {

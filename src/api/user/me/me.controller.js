@@ -28,7 +28,7 @@ const controller = {
     const { payload: { userId } } = req;
 
     return await User
-      .scope('verified')
+      .scope('verified', 'profile')
       .findOne({ where: { userId: userId }, include: [{ model: Institution, through: { where: { isDefault: true } } }] })
       .then(handleEntityNotFound(res))
       .then(me => {
@@ -37,7 +37,7 @@ const controller = {
           userInfo: {
             profile: me.profile ? {
               fullName: me.profile.fullName,
-              specializations: me.profile.specializations,
+              specialization: me.profile.specialization,
               image: me.profile.image
             } : null,
           },
@@ -155,7 +155,7 @@ const controller = {
               userInfo: {
                 profile: {
                   fullName: profile.fullName,
-                  specializations: profile.specializations,
+                  specialization: profile.specialization,
                   image: profile.image
                 }
               }
