@@ -32,16 +32,20 @@ const controller = {
       .catch(handleError(res));
   },
   create: async (req, res) => {
-    const { body: { chiefComplaint, queueId, hpis, patientId } } = req;
+    const { body: { chiefComplaint, queueId, hpis, patientId, physicianId } } = req;
     return await Consultation
       .create({
         queueId: queueId,
         patientId: patientId,
+        physicianId: physicianId,
         chiefComplaint: { chiefComplaint: chiefComplaint },
         hpis: hpis
-      }, { include: [ChiefComplaint, Hpi] })
+      }, { include: [ChiefComplaint, Hpi, 'Doctor'] })
       .then(respondWithResult(res))
-      .catch(handleError(res));
+      .catch(err => {
+        console.log(err);
+        handleError(res);
+      });
   },
   createHpis: async (req, res) => {
     const hpis = [
