@@ -1,9 +1,10 @@
 const Sequelize = require('sequelize');
-const { Allergies, FamilyMedicalHistory, Medication, ObGyneHistory, PastMedicalHistory, SocialPersonalHistory, Surgeries } = require('./histories');
+const { FamilyMedicalHistory, ObGyneHistory, PastMedicalHistory, SocialPersonalHistory } = require('./histories');
 
 const MedicalHistory = sequelize.define('medicalHistory', {
     medicalHistoryId: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
 }, {
+    freezeTableName: true,
     defaultScope: { include: [{ all: true }] }
 });
 
@@ -12,6 +13,6 @@ MedicalHistory.hasOne(FamilyMedicalHistory, { foreignKey: 'medicalHistoryId' });
 MedicalHistory.hasOne(ObGyneHistory, { foreignKey: 'medicalHistoryId' });
 MedicalHistory.hasOne(SocialPersonalHistory, { foreignKey: 'medicalHistoryId' });
 
-module.exports = { MedicalHistory };
+module.exports =  MedicalHistory ;
 
 

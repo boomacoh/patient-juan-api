@@ -27,9 +27,14 @@ const Profile = sequelize.define('profile', {
   type: { type: Sequelize.STRING }
 }, {
   setterMethods: {
-    names(value) {
+    firstName(value) {
       this.setDataValue('firstName', value.charAt(0).toUpperCase() + value.slice(1));
+    },
+    lastName(value) {
       this.setDataValue('lastName', value.charAt(0).toUpperCase() + value.slice(1));
+    },
+    middleName(value) {
+      if (value) return this.setDataValue('middleName', value.charAt(0).toUpperCase() + value.slice(1));
     },
     contactNo(value) {
       if (value) return this.setDataValue('contactNo', value.join(';'));

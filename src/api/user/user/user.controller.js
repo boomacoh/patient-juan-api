@@ -17,7 +17,7 @@ const controller = {
             .then((users) => {
                 return res.status(200).send(users)
             })
-            .catch(err => console.log(err));
+            .catch(handleErr(res));
     },
     getEntry: async (req, res) => {
         const { params: { userId } } = req;
