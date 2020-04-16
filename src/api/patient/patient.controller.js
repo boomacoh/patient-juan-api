@@ -12,32 +12,38 @@ const controller = {
     getOne: async (req, res) => {
         const { params: { patientId } } = req;
         return await Patient.findOne({ where: { patientId: patientId } })
-        .then(patient => res.send(patient))
-        .catch(handleError(res));
+            .then(patient => res.send(patient))
+            .catch(handleError(res));
     },
     create: async (req, res) => {
         await Patient.create(req.body)
-            .then(patient => { return res.status(201).send(patient) })
-            .catch(err => console.log(err));
+            .then(patient => {
+                patient
+                    .createMedicalHistory()
+                    .then(async mh => {
+                        await mh.createPastMedicalHistory();
+                        await mh.createFamilyMedicalHistory();
+                        await mh.createSocialPersonalHistory();
+                    })
+                return patient;
+            })
+            .then(respondWithResult(res))
+            .catch(handleError(res));
     },
     update: async (req, res) => {
-        console.log(req.body);
         const { params: { patientId } } = req;
-        return await Patient.update(req.body, { where: { patientId: patientId } })
-            .then(affectedRows => {
-                return Patient.findOne({ where: { patientId: patientId } })
-                    .then(patient => { return res.status(200).send(patient) })
-                    .catch(handleError(res));
-            })
+        return await Patient
+            .update(req.body, { where: { patientId: patientId } })
+            .then(() => { return Patient.findByPk(patientId) })
+            .then(respondWithResult(res))
             .catch(handleError(res));
     },
     destroy: async (req, res) => {
-
-    },
-    getTests: async (req, res) => {
-        await Patient.getTests()
-            .then(data => res.send(data))
-            .catch(err => res.send(err));
+        const { params: { patientId } } = req;
+        return await Patient
+            .destroy({ where: { patientId: patientId } })
+            .then(respondWithResult(res, 204))
+            .catch(handleError(res));
     }
 }
 
