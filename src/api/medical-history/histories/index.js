@@ -5,10 +5,11 @@ const PastMedicalHistory = sequelize.define('pastMedicalHistory', {
   unremarkable: { type: Sequelize.BOOLEAN }
 }, {
   freezeTableName: true,
-  defaultScope: { include: [{ all: true }] }
+  defaultScope: { include: [Allergy, Illness, Medication, Surgery] }
 });
 
-PastMedicalHistory.hasMany(Illness)
+PastMedicalHistory.hasMany(Allergy);
+PastMedicalHistory.hasMany(Illness, { foreignKey: 'parentId', scope: { parent: 'pmh' } });
 PastMedicalHistory.hasMany(Medication);
 PastMedicalHistory.hasMany(Surgery);
 
@@ -16,17 +17,17 @@ const FamilyMedicalHistory = sequelize.define('familyMedicalHistory', {
   unremarkable: Sequelize.BOOLEAN
 }, {
   freezeTableName: true,
-  defaultScope: { include: [{ all: true }] }
+  defaultScope: { include: [Illness] }
 });
 
-FamilyMedicalHistory.hasMany(Illness);
+FamilyMedicalHistory.hasMany(Illness, { foreignKey: 'parentId', scope: { parent: 'fmh' } });
 
 const SocialPersonalHistory = sequelize.define('socialPersonalHistory', {
   unremarkable: Sequelize.BOOLEAN,
   lifestyle: Sequelize.STRING
 }, {
   freezeTableName: true,
-  defaultScope: { include: [{ all: true }] }
+  defaultScope: { include: [Substance] }
 });
 
 SocialPersonalHistory.hasMany(Substance);

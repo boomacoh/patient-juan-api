@@ -7,7 +7,7 @@ const controller = {
   getAll: async (req, res) => {
     return await MedicalHistory
       .findAll()
-      .then(respondWithResult(res))
+      .then(mh => res.send(mh))
       .catch(handleError(res));
   },
   getOne: async (req, res) => {
@@ -18,6 +18,15 @@ const controller = {
       .then(history => {
         console.log(Object.keys(history.__proto__));
         res.send(history);
+      })
+      .catch(handleError(res));
+  },
+  pmh: async (req, res) => {
+    return await PastMedicalHistory
+      .findOrCreate({ where: { medicalHistoryId: 1 } })
+      .then(pmh => {
+        console.log(Object.keys(pmh.__proto__));
+        res.send(pmh[0]);
       })
       .catch(handleError(res));
   }

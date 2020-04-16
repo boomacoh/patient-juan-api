@@ -32,4 +32,10 @@ const Substance = sequelize.define('substance', {
   remarks: Sequelize.STRING
 });
 
+// Illness.removeAttribute('id');
+// Allergy.removeAttribute('id');
+// Surgery.removeAttribute('id');
+// Medication.removeAttribute('id');
+// Substance.removeAttribute('id');
+
 module.exports = { Allergy, Medication, Surgery, Illness, Substance }
