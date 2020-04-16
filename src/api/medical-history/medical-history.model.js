@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const Patient = require('../patient/patient.model');
 const { FamilyMedicalHistory, ObGyneHistory, PastMedicalHistory, SocialPersonalHistory } = require('./histories');
 const { Allergy, Illness, Medication, Substance, Surgery } = require('./sub-histories');
 
@@ -13,6 +14,8 @@ MedicalHistory.hasOne(PastMedicalHistory, { foreignKey: 'medicalHistoryId' });
 MedicalHistory.hasOne(FamilyMedicalHistory, { foreignKey: 'medicalHistoryId' });
 MedicalHistory.hasOne(ObGyneHistory, { foreignKey: 'medicalHistoryId' });
 MedicalHistory.hasOne(SocialPersonalHistory, { foreignKey: 'medicalHistoryId' });
+MedicalHistory.belongsTo(Patient, { foreignKey: 'patientId' });
+Patient.hasOne(MedicalHistory, {foreignKey: 'patientId'});
 
 module.exports = MedicalHistory;
 
