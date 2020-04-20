@@ -12,7 +12,7 @@ const Illness = sequelize.define('illness', {
 });
 
 const Surgery = sequelize.define('surgery', {
-  approxDate: Sequelize.DATEONLY,
+  approximateDate: Sequelize.DATEONLY,
   type: Sequelize.STRING,
   reason: Sequelize.STRING,
   complications: Sequelize.STRING

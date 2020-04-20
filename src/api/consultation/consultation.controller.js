@@ -50,7 +50,7 @@ const controller = {
         physicianId: physicianId,
         chiefComplaint: { chiefComplaint: chiefComplaint },
         hpis: hpis
-      }, { include: [ChiefComplaint, Hpi, 'Doctor'] })
+      }, { include: [ChiefComplaint, Hpi, 'physician'] })
       .then(respondWithResult(res))
       .catch(err => {
         console.log(err);

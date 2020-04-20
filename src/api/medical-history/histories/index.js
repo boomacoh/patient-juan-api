@@ -7,10 +7,10 @@ const PastMedicalHistory = sequelize.define('pastMedicalHistory', {
   freezeTableName: true,
   defaultScope: {
     include: [
-      { model: Allergy, attributes: { exclude: ['createdAt', 'updatedAt', 'id'] } },
-      { model: Illness, attributes: { exclude: ['createdAt', 'updatedAt', 'id'] } },
-      { model: Medication, attributes: { exclude: ['createdAt', 'updatedAt', 'id'] } },
-      { model: Surgery, attributes: { exclude: ['createdAt', 'updatedAt', 'id'] } }
+      { model: Allergy, attributes: { exclude: ['createdAt', 'updatedAt'] } },
+      { model: Illness, attributes: { exclude: ['createdAt', 'updatedAt'] } },
+      { model: Medication, attributes: { exclude: ['createdAt', 'updatedAt'] } },
+      { model: Surgery, attributes: { exclude: ['createdAt', 'updatedAt'] } }
     ]
   }
 });
