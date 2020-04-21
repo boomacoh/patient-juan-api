@@ -57,24 +57,6 @@ const controller = {
         handleError(res);
       });
   },
-  createHpis: async (req, res) => {
-    const hpis = [
-      { timeFrame: 'timeFrame1', details: 'details1' },
-      { timeFrame: 'timeFrame2', details: 'details2' },
-      { timeFrame: 'timeFrame3', details: 'details3' }
-    ];
-
-    return await Consultation
-      .findOne({ where: { consultationId: 1 } })
-      .then(consultation => {
-        hpis.forEach(hpi => {
-          consultation.createHpi(hpi);
-        })
-        return consultation;
-      })
-      .then(respondWithResult(res))
-      .catch(handleError(res));
-  }
 }
 
 module.exports = controller;

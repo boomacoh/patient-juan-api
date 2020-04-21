@@ -25,6 +25,7 @@ const controller = {
                         await mh.createFamilyMedicalHistory();
                         await mh.createSocialPersonalHistory();
                     })
+                    .catch(handleError(res));
                 return patient;
             })
             .then(respondWithResult(res))
