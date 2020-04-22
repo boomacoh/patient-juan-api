@@ -23,4 +23,8 @@ require('./routes')(app);
 
 require('./services/auth/passport');
 
+app.use(function (err, req, res, next) {
+  if (err.code === 'permission_denied') res.status(403).send('Forbidden');
+});
+
 module.exports = app;
