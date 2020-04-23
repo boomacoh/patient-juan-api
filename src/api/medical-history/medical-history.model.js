@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const Patient = require('../patient/patient.model');
 const { FamilyMedicalHistory, ObGyneHistory, PastMedicalHistory, SocialPersonalHistory } = require('./histories');
-const { Allergy, Illness, Medication, Substance, Surgery } = require('./sub-histories');
+const { Allergy, PastIllness, Medication, Substance, Surgery } = require('./sub-histories');
 
 const MedicalHistory = sequelize.define('medicalHistory', {
     medicalHistoryId: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },

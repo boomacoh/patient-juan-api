@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const { Allergy, Illness, Medication, Substance, Surgery } = require('../sub-histories');
+const { Allergy, PastIllness, Medication, Substance, Surgery } = require('../sub-histories');
 
 const PastMedicalHistory = sequelize.define('pastMedicalHistory', {
   unremarkable: { type: Sequelize.BOOLEAN }
@@ -8,7 +8,7 @@ const PastMedicalHistory = sequelize.define('pastMedicalHistory', {
   defaultScope: {
     include: [
       { model: Allergy, attributes: { exclude: ['createdAt', 'updatedAt'] } },
-      { model: Illness, attributes: { exclude: ['createdAt', 'updatedAt'] } },
+      { model: PastIllness, attributes: { exclude: ['createdAt', 'updatedAt'] } },
       { model: Medication, attributes: { exclude: ['createdAt', 'updatedAt'] } },
       { model: Surgery, attributes: { exclude: ['createdAt', 'updatedAt'] } }
     ]
@@ -16,7 +16,7 @@ const PastMedicalHistory = sequelize.define('pastMedicalHistory', {
 });
 
 PastMedicalHistory.hasMany(Allergy);
-PastMedicalHistory.hasMany(Illness, { foreignKey: 'parentId', scope: { parent: 'pmh' } });
+PastMedicalHistory.hasOne(PastIllness, { foreignKey: 'parentId', scope: { parent: 'pmh' } });
 PastMedicalHistory.hasMany(Medication);
 PastMedicalHistory.hasMany(Surgery);
 
@@ -24,10 +24,10 @@ const FamilyMedicalHistory = sequelize.define('familyMedicalHistory', {
   unremarkable: Sequelize.BOOLEAN
 }, {
   freezeTableName: true,
-  defaultScope: { include: [{ model: Illness, attributes: {exclude: ['createdAt', 'updatedAt', 'id']} }] }
+  defaultScope: { include: [{ model: PastIllness, attributes: {exclude: ['createdAt', 'updatedAt', 'id']} }] }
 });
 
-FamilyMedicalHistory.hasMany(Illness, { foreignKey: 'parentId', scope: { parent: 'fmh' } });
+FamilyMedicalHistory.hasOne(PastIllness, { foreignKey: 'parentId', scope: { parent: 'fmh' } });
 
 const SocialPersonalHistory = sequelize.define('socialPersonalHistory', {
   unremarkable: Sequelize.BOOLEAN,
