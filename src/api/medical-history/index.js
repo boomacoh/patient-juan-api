@@ -6,6 +6,7 @@ router.get('/', controller.getAll);
 router.get('/:medicalHistoryId', jwtAuth.required, controller.getOne);
 router.get('/patient/:patientId', jwtAuth.required, controller.getPatientMedicalHistory);
 
+router.post('/past-illness/:parent/:parentId', controller.updateIllnesses);
 router.post('/surgery', jwtAuth.required, controller.addSurgery);
 router.post('/medication', jwtAuth.required, controller.addMedication);
 router.post('/allergy', jwtAuth.required, controller.addAllergy);

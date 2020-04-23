@@ -1,14 +1,37 @@
 const MedicalHistory = require('./medical-history.model');
 const { respondWithResult, handleErrorMsg, handleEntityNotFound, handleError } = require('../../services/handlers');
 const { FamilyMedicalHistory, ObGyneHistory, PastMedicalHistory, SocialPersonalHistory } = require('./histories');
-const { Medication, Allergy, Illness, Substance, Surgery } = require('./sub-histories');
+const { Medication, Allergy, PastIllness, Substance, Surgery } = require('./sub-histories');
+
+const mhView = (data) => {
+  const medicalHistory = {
+    pastMedicalHistory: {
+      allergies: data.pastMedicalHistory.allergies,
+      medications: data.pastMedicalHistory.medications,
+      surgeries: data.pastMedicalHistory.surgeries,
+      pastIllnesses: data.pastMedicalHistory.pastIllness.illness.forEach((item, index) => {
+        return {
+          illness: item,
+          remarks: data.pastMedicalHistory.pastIllness.remarks[index]
+        }
+      })
+    }
+  }
+  return medicalHistory;
+}
 
 const controller = {
   getAll: async (req, res) => {
-    return await MedicalHistory
-      .findAll()
-      .then(mh => res.send(mh))
-      .catch(handleError(res));
+    try {
+      const medicalHistories = await MedicalHistory.findAll();
+      res.send(medicalHistories);
+    } catch (error) {
+      res.status(error.statusCode).send(error.message)
+    }
+    // return await MedicalHistory
+    //   .findAll()
+    //   .then(mh => res.send(mh))
+    //   .catch(handleError(res));
   },
   getOne: async (req, res) => {
     const { params: { medicalHistoryId } } = req;
@@ -27,7 +50,7 @@ const controller = {
       .findOne({ where: { patientId: patientId } })
       .then(handleEntityNotFound(res, 'Medical History'))
       .then(respondWithResult(res))
-      .catch(err => res.status(500).send(err));
+      .catch(handleError(res));
   },
   addSurgery: async (req, res) => {
     return await Surgery
@@ -108,6 +131,20 @@ const controller = {
       .destroy({ where: { id: id } })
       .then(respondWithResult(res))
       .catch(handleError(res));
+  },
+  updateIllnesses: async (req, res) => {
+    const { params: { parent, parentId } } = req;
+    try {
+      const affectedRows = await PastIllness.update(req.body, { where: { parentId: parentId, parent: parent } })
+      res.json(affectedRows);
+    } catch (error) {
+      res.status(500).send(error.message)
+    }
+
+    // return await PastIllness
+    //   .update(req.body, { where: { parentId: parentId, parent: parent } })
+    //   .then(() => res.status(200).json('Past Illness Updated'))
+    //   .catch(handleError(res));
   }
 
 }
