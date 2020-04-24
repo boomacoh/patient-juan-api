@@ -11,11 +11,14 @@ router.post('/surgery', jwtAuth.required, controller.addSurgery);
 router.post('/medication', jwtAuth.required, controller.addMedication);
 router.post('/allergy', jwtAuth.required, controller.addAllergy);
 router.post('/substance', jwtAuth.required, controller.addSubstance);
+router.post('/obh', jwtAuth.required, controller.createObGyneHistory);
 
 router.put('/surgery/:id', jwtAuth.required, controller.updateSurgery);
 router.put('/medication/:id', jwtAuth.required, controller.updateMedication);
 router.put('/allergy/:id', jwtAuth.required, controller.updateAllergy);
 router.put('/substance/:id', jwtAuth.required, controller.updateSubstance);
+router.put('/sph/:id', jwtAuth.required, controller.updateSph);
+router.put('/obh/:id', jwtAuth.required, controller.updateObGyneHistory);
 
 router.delete('/surgery/:id', jwtAuth.required, controller.deleteSurgery);
 router.delete('/medication/:id', jwtAuth.required, controller.deleteMedication);

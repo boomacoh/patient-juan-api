@@ -21,21 +21,15 @@ const mhView = (data) => {
 }
 
 const controller = {
-  getAll: async (req, res) => {
-    try {
-      const medicalHistories = await MedicalHistory.findAll();
-      res.send(medicalHistories);
-    } catch (error) {
-      res.status(error.statusCode).send(error.message)
-    }
-    // return await MedicalHistory
-    //   .findAll()
-    //   .then(mh => res.send(mh))
-    //   .catch(handleError(res));
+  getAll: (req, res) => {
+    return MedicalHistory
+      .findAll()
+      .then(mh => res.send(mh))
+      .catch(handleError(res));
   },
-  getOne: async (req, res) => {
+  getOne: (req, res) => {
     const { params: { medicalHistoryId } } = req;
-    return await MedicalHistory
+    return MedicalHistory
       .findByPk(medicalHistoryId)
       .then(handleEntityNotFound(res))
       .then(history => {
@@ -44,107 +38,123 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  getPatientMedicalHistory: async (req, res) => {
+  getPatientMedicalHistory: (req, res) => {
     const { params: { patientId } } = req;
-    return await MedicalHistory
+    return MedicalHistory
       .findOne({ where: { patientId: patientId } })
       .then(handleEntityNotFound(res, 'Medical History'))
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
-  addSurgery: async (req, res) => {
-    return await Surgery
+  addSurgery: (req, res) => {
+    return Surgery
       .create(req.body)
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
-  updateSurgery: async (req, res) => {
+  updateSurgery: (req, res) => {
     const { params: { id } } = req;
-    return await Surgery
+    return Surgery
       .update(req.body, { where: { id: id } })
       .then(() => res.status(200).json('Surgery Updated'))
       .catch(handleError(res));
   },
-  deleteSurgery: async (req, res) => {
+  deleteSurgery: (req, res) => {
     const { params: { id } } = req;
-    return await Surgery
+    return Surgery
       .destroy({ where: { id: id } })
       .then(respondWithResult(res, 204))
       .catch(handleError(res));
   },
-  addMedication: async (req, res) => {
-    return await Medication
+  addMedication: (req, res) => {
+    return Medication
       .create(req.body)
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
-  updateMedication: async (req, res) => {
+  updateMedication: (req, res) => {
     const { params: { id } } = req;
-    return await Medication
+    return Medication
       .update(req.body, { where: { id: id } })
       .then(() => res.status(200).json('Medication updated'))
       .catch(handleError(res));
   },
-  deleteMedication: async (req, res) => {
+  deleteMedication: (req, res) => {
     const { params: { id } } = req;
-    return await Medication
-      .destory({ where: { id: id } })
+    return Medication
+      .destroy({ where: { id: id } })
       .then(respondWithResult(res, 204))
       .catch(handleError(res));
   },
-  addAllergy: async (req, res) => {
-    return await Allergy
+  addAllergy: (req, res) => {
+    return Allergy
       .create(req.body)
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
-  updateAllergy: async (req, res) => {
+  updateAllergy: (req, res) => {
     const { params: { id } } = req;
-    return await Allergy
+    return Allergy
       .update(req.body, { where: { id: id } })
       .then(() => res.status(200).json('Allergy Updated'))
       .catch(handleError(res));
   },
-  deleteAllergy: async (req, res) => {
+  deleteAllergy: (req, res) => {
     const { params: { id } } = req;
-    return await Allergy
+    return Allergy
       .destroy({ where: { id: id } })
       .then(respondWithResult(res, 204))
       .catch(handleError(res));
   },
-  addSubstance: async (req, res) => {
-    return await Substance
+  addSubstance: (req, res) => {
+    return Substance
       .create(req.body)
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
-  updateSubstance: async (req, res) => {
+  updateSubstance:  (req, res) => {
     const { params: { id } } = req;
-    return await Substance
+    return Substance
       .update(req.body, { where: { id: id } })
       .then(() => res.status(200).json('Substance updated'))
       .catch(handleError(res));
   },
-  deleteSubstance: async (req, res) => {
+  deleteSubstance: (req, res) => {
     const { params: { id } } = req;
-    return await Substance
+    return Substance
       .destroy({ where: { id: id } })
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
-  updateIllnesses: async (req, res) => {
+  updateIllnesses: (req, res) => {
     const { params: { parent, parentId } } = req;
-    try {
-      const affectedRows = await PastIllness.update(req.body, { where: { parentId: parentId, parent: parent } })
-      res.json(affectedRows);
-    } catch (error) {
-      res.status(500).send(error.message)
-    }
-
-    // return await PastIllness
-    //   .update(req.body, { where: { parentId: parentId, parent: parent } })
-    //   .then(() => res.status(200).json('Past Illness Updated'))
-    //   .catch(handleError(res));
+    return PastIllness
+      .findOrCreate({ where: { parentId: parentId, parent: parent } })
+      .then(result => {
+        return result[0].update(req.body);
+      })
+      .then(() => res.status(200).json('Past Illness Updated'))
+      .catch(handleError(res));
+  },
+  updateSph: (req, res) => {
+    const { params: { id } } = req;
+    return SocialPersonalHistory
+      .update(req.body, { where: { id: id } })
+      .then(() => res.status(200).json('SPH updated'))
+      .catch(handleError(res));
+  },
+  createObGyneHistory: (req, res) => {
+    return ObGyneHistory
+      .create(req.body)
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  },
+  updateObGyneHistory: (req, res) => {
+    const { params: { id } } = req;
+    return ObGyneHistory
+      .update(req.body, { where: { id: id } })
+      .then(() => res.status(200).json('Ob-Gyne History Updated'))
+      .catch(handleError(res));
   }
 
 }
