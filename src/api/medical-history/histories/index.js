@@ -46,7 +46,7 @@ const ObGyneHistory = sequelize.define('obGyneHistory', {
   fullTermPregnancy: Sequelize.INTEGER,
   noOfMiscarriage: Sequelize.INTEGER,
   ageOfFirstMenstruation: Sequelize.INTEGER,
-  lastMenstruationPeriod: Sequelize.INTEGER,
+  lastMenstruationPeriod: Sequelize.DATEONLY,
   parity: Sequelize.INTEGER,
   noOfAbortion: Sequelize.INTEGER,
   noOfLivingChildren: Sequelize.INTEGER,
@@ -54,7 +54,16 @@ const ObGyneHistory = sequelize.define('obGyneHistory', {
   lastPapsmearDate: Sequelize.DATEONLY,
   lastPapsmearRemarks: Sequelize.STRING
 }, {
-  freezeTableName: true
+  freezeTableName: true,
+  setterMethods: {
+    lastMenstruationPeriod(value){
+      if(!value) this.setDataValue('lastMenstruationPeriod', null);
+    },
+    lastPapsmearDate(value){
+      if(!value) this.setDataValue('lastPapsmearDate', null);
+    }
+
+  }
 });
 
 
