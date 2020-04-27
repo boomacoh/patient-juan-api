@@ -16,9 +16,21 @@ const view = (data) => {
     },
     physician: {
       userId: data.physician.userId,
-      specialization: data.physician.specialization,
-      fullName: data.physician.fullName
-    }
+      specialization: data.physician.profile.specialization,
+      fullName: data.physician.profile.fullName
+    },
+    rosys: {
+      genHealthSystem: data.genHealthSystem,
+      heentSystem: data.heentSystem,
+      cardiovascularSystem: data.cardiovascularSystem,
+      nervousSystem: data.nervousSystem,
+      gastroIntestinalSystem: data.gastroIntestinalSystem
+    },
+    physx: {
+
+    },
+    diagnosis: data.diagnosis,
+    plan: data.plan
   }
   return consultation;
 }
@@ -37,7 +49,7 @@ const controller = {
       .then(consultation => {
         console.log(Object.keys(consultation.__proto__));
         consultation.createHpi
-        res.send(consultation)
+        res.send(view(consultation));
       })
       .catch(handleError(res));
   },
@@ -51,12 +63,33 @@ const controller = {
         chiefComplaint: { chiefComplaint: chiefComplaint },
         hpis: hpis
       }, { include: [ChiefComplaint, Hpi, 'physician'] })
+      .then(consultation => {
+        consultation.createGenHealthSystem();
+        consultation.createHeentSystem();
+        consultation.createCardiovascularSystem();
+        consultation.createRespiratorySystem();
+        consultation.createNervousSystem();
+        consultation.createGastroIntestinalSystem();
+        return consultation;
+      })
       .then(respondWithResult(res))
       .catch(err => {
         console.log(err);
         handleError(res);
       });
   },
+  updateRosysGroup: (req, res) => {
+    const { params: { group, consultationId } } = req;
+    return Consultation
+      .findByPk(consultationId)
+      .then(handleEntityNotFound(res, 'Consultation'))
+      .then(consultation => {
+        consultation[group]
+          .update(req.body)
+      })
+      .then(() => res.status(200).json(`${group} updated`))
+      .catch(handleError(res));
+  }
 }
 
 module.exports = controller;
