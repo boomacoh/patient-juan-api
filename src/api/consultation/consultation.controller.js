@@ -20,11 +20,11 @@ const view = (data) => {
       fullName: data.physician.profile.fullName
     },
     rosys: {
-      genHealthSystem: data.genHealthSystem,
-      heentSystem: data.heentSystem,
-      cardiovascularSystem: data.cardiovascularSystem,
-      nervousSystem: data.nervousSystem,
-      gastroIntestinalSystem: data.gastroIntestinalSystem
+      genHealthSystem: data.rosGeneralHealth,
+      heentSystem: data.rosHeent,
+      cardiovascularSystem: data.rosCardiovascularSystem,
+      nervousSystem: data.rosNervousSystem,
+      gastroIntestinalSystem: data.rosGastroIntestinalSystem
     },
     physx: {
 
@@ -64,12 +64,12 @@ const controller = {
         hpis: hpis
       }, { include: [ChiefComplaint, Hpi, 'physician'] })
       .then(consultation => {
-        consultation.createGenHealthSystem();
-        consultation.createHeentSystem();
-        consultation.createCardiovascularSystem();
-        consultation.createRespiratorySystem();
-        consultation.createNervousSystem();
-        consultation.createGastroIntestinalSystem();
+        consultation.createRosGeneralHealth();
+        consultation.createRosHeent();
+        consultation.createRosCardiovascularSystem();
+        consultation.createRosRespiratorySystem();
+        consultation.createRosNervousSystem();
+        consultation.createRosGastroIntestinalSystem();
         return consultation;
       })
       .then(respondWithResult(res))
@@ -78,13 +78,30 @@ const controller = {
         handleError(res);
       });
   },
+  updateRosys: (req, res) => {
+    const { params: { consultationId } } = req;
+    const rosData = req.body;
+    console.log(req.body);
+    return Consultation
+      .findByPk(consultationId)
+      .then(consultation => {
+        consultation.rosGeneralHealth.update(rosData.rosGeneralHealth);
+        consultation.rosHeent.update(rosData.rosHeent);
+        consultation.rosCardiovascularSystem.update(rosData.rosCardiovascularSystem);
+        consultation.rosRespiratorySystem.update(rosData.rosRespiratorySystem);
+        consultation.rosGastroIntestinalSystem.update(rosData.rosGastroIntestinalSystem);
+        consultation.rosNervousSystem.update(rosData.rosNervousSystem);
+      })
+      .then(() => res.status(200).json('Consultation Updated'))
+      .catch(handleError(res));
+  },
   updateRosysGroup: (req, res) => {
     const { params: { group, consultationId } } = req;
     return Consultation
       .findByPk(consultationId)
       .then(handleEntityNotFound(res, 'Consultation'))
       .then(consultation => {
-        consultation[group]
+        return consultation[group]
           .update(req.body)
       })
       .then(() => res.status(200).json(`${group} updated`))
