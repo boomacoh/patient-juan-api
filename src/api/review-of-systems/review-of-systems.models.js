@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const GeneralHealthSystem = sequelize.define('genHealthSystem', {
+const Ros_GeneralHealth = sequelize.define('ros_generalHealth', {
   symptoms: Sequelize.STRING(1000),
   remarks: Sequelize.STRING(1000),
   notes: Sequelize.STRING
@@ -18,19 +18,19 @@ const GeneralHealthSystem = sequelize.define('genHealthSystem', {
   },
   getterMethods: {
     symptoms() {
-      const symptoms = this.getDataValue('symptoms').split('-');
-      if (symptoms) return symptoms;
+      const symptoms = this.getDataValue('symptoms');
+      if (symptoms) return symptoms.split('-');
       return null;
     },
     remarks() {
-      const remarks = this.getDataValue('remarks').split('-');
-      if (remarks) return remarks;
+      const remarks = this.getDataValue('remarks');
+      if (remarks) return remarks.split('-');
       return null;
     }
   }
 });
 
-const HeentSystem = sequelize.define('heentSystem', {
+const Ros_Heent = sequelize.define('ros_heent', {
   symptoms: Sequelize.STRING(1000),
   remarks: Sequelize.STRING(1000),
   notes: Sequelize.STRING
@@ -48,19 +48,19 @@ const HeentSystem = sequelize.define('heentSystem', {
   },
   getterMethods: {
     symptoms() {
-      const symptoms = this.getDataValue('symptoms').split('-');
-      if (symptoms) return symptoms;
+      const symptoms = this.getDataValue('symptoms');
+      if (symptoms) return symptoms.split('-');
       return null;
     },
     remarks() {
-      const remarks = this.getDataValue('remarks').split('-');
-      if (remarks) return remarks;
+      const remarks = this.getDataValue('remarks');
+      if (remarks) return remarks.split('-');
       return null;
     }
   }
 });
 
-const CardioVascularSystem = sequelize.define('cardiovascularSystem', {
+const Ros_CardioVascularSystem = sequelize.define('ros_cardiovascularSystem', {
   symptoms: Sequelize.STRING(1000),
   remarks: Sequelize.STRING(1000),
   notes: Sequelize.STRING
@@ -78,19 +78,19 @@ const CardioVascularSystem = sequelize.define('cardiovascularSystem', {
   },
   getterMethods: {
     symptoms() {
-      const symptoms = this.getDataValue('symptoms').split('-');
-      if (symptoms) return symptoms;
+      const symptoms = this.getDataValue('symptoms');
+      if (symptoms) return symptoms.split('-');
       return null;
     },
     remarks() {
-      const remarks = this.getDataValue('remarks').split('-');
-      if (remarks) return remarks;
+      const remarks = this.getDataValue('remarks');
+      if (remarks) return remarks.split('-');
       return null;
     }
   }
 });
 
-const RespiratorySystem = sequelize.define('respiratorySystem', {
+const Ros_RespiratorySystem = sequelize.define('ros_respiratorySystem', {
   symptoms: Sequelize.STRING(1000),
   remarks: Sequelize.STRING(1000),
   notes: Sequelize.STRING
@@ -108,19 +108,19 @@ const RespiratorySystem = sequelize.define('respiratorySystem', {
   },
   getterMethods: {
     symptoms() {
-      const symptoms = this.getDataValue('symptoms').split('-');
-      if (symptoms) return symptoms;
+      const symptoms = this.getDataValue('symptoms');
+      if (symptoms) return symptoms.split('-');
       return null;
     },
     remarks() {
-      const remarks = this.getDataValue('remarks').split('-');
-      if (remarks) return remarks;
+      const remarks = this.getDataValue('remarks');
+      if (remarks) return remarks.split('-');
       return null;
     }
   }
 });
 
-const GastroIntestinalSystem = sequelize.define('gastroIntestinalSystem', {
+const Ros_GastroIntestinalSystem = sequelize.define('ros_gastroIntestinalSystem', {
   symptoms: Sequelize.STRING(1000),
   remarks: Sequelize.STRING(1000),
   notes: Sequelize.STRING
@@ -138,19 +138,19 @@ const GastroIntestinalSystem = sequelize.define('gastroIntestinalSystem', {
   },
   getterMethods: {
     symptoms() {
-      const symptoms = this.getDataValue('symptoms').split('-');
-      if (symptoms) return symptoms;
+      const symptoms = this.getDataValue('symptoms');
+      if (symptoms) return symptoms.split('-');
       return null;
     },
     remarks() {
-      const remarks = this.getDataValue('remarks').split('-');
-      if (remarks) return remarks;
+      const remarks = this.getDataValue('remarks');
+      if (remarks) return remarks.split('-');
       return null;
     }
   }
 });
 
-const NervousSystem = sequelize.define('nervousSystem', {
+const Ros_NervousSystem = sequelize.define('ros_nervousSystem', {
   symptoms: Sequelize.STRING(1000),
   remarks: Sequelize.STRING(1000),
   notes: Sequelize.STRING
@@ -168,17 +168,17 @@ const NervousSystem = sequelize.define('nervousSystem', {
   },
   getterMethods: {
     symptoms() {
-      const symptoms = this.getDataValue('symptoms').split('-');
-      if (symptoms) return symptoms;
+      const symptoms = this.getDataValue('symptoms');
+      if (symptoms) return symptoms.split('-');
       return null;
     },
     remarks() {
-      const remarks = this.getDataValue('remarks').split('-');
-      if (remarks) return remarks;
+      const remarks = this.getDataValue('remarks');
+      if (remarks) return remarks.split('-');
       return null;
     }
   }
 });
 
 
-module.exports = { GeneralHealthSystem, HeentSystem, CardioVascularSystem, RespiratorySystem, GastroIntestinalSystem, NervousSystem };
+module.exports = { Ros_GeneralHealth, Ros_Heent, Ros_CardioVascularSystem, Ros_RespiratorySystem, Ros_GastroIntestinalSystem, Ros_NervousSystem };
