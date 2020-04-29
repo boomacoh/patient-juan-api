@@ -23,7 +23,7 @@ class Nodemailer {
     });
     this.email = new Email({
       message: {
-        from: 'wittywalletapp@gmail.com'
+        from: '<no-reply@patient-juan.com>'
       },
       send: config.sendEmail,
       preview: false,
