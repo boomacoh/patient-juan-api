@@ -5,7 +5,7 @@ const NodeMailer = require('../../../utility/mailer');
 const config = require('../../../config');
 
 const controller = {
-    getEntries: async (req, res) => {
+    getAll: async (req, res) => {
         const { query: { type } } = req;
         const scopes = [];
         if (type) scopes.push({ method: ['type', type] });
@@ -17,9 +17,9 @@ const controller = {
             .then((users) => {
                 return res.status(200).send(users)
             })
-            .catch(handleErr(res));
+            .catch(handleError(res));
     },
-    getEntry: async (req, res) => {
+    getOne: async (req, res) => {
         const { params: { userId } } = req;
         return await User
             .scope('verified', 'profile')
