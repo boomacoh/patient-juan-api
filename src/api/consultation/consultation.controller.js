@@ -1,6 +1,5 @@
 const Consultation = require('./consultation.model');
 const Hpi = require('../history-of-present-illness/hpi.model');
-const ChiefComplaint = require('../chief-complaint/chief-complaint.model');
 const { handleErrorMsg, handleEntityNotFound, respondWithResult, handleError } = require('../../services/handlers');
 const moment = require('moment');
 
