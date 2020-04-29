@@ -4,11 +4,10 @@ const ChiefComplaint = require('../chief-complaint/chief-complaint.model');
 const { handleErrorMsg, handleEntityNotFound, respondWithResult, handleError } = require('../../services/handlers');
 const moment = require('moment');
 
-
 const view = (data) => {
   const consultation = {
     consultationId: data.consultationId,
-    chiefComplaint: data.chiefComplaint.chiefComplaint,
+    chiefComplaint: data.chiefComplaint,
     hpis: data.hpis,
     patient: {
       patientId: data.patient.patientId,
@@ -35,34 +34,36 @@ const view = (data) => {
   return consultation;
 }
 const controller = {
-  getAll: async (req, res) => {
-    return await Consultation
+  getAll: (req, res) => {
+    return Consultation
       .findAll()
       .then(consultations => res.send(consultations.map(consultation => { return view(consultation) })))
       .catch(handleError(res));
   },
-  getOne: async (req, res) => {
+  getOne: (req, res) => {
     const { params: { consultationId } } = req;
-    return await Consultation
-      .findOne({ where: { consultationId: consultationId } })
+    return Consultation
+      .findByPk(consultationId)
       .then(handleEntityNotFound(res, 'Consultation'))
       .then(consultation => {
-        console.log(Object.keys(consultation.__proto__));
-        consultation.createHpi
+        // console.log(Object.keys(consultation.__proto__));
         res.send(view(consultation));
       })
       .catch(handleError(res));
   },
-  create: async (req, res) => {
-    const { body: { chiefComplaint, queueId, hpis, patientId, physicianId } } = req;
-    return await Consultation
-      .create({
-        queueId: queueId,
-        patientId: patientId,
-        physicianId: physicianId,
-        chiefComplaint: { chiefComplaint: chiefComplaint },
-        hpis: hpis
-      }, { include: [ChiefComplaint, Hpi, 'physician'] })
+  find: (req, res) => {
+    const query = req.query || {};
+    return Consultation
+      .findOne({ where: query })
+      .then(consultation => {
+        if (!consultation) return res.json(false);
+        res.json(true);
+      })
+      .catch(handleError(res));
+  },
+  create: (req, res) => {
+    return Consultation
+      .create(req.body)
       .then(consultation => {
         consultation.createRosGeneralHealth();
         consultation.createRosHeent();
@@ -73,10 +74,38 @@ const controller = {
         return consultation;
       })
       .then(respondWithResult(res))
-      .catch(err => {
-        console.log(err);
-        handleError(res);
-      });
+      .catch(handleError(res));
+  },
+  updateHpis: (req, res) => {
+    const { params: { consultationId } } = req;
+    return Consultation
+      .findByPk(consultationId)
+      .then(consultation => {
+
+        req.body.hpis.forEach(item => {
+          if (!item.id) consultation.createHpi(item);
+        });
+
+        consultation.chiefComplaint = req.body.chiefComplaint;
+        consultation.save();
+
+        return consultation;
+      })
+      .then(consultation => {
+
+        consultation.getHpis()
+          .then(hpis => {
+            hpis.forEach(hpi => {
+              let index = req.body.hpis.findIndex(i => { return i.id === hpi.id });
+              if (index !== -1) return hpi.update({ timeFrame: req.body.hpis[index].timeFrame, details: req.body.hpis[index].details });
+              hpi.destroy();
+            });
+          })
+          .catch(handleError(res));
+        return consultation;
+      })
+      .then(respondWithResult(res))
+      .catch(handleError(res));
   },
   updateRosys: (req, res) => {
     const { params: { consultationId } } = req;
