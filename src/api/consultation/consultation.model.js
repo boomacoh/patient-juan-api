@@ -15,16 +15,16 @@ const Consultation = sequelize.define('consultation', {
     }
 });
 
-Consultation.hasMany(Hpi, { foreignKey: 'consultationId' });
+Consultation.hasMany(Hpi, { as: 'hpi', foreignKey: 'consultationId' });
 Hpi.belongsTo(Consultation, { foreignKey: 'consultationId' });
 
-Consultation.belongsTo(Patient, { foreignKey: 'patientId' });
+Consultation.belongsTo(Patient, { as: 'patient', foreignKey: 'patientId' });
 Patient.hasMany(Consultation, { foreignKey: 'patientId' });
 
 Consultation.belongsTo(User, { as: 'physician', foreignKey: 'physicianId' });
-User.hasMany(Consultation, { as: 'physician', foreignKey: 'physicianId' });
+User.hasMany(Consultation, { as: 'consultation', foreignKey: 'physicianId' });
 
-Consultation.belongsTo(Institution, { foreignKey: 'institutionId' });
+Consultation.belongsTo(Institution, { as: 'institution', foreignKey: 'institutionId' });
 Institution.hasMany(Consultation, { foreignKey: 'institutionId' });
 
 Consultation.hasOne(Ros_GeneralHealth, { as: 'rosGeneralHealth', foreignKey: 'consultationId' });
