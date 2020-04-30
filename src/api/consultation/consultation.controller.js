@@ -18,18 +18,19 @@ const view = (data) => {
       fullName: data.physician.profile.fullName
     },
     rosys: {
-      genHealthSystem: data.rosGeneralHealth,
-      heentSystem: data.rosHeent,
+      generalHealth: data.rosGeneralHealth,
+      heent: data.rosHeent,
       cardiovascularSystem: data.rosCardiovascularSystem,
+      respiratorySystem: data.rosRespiratorySystem,
+      gastroIntestinalSystem: data.rosGastroIntestinalSystem,
       nervousSystem: data.rosNervousSystem,
-      gastroIntestinalSystem: data.rosGastroIntestinalSystem
     },
-    physx: {
-
-    },
+    physicalExam: data.physicalExam,
     diagnosis: data.diagnosis,
     plan: data.plan
   }
+  if (!consultation.physicalExam) delete consultation.physicalExam;
+  if (!consultation.plan) delete consultation.plan;
   return consultation;
 }
 const controller = {
@@ -45,7 +46,7 @@ const controller = {
       .findByPk(consultationId)
       .then(handleEntityNotFound(res, 'Consultation'))
       .then(consultation => {
-        // console.log(Object.keys(consultation.__proto__));
+        console.log(Object.keys(consultation.__proto__));
         res.send(view(consultation));
       })
       .catch(handleError(res));
@@ -72,6 +73,15 @@ const controller = {
         consultation.createRosGastroIntestinalSystem();
         return consultation;
       })
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  },
+  getAssociation: (req, res) => {
+    const { params: { consultationId } } = req;
+    const { query: { association } } = req;
+    return Consultation
+      .findByPk(consultationId, { attributes: [], include: association })
+      .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
