@@ -71,14 +71,14 @@ const controller = {
         consultation.createRosRespiratorySystem();
         consultation.createRosNervousSystem();
         consultation.createRosGastroIntestinalSystem();
+        consultation.createPhysicalExam();
         return consultation;
       })
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
   getAssociation: (req, res) => {
-    const { params: { consultationId } } = req;
-    const { query: { association } } = req;
+    const { params: { consultationId, association } } = req;
     return Consultation
       .findByPk(consultationId, { attributes: [], include: association })
       .then(handleEntityNotFound(res))
@@ -144,6 +144,15 @@ const controller = {
       })
       .then(() => res.status(200).json(`${group} updated`))
       .catch(handleError(res));
+  },
+  updatePhysicalExam: (req, res) => {
+    const { params: { consultationId } } = req;
+    return Consultation
+      .findByPk(consultationId)
+      .then(async consultation => {
+        const physicalExam = await consultation.getPhysicalExam();
+        await physicalExam.update(req.body.physicalExam);
+      })
   }
 }
 
