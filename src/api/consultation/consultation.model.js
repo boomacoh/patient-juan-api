@@ -4,6 +4,7 @@ const Patient = require('../patient/patient.model');
 const User = require('../user/user/user.model');
 const Institution = require('../institution/institution.model');
 const { Ros_CardioVascularSystem, Ros_GastroIntestinalSystem, Ros_GeneralHealth, Ros_Heent, Ros_NervousSystem, Ros_RespiratorySystem } = require('../review-of-systems/review-of-systems.models');
+const PhysicalExam = require('../physical-exam/physical-exam.model');
 
 const Consultation = sequelize.define('consultation', {
     consultationId: { type: Sequelize.INTEGER(11), allowNull: false, primaryKey: true, autoIncrement: true },
@@ -33,5 +34,7 @@ Consultation.hasOne(Ros_GastroIntestinalSystem, { as: 'rosGastroIntestinalSystem
 Consultation.hasOne(Ros_RespiratorySystem, { as: 'rosRespiratorySystem', foreignKey: 'consultationId' });
 Consultation.hasOne(Ros_CardioVascularSystem, { as: 'rosCardiovascularSystem', foreignKey: 'consultationId' });
 Consultation.hasOne(Ros_NervousSystem, { as: 'rosNervousSystem', foreignKey: 'consultationId' });
+
+Consultation.hasOne(PhysicalExam, { as: 'physicalExam', foreignKey: 'consultationId' });
 
 module.exports = Consultation;
