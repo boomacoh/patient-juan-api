@@ -11,12 +11,21 @@ const PhysicalExam = sequelize.define('physicalExam', {
   skinBackExtremeties: Sequelize.STRING,
   nervousSystem: Sequelize.STRING,
   rectalExamination: Sequelize.STRING,
-  pelvicExamination: Sequelize.STRING
-}, {
-  defaultScope: { include: ['vitalSigns', 'antrophometricData'] }
+  pelvicExamination: Sequelize.STRING,
+  vsHead: Sequelize.STRING,
+  vsSystolic: Sequelize.STRING,
+  vsDiastolic: Sequelize.STRING,
+  vsHeartRate: Sequelize.STRING,
+  vsRespiratoryRate: Sequelize.STRING,
+  vsOxygenRate: Sequelize.STRING,
+  vsTemperatureMethod: Sequelize.STRING,
+  vsTemperature: Sequelize.STRING,
+  vsTemperatureRemarks: Sequelize.STRING,
+  adHead: Sequelize.STRING,
+  adHeight: Sequelize.STRING,
+  adWeight: Sequelize.STRING,
+  adRemarks: Sequelize.STRING,
 });
 
-PhysicalExam.hasOne(VitalSigns, { as: 'vitalSigns', foreignKey: 'physicalExamId' });
-PhysicalExam.hasOne(AntrophometricData, { as: 'antrophometricData', foreignKey: 'physicalExamId' });
 
 module.exports = PhysicalExam;
