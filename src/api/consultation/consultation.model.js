@@ -5,10 +5,12 @@ const User = require('../user/user/user.model');
 const Institution = require('../institution/institution.model');
 const { Ros_CardioVascularSystem, Ros_GastroIntestinalSystem, Ros_GeneralHealth, Ros_Heent, Ros_NervousSystem, Ros_RespiratorySystem } = require('../review-of-systems/review-of-systems.models');
 const PhysicalExam = require('../physical-exam/physical-exam.model');
+const Plan = require('../plan/plan.model');
 
 const Consultation = sequelize.define('consultation', {
     consultationId: { type: Sequelize.INTEGER(11), allowNull: false, primaryKey: true, autoIncrement: true },
     chiefComplaint: { type: Sequelize.STRING, allownNull: false },
+    diagnosis: { type: Sequelize.STRING(1000) },
     queueId: { type: Sequelize.STRING }
 }, {
     defaultScope: {
@@ -16,7 +18,7 @@ const Consultation = sequelize.define('consultation', {
     }
 });
 
-Consultation.hasMany(Hpi, { as: 'hpi', foreignKey: 'consultationId' });
+Consultation.hasMany(Hpi, { as: 'hpis', foreignKey: 'consultationId' });
 Hpi.belongsTo(Consultation, { foreignKey: 'consultationId' });
 
 Consultation.belongsTo(Patient, { as: 'patient', foreignKey: 'patientId' });
@@ -36,5 +38,6 @@ Consultation.hasOne(Ros_CardioVascularSystem, { as: 'rosCardiovascularSystem', f
 Consultation.hasOne(Ros_NervousSystem, { as: 'rosNervousSystem', foreignKey: 'consultationId' });
 
 Consultation.hasOne(PhysicalExam, { as: 'physicalExam', foreignKey: 'consultationId' });
+Consultation.hasOne(Plan, { as: 'plan', foreignKey: 'consultationId' });
 
 module.exports = Consultation;
