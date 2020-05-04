@@ -17,7 +17,7 @@ const view = (data) => {
       specialization: data.physician.profile.specialization,
       fullName: data.physician.profile.fullName
     },
-    rosys: {
+    reviewOfSystems: {
       generalHealth: data.rosGeneralHealth,
       heent: data.rosHeent,
       cardiovascularSystem: data.rosCardiovascularSystem,
@@ -46,7 +46,7 @@ const controller = {
       .findByPk(consultationId)
       .then(handleEntityNotFound(res, 'Consultation'))
       .then(consultation => {
-        console.log(Object.keys(consultation.__proto__));
+        // console.log(Object.keys(consultation.__proto__));
         res.send(view(consultation));
       })
       .catch(handleError(res));
@@ -61,6 +61,16 @@ const controller = {
       })
       .catch(handleError(res));
   },
+  update: (req, res) => {
+    const { params: { consultationId } } = req;
+    return Consultation
+      .findByPk(consultationId)
+      .then(consultation => {
+        return consultation.update(req.body);
+      })
+      .then(() => res.status(200).json('Consultation Updated'))
+      .catch(err => res.json(err));
+  },
   create: (req, res) => {
     return Consultation
       .create(req.body)
@@ -72,6 +82,7 @@ const controller = {
         consultation.createRosNervousSystem();
         consultation.createRosGastroIntestinalSystem();
         consultation.createPhysicalExam();
+        consultation.createPlan();
         return consultation;
       })
       .then(respondWithResult(res))
@@ -147,12 +158,19 @@ const controller = {
   },
   updatePhysicalExam: (req, res) => {
     const { params: { consultationId } } = req;
+    const physicalExam = req.body.physicalExam;
+    const vitalSigns = req.body.vitalSigns;
+    const antrophometricData = req.body.antrophometricData;
     return Consultation
       .findByPk(consultationId)
-      .then(async consultation => {
-        const physicalExam = await consultation.getPhysicalExam();
-        await physicalExam.update(req.body.physicalExam);
+      .then(consultation => {
+        return consultation.getPhysicalExam();
       })
+      .then(physicalExam => {
+        return physicalExam.update(req.body)
+      })
+      .then(() => res.status(200).json('Physical Exam updated'))
+      .catch(handleError(res));
   }
 }
 
