@@ -29,8 +29,7 @@ const view = (data) => {
     diagnosis: data.diagnosis,
     plan: data.plan
   }
-  if (!consultation.physicalExam) delete consultation.physicalExam;
-  if (!consultation.plan) delete consultation.plan;
+
   return consultation;
 }
 const controller = {
@@ -170,6 +169,69 @@ const controller = {
         return physicalExam.update(req.body)
       })
       .then(() => res.status(200).json('Physical Exam updated'))
+      .catch(handleError(res));
+  },
+  updateplan: (req, res) => {
+    const { params: { consultationId } } = req;
+    const planData = req.body;
+    return Consultation
+      .findByPk(consultationId)
+      .then(consultation => {
+        return consultation.getPlan();
+      })
+      .then(plan => {
+        plan.diet = planData.diet;
+        plan.disposition = planData.disposition;
+
+        plan.save();
+
+        if (planData.drugs.length > 0) {
+          planData.drugs.forEach(drug => {
+            if (!drug.id) plan.createDrug(drug);
+          });
+        }
+        if (planData.diagnostics.length > 0) {
+          planData.diagnostics.forEach(diagnostic => {
+            if (!diagnostic.id) plan.createDiagnostic(diagnostic);
+          });
+        }
+
+        return plan;
+
+      })
+      .then(async plan => {
+        const drugs = await plan.getDrugs();
+        const diagnostics = await plan.getDiagnostics();
+
+        drugs.forEach(drug => {
+          let index = planData.drugs.findIndex(i => i.id === drug.id);
+          if (index !== -1) {
+            return drug.update({
+              generic: planData.drugs[index].generic,
+              brand: planData.drugs[index].brand,
+              preparation: planData.drugs[index].preparation,
+              frequency: planData.drugs[index].frequency,
+              route: planData.drugs[index].route,
+              purpose: planData.drugs[index].purpose
+            });
+          }
+          drug.destroy();
+        });
+
+        diagnostics.forEach(diagnostic => {
+          let index = planData.diagnostics.findIndex(i => i.id === diagnostic.id);
+          if (index !== -1) {
+            return diagnostic.update({
+              diagnostic: planData.diagnostics[index].diagnostic,
+              details: planData.diagnostics[index].details
+            });
+          }
+          diagnostic.destroy();
+        });
+
+        return plan;
+      })
+      .then(() => res.status(200).json('Plan Updated'))
       .catch(handleError(res));
   }
 }

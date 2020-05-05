@@ -127,6 +127,7 @@ const controller = {
             civilStatus: profile.civilStatus,
             sex: profile.sex,
             image: profile.image,
+            specialization: profile.specialization,
             createdAt: moment(profile.createdAt).format('MMMM DD, YYYY'),
             updatedAt: moment(profile.updatedAt).fromNow()
           }
