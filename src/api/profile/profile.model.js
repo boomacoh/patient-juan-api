@@ -4,7 +4,7 @@ const config = require('../../config');
 
 const Profile = sequelize.define('profile', {
   profileId: { type: Sequelize.INTEGER(11), allowNull: false, autoIncrement: true, primaryKey: true },
-  fullName: { type: Sequelize.VIRTUAL, get() { return `${this.firstName} ${this.lastName} ${this.suffix ? this.suffix : ''}` } },
+  fullName: Sequelize.VIRTUAL,
   firstName: { type: Sequelize.STRING(255), allowNull: false },
   lastName: { type: Sequelize.STRING(255), allowNull: false },
   middleName: { type: Sequelize.STRING(255) },
@@ -24,6 +24,7 @@ const Profile = sequelize.define('profile', {
   image: Sequelize.STRING,
   contactNo: Sequelize.STRING,
   address: Sequelize.STRING,
+  medicalDesignation: Sequelize.STRING,
   type: { type: Sequelize.STRING }
 }, {
   setterMethods: {
@@ -50,13 +51,19 @@ const Profile = sequelize.define('profile', {
     }
   },
   getterMethods: {
+    fullName(){
+      if(this.suffix) return `${this.firstName} ${this.lastName} ${this.suffix}`;
+      return `${this.firstName} ${this.lastName}`;
+    },
     contactNo() {
       contactNos = this.getDataValue('contactNo');
       if (contactNos) return contactNos.split(';');
+      return []
     },
     specialization() {
       specializations = this.getDataValue('specialization');
       if (specializations) return specializations.split(';');
+      return []
     }
   }
 })
