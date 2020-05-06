@@ -8,8 +8,9 @@ router.get('/', jwtAuth.required, controller.me);
 router.get('/switch/:institutionId', jwtAuth.required, controller.switchInstitution);
 router.get('/profile', jwtAuth.required, controller.getProfile);
 
+router.put('/profile', jwtAuth.required, controller.updateProfile);
+
 router.post('/change-password', jwtAuth.required, controller.changePassword);
-router.put('/update', jwtAuth.required, controller.updateProfile);
 router.post('/update/image', jwtAuth.required, upload.single('profileImage'), controller.updateProfileImage);
 
 module.exports = router;

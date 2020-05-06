@@ -75,18 +75,21 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  updateProfile: async (req, res) => {
+  updateProfile: (req, res) => {
     const { payload: { userId } } = req;
     if (req.body.userId) Reflect.deleteProperty(req.body, 'userId');
 
-    return await User.update(req.body, { where: { userId: userId } })
-      .then(handleEntityNotFound(res))
-      .then(respondWithResult(res, 202))
-      .catch(handleError(res))
+    return User
+      .findByPk(userId)
+      .then(user => { return user.getProfile() })
+      .then(profile => {
+        profile.update(req.body);
+        res.status(200).json('Profile Updated');
+      })
+      .catch(handleError(res));
   },
   switchInstitution: async (req, res) => {
-    // const { payload: { userId } } = req;
-    const userId = 1;
+    const { payload: { userId } } = req;
     const { params: { institutionId } } = req;
 
     return await User
@@ -112,22 +115,30 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  getProfile: async (req, res) => {
+  getProfile: (req, res) => {
     const { payload: { userId } } = req;
-    await Profile.findOne({ where: { userId: userId } })
+
+    return User.findByPk(userId)
       .then(handleEntityNotFound(res))
+      .then(user => { return user.getProfile(); })
       .then(profile => {
 
         const data = {
           profile: {
             fullName: profile.fullName,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            middleName: profile.middleName,
             birthdate: profile.birthdate,
+            suffix: profile.suffix,
             contactNo: profile.contactNo,
             address: profile.address,
             civilStatus: profile.civilStatus,
             sex: profile.sex,
             image: profile.image,
             specialization: profile.specialization,
+            PRCLicenseNo: profile.PRCLicenseNo,
+            medicalDesignation: profile.medicalDesignation,
             createdAt: moment(profile.createdAt).format('MMMM DD, YYYY'),
             updatedAt: moment(profile.updatedAt).fromNow()
           }
