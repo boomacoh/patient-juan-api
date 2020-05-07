@@ -45,6 +45,10 @@ const Profile = sequelize.define('profile', {
       if (value) return this.setDataValue('specialization', value.join(';'));
       this.setDataValue('specialization', null);
     },
+    medicalDesignation(value){
+      if(value) return this.setDataValue('medicalDesignation', value.join(';'));
+      this.setDataValue('medicalDesignation', null);
+    },
     image(value) {
       if (value) return this.setDataValue('image', `${config.apiUrl}/images/profile/${value}`);
       this.setDataValue('image', null);
@@ -58,12 +62,17 @@ const Profile = sequelize.define('profile', {
     contactNo() {
       contactNos = this.getDataValue('contactNo');
       if (contactNos) return contactNos.split(';');
-      return []
+      return [];
     },
     specialization() {
       specializations = this.getDataValue('specialization');
       if (specializations) return specializations.split(';');
-      return []
+      return [];
+    },
+    medicalDesignation(){
+      designations = this.getDataValue('medicalDesignation');
+      if(designations) return designations.split(';');
+      return [];
     }
   }
 })
