@@ -6,6 +6,7 @@ const moment = require('moment');
 const view = (data) => {
   const consultation = {
     consultationId: data.consultationId,
+    queueId: data.queueId,
     chiefComplaint: data.chiefComplaint,
     hpis: data.hpis,
     patient: {
