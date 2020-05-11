@@ -158,9 +158,6 @@ const controller = {
   },
   updatePhysicalExam: (req, res) => {
     const { params: { consultationId } } = req;
-    const physicalExam = req.body.physicalExam;
-    const vitalSigns = req.body.vitalSigns;
-    const antrophometricData = req.body.antrophometricData;
     return Consultation
       .findByPk(consultationId)
       .then(consultation => {
