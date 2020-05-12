@@ -12,6 +12,9 @@ const view = (data) => {
     patient: {
       patientId: data.patient.patientId,
       fullName: data.patient.fullName,
+      sex: data.patient.sex,
+      birthdate: data.patient.birthdate,
+      age: moment().diff(data.patient.birthdate, 'years')
     },
     physician: {
       userId: data.physician.userId,
@@ -181,8 +184,6 @@ const controller = {
         plan.diet = planData.diet;
         plan.disposition = planData.disposition;
 
-        plan.save();
-
         if (planData.drugs.length > 0) {
           planData.drugs.forEach(drug => {
             if (!drug.id) plan.createDrug(drug);
@@ -194,6 +195,7 @@ const controller = {
           });
         }
 
+        plan.save();
         return plan;
 
       })
@@ -217,7 +219,7 @@ const controller = {
         });
 
         diagnostics.forEach(diagnostic => {
-          let index = planData.diagnostics.findIndex(i => i.id === diagnostic.id);
+          let index = planData.diagnostics.findIndex(j => j.id === diagnostic.id);
           if (index !== -1) {
             return diagnostic.update({
               diagnostic: planData.diagnostics[index].diagnostic,
