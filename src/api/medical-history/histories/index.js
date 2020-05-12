@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const { Allergy, PastIllness, Medication, Substance, Surgery } = require('../sub-histories');
 
 const PastMedicalHistory = sequelize.define('pastMedicalHistory', {
-  unremarkable: { type: Sequelize.BOOLEAN }
+  unremarkable: { type: Sequelize.BOOLEAN, defaultValue: false }
 }, {
   freezeTableName: true,
   defaultScope: {
@@ -21,16 +21,16 @@ PastMedicalHistory.hasMany(Medication);
 PastMedicalHistory.hasMany(Surgery);
 
 const FamilyMedicalHistory = sequelize.define('familyMedicalHistory', {
-  unremarkable: Sequelize.BOOLEAN
+  unremarkable: { type: Sequelize.BOOLEAN, defaultValue: false }
 }, {
   freezeTableName: true,
-  defaultScope: { include: [{ model: PastIllness, attributes: {exclude: ['createdAt', 'updatedAt', 'id']} }] }
+  defaultScope: { include: [{ model: PastIllness, attributes: { exclude: ['createdAt', 'updatedAt', 'id'] } }] }
 });
 
 FamilyMedicalHistory.hasOne(PastIllness, { foreignKey: 'parentId', scope: { parent: 'fmh' } });
 
 const SocialPersonalHistory = sequelize.define('socialPersonalHistory', {
-  unremarkable: Sequelize.BOOLEAN,
+  unremarkable: { type: Sequelize.BOOLEAN, defaultValue: false },
   lifestyle: Sequelize.STRING
 }, {
   freezeTableName: true,
@@ -40,7 +40,7 @@ const SocialPersonalHistory = sequelize.define('socialPersonalHistory', {
 SocialPersonalHistory.hasMany(Substance);
 
 const ObGyneHistory = sequelize.define('obGyneHistory', {
-  unremarkable: Sequelize.BOOLEAN,
+  unremarkable: { type: Sequelize.BOOLEAN, defaultValue: false },
   referringOB: Sequelize.STRING,
   gravidity: Sequelize.INTEGER,
   fullTermPregnancy: Sequelize.INTEGER,
@@ -56,11 +56,11 @@ const ObGyneHistory = sequelize.define('obGyneHistory', {
 }, {
   freezeTableName: true,
   setterMethods: {
-    lastMenstruationPeriod(value){
-      if(!value) this.setDataValue('lastMenstruationPeriod', null);
+    lastMenstruationPeriod(value) {
+      if (!value) this.setDataValue('lastMenstruationPeriod', null);
     },
-    lastPapsmearDate(value){
-      if(!value) this.setDataValue('lastPapsmearDate', null);
+    lastPapsmearDate(value) {
+      if (!value) this.setDataValue('lastPapsmearDate', null);
     }
 
   }
