@@ -38,12 +38,33 @@ const controller = {
       })
       .catch(handleError(res));
   },
+  update: (req, res) => {
+    const { params: { medicalHistoryId } } = req;
+    return MedicalHistory
+      .findByPk(medicalHistory)
+      .then(handleEntityNotFound(res, 'Medical History'))
+      .then(medicalHistory => {
+        medicalHistory.familyMedicalHistory.update(req.body.fmh);
+        medicalHistory.pastMedicalHistory.update(req.body.pmh);
+        medicalHistory.SocialPersonalHistory.update(req.body.sph);
+        medicalHistory.ObGyneHistory.update(req.body.obh);
+      })
+      .then(() => res.status(200).json('Medical History updated'))
+      .catch(handleError(res));
+  },
   getPatientMedicalHistory: (req, res) => {
     const { params: { patientId } } = req;
     return MedicalHistory
       .findOne({ where: { patientId: patientId } })
       .then(handleEntityNotFound(res, 'Medical History'))
       .then(respondWithResult(res))
+      .catch(handleError(res));
+  },
+  updateSph: (req, res) => {
+    const { params: { id } } = req;
+    return SocialPersonalHistory
+      .update(req.body, { where: { id: id } })
+      .then(() => res.status(200).json('SPH updated'))
       .catch(handleError(res));
   },
   addSurgery: (req, res) => {
@@ -112,7 +133,7 @@ const controller = {
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
-  updateSubstance:  (req, res) => {
+  updateSubstance: (req, res) => {
     const { params: { id } } = req;
     return Substance
       .update(req.body, { where: { id: id } })
@@ -134,13 +155,6 @@ const controller = {
         return result[0].update(req.body);
       })
       .then(() => res.status(200).json('Past Illness Updated'))
-      .catch(handleError(res));
-  },
-  updateSph: (req, res) => {
-    const { params: { id } } = req;
-    return SocialPersonalHistory
-      .update(req.body, { where: { id: id } })
-      .then(() => res.status(200).json('SPH updated'))
       .catch(handleError(res));
   },
   createObGyneHistory: (req, res) => {

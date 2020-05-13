@@ -13,6 +13,7 @@ router.post('/allergy', jwtAuth.required, controller.addAllergy);
 router.post('/substance', jwtAuth.required, controller.addSubstance);
 router.post('/obh', jwtAuth.required, controller.createObGyneHistory);
 
+router.put('/:medicalHistoryId', jwtAuth.required, controller.update);
 router.put('/surgery/:id', jwtAuth.required, controller.updateSurgery);
 router.put('/medication/:id', jwtAuth.required, controller.updateMedication);
 router.put('/allergy/:id', jwtAuth.required, controller.updateAllergy);
