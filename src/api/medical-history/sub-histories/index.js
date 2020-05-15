@@ -6,34 +6,12 @@ const Allergy = sequelize.define('allergy', {
 });
 
 const PastIllness = sequelize.define('pastIllness', {
-  illness: Sequelize.STRING(500),
-  remarks: Sequelize.STRING(500),
+  illness: Sequelize.STRING,
+  remarks: Sequelize.STRING,
   parent: Sequelize.STRING
 }, {
   scopes: {
     parent(parent) { return { where: { parent: parent } } }
-  },
-  setterMethods: {
-    illness(value) {
-      if (value) return this.setDataValue('illness', value.join('-'));
-      this.setDataValue('illness', null)
-    },
-    remarks(value) {
-      if (value) return this.setDataValue('remarks', value.join('-'));
-      this.setDataValue('remarks', null);
-    }
-  },
-  getterMethods: {
-    illness() {
-      const illnesses = this.getDataValue('illness').split('-');
-      if (illnesses) return illnesses;
-      return [];
-    },
-    remarks(){
-      const remarks = this.getDataValue('remarks').split('-');
-      if(remarks) return remarks;
-      return [];
-    }
   }
 });
 
@@ -57,6 +35,8 @@ const Substance = sequelize.define('substance', {
   substance: Sequelize.STRING,
   remarks: Sequelize.STRING
 });
+
+// PastIllness.removeAttribute('id');
 
 // Illness.removeAttribute('id');
 // Allergy.removeAttribute('id');
