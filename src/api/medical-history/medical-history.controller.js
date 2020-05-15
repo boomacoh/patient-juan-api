@@ -38,20 +38,6 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  update: (req, res) => {
-    const { params: { medicalHistoryId } } = req;
-    return MedicalHistory
-      .findByPk(medicalHistory)
-      .then(handleEntityNotFound(res, 'Medical History'))
-      .then(medicalHistory => {
-        medicalHistory.familyMedicalHistory.update(req.body.fmh);
-        medicalHistory.pastMedicalHistory.update(req.body.pmh);
-        medicalHistory.SocialPersonalHistory.update(req.body.sph);
-        medicalHistory.ObGyneHistory.update(req.body.obh);
-      })
-      .then(() => res.status(200).json('Medical History updated'))
-      .catch(handleError(res));
-  },
   getPatientMedicalHistory: (req, res) => {
     const { params: { patientId } } = req;
     return MedicalHistory
@@ -148,13 +134,36 @@ const controller = {
       .catch(handleError(res));
   },
   updateIllnesses: (req, res) => {
-    const { params: { parent, parentId } } = req;
-    return PastIllness
-      .findOrCreate({ where: { parentId: parentId, parent: parent } })
+    const { query: { scope, parentId } } = req;
+    const formData = req.body;
+    let model;
+    if (scope === 'pmh') model = PastMedicalHistory;
+    if (scope === 'fmh') model = FamilyMedicalHistory;
+
+    return model
+      .findByPk(parentId)
       .then(result => {
-        return result[0].update(req.body);
+
+        formData.forEach(data => {
+          if (!data.id) result.createPastIllness(data);
+        });
+
+        return result;
       })
-      .then(() => res.status(200).json('Past Illness Updated'))
+      .then(async result => {
+
+        const illnesses = await result.getPastIllnesses();
+
+        illnesses.forEach(illness => {
+          let index = formData.findIndex(i => i.id === illness.id);
+          if (index !== -1) {
+            illness.remarks = formData[index].remarks;
+            return illness.save();
+          }
+          illness.destroy();
+        });
+      })
+      .then(() => res.status(200).json('Illnesses updated'))
       .catch(handleError(res));
   },
   createObGyneHistory: (req, res) => {
