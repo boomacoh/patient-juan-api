@@ -14,11 +14,15 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  getEntry: async (req, res) => {
+  getOne: async (req, res) => {
     const { params: { institutionId } } = req;
-    await Institution.findOne({ where: { institutionId: institutionId }, attributes: ['registeredName'], include: [{ model: User }] })
+    await Institution
+      .findByPk(institutionId)
       .then(handleEntityNotFound(res))
-      .then(institution => res.send(institution))
+      .then(institution => {
+        console.log(Object.keys(institution.__proto__));
+        res.send(institution)
+      })
       .catch(handleError(res));
   },
   create: async (req, res) => {

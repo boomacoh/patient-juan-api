@@ -7,7 +7,7 @@ const config = require('../../../config');
 const decode = require('jwt-decode');
 
 const controller = {
-  register: async (req, res) => {
+  register: (req, res) => {
     const { body: { email, password, confirmPassword, registeredName, access } } = req;
 
     if (!email) return handleErrorMsg(res, 422, 'Email must not be empty!');
@@ -16,17 +16,17 @@ const controller = {
     if (password !== confirmPassword) return handleErrorMsg(res, 422, 'Passwords do not match!');
     if (!registeredName) return handleErrorMsg(res, 422, 'Please provide a name for your clinic!');
 
-    const newUser = await User.build({
+    const newUser = User.build({
       email: email,
       password: password,
     });
 
-    await newUser.setPassword(password);
-    const token = await newUser.createVerifyToken();
+    newUser.setPassword(password);
+    const token = newUser.createVerifyToken();
     newUser.verifyToken = token;
 
-    await newUser.save()
-      .then(async (user) => {
+    newUser.save()
+      .then(async user => {
 
         // console.log(Object.keys(user.__proto__));
 

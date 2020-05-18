@@ -5,23 +5,22 @@ const NodeMailer = require('../../../utility/mailer');
 const config = require('../../../config');
 
 const controller = {
-    getAll: async (req, res) => {
+    getAll: (req, res) => {
         const { query: { type } } = req;
         const scopes = [];
         if (type) scopes.push({ method: ['type', type] });
 
-        return await User
+        return User
             .scope(scopes)
             .findAll()
-            .then(handleEntityNotFound(res))
             .then((users) => {
                 return res.status(200).send(users)
             })
             .catch(handleError(res));
     },
-    getOne: async (req, res) => {
+    getOne: (req, res) => {
         const { params: { userId } } = req;
-        return await User
+        return User
             .scope('verified', 'profile')
             .findByPk(userId, { attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] } })
             .then(handleEntityNotFound(res))
@@ -30,19 +29,20 @@ const controller = {
             })
             .catch(handleError(res));
     },
-    update: async (req, res) => {
+    update: (req, res) => {
         const { params: { userId } } = req;
         const user = req.body;
     },
-    destroy: async (req, res) => {
+    destroy: (req, res) => {
         const { params: { userId } } = req;
-        await User.delete({ where: { userId: userId } })
+        return User
+            .destroy({ where: { userId: userId } })
             .then(respondWithResult(res, 204))
             .catch(handleError(res));
     },
-    forgotPassword: async (req, res) => {
+    forgotPassword: (req, res) => {
         const { body: { email } } = req;
-        return await User
+        return User
             .scope('verified')
             .findOne({ where: { email: email } })
             .then(user => {
