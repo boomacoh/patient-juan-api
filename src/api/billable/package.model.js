@@ -8,4 +8,7 @@ const Package = sequelize.define('package', {
   defaultScope: { include: [{ all: true }] }
 });
 
+Package.belongsToMany(Billable, { through: 'billable_packages', as: 'billables' });
+Billable.belongsToMany(Package, { through: 'billable_packages', as: 'packages' });
+
 module.exports = Package;

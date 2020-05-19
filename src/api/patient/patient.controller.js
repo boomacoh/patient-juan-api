@@ -1,10 +1,15 @@
 const Patient = require('./patient.model');
-const Test = require('../test/test.model');
 const { handleErrorMsg, handleEntityNotFound, handleError, respondWithResult } = require('../../services/handlers');
 
 const controller = {
     getAll: async (req, res) => {
-        await Patient.findAll()
+        const { query: { institutionId } } = req;
+        const scopes = [];
+        if (institutionId) scopes.push({ method: ['institution', institutionId] });
+
+        await Patient
+            .scope(scopes)
+            .findAll()
             .then(handleEntityNotFound(res))
             .then(patients => res.status(200).send(patients))
             .catch(handleError(res));

@@ -4,11 +4,11 @@ const Patient = require('../patient/patient.model');
 const moment = require('moment');
 
 const Queue = sequelize.define('queue', {
-  queueId: { type: Sequelize.UUID, allowNull: false, defaultValue: Sequelize.UUIDV1, primaryKey: true },
-  physicianId: { type: Sequelize.INTEGER(11), },
-  institutionId: { type: Sequelize.INTEGER(11) },
+  id: { type: Sequelize.UUID, allowNull: false, defaultValue: Sequelize.UUIDV1, primaryKey: true },
+  physicianId: { type: Sequelize.INTEGER, },
+  institutionId: { type: Sequelize.INTEGER },
   date: { type: Sequelize.DATEONLY, allowNull: false },
-  queueNumber: Sequelize.INTEGER,
+  queueNumber: { type: Sequelize.INTEGER, allowNull: false },
   type: { type: Sequelize.STRING, allowNull: false, validate: { isIn: { args: [['appointment', 'walk-in']], msg: 'That is not a valid type' } } },
   status: { type: Sequelize.STRING, allowNull: false, defaultValue: 'pending' },
   reason: { type: Sequelize.STRING, allowNull: false },

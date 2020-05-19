@@ -3,9 +3,9 @@ const router = express.Router();
 const controller = require('./patient.controller');
 
 router.get('/', controller.getAll);
-router.get('/:patientId', controller.getOne);
+router.get('/:id', controller.getOne);
 router.post('/', controller.create);
-router.put('/:patientId', controller.update);
-router.delete('/:patientId', controller.destroy);
+router.put('/:id', controller.update);
+router.delete('/:id', controller.destroy);
 
 module.exports = router;

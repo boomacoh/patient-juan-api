@@ -8,7 +8,7 @@ const config = require('../../config');
 const controller = {
   getEntries: async (req, res) => {
     const { query: { email, institutionId, invitationId } } = req;
-    const condition = {}
+    const scopes = [];
 
     if (invitationId) condition['invitationId'] = invitationId;
     if (email) condition['email'] = email;

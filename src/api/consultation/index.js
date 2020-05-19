@@ -3,18 +3,18 @@ const controller = require('./consultation.controller');
 const { jwtAuth, checkPermission } = require('../../services/auth/jwt');
 
 router.get('/', jwtAuth.required, controller.getAll);
-router.get('/:consultationId', jwtAuth.required, controller.getOne);
+router.get('/:id', jwtAuth.required, controller.getOne);
 router.get('/find/options', jwtAuth.required, controller.find);
-router.get('/association/:consultationId/:association', controller.getAssociation);
+router.get('/association/:id/:association', controller.getAssociation);
 
-router.put('/:consultationId', jwtAuth.required, controller.update);
+router.put('/:id', jwtAuth.required, controller.update);
 
 router.post('/', jwtAuth.required, controller.create);
-router.post('/hpis/:consultationId', controller.updateHpis);
-router.post('/rosys/:consultationId', jwtAuth.required, controller.updateRosys);
-router.post('/rosys/:group/:consultationId', jwtAuth.required, controller.updateRosysGroup);
-router.post('/physical-exam/:consultationId', jwtAuth.required, controller.updatePhysicalExam);
-router.post('/plan/:consultationId', jwtAuth.required, controller.updateplan);
+router.post('/hpis/:id', controller.updateHpis);
+router.post('/rosys/:id', jwtAuth.required, controller.updateRosys);
+router.post('/rosys/:group/:id', jwtAuth.required, controller.updateRosysGroup);
+router.post('/physical-exam/:id', jwtAuth.required, controller.updatePhysicalExam);
+router.post('/plan/:id', jwtAuth.required, controller.updateplan);
 
 
 module.exports = router;

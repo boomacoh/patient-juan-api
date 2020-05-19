@@ -8,30 +8,28 @@ const decode = require('jwt-decode');
 
 const controller = {
   register: (req, res) => {
-    const { body: { email, password, confirmPassword, registeredName, access } } = req;
+    const { body: { userInfo, clinicInfo } } = req;
 
-    if (!email) return handleErrorMsg(res, 422, 'Email must not be empty!');
-    if (!password) return handleErrorMsg(res, 422, 'Password must not be empty!');
-    if (!confirmPassword) return handleErrorMsg(res, 422, 'Confirm Password must not be empty!');
-    if (password !== confirmPassword) return handleErrorMsg(res, 422, 'Passwords do not match!');
-    if (!registeredName) return handleErrorMsg(res, 422, 'Please provide a name for your clinic!');
+    if (!userInfo.email) return handleErrorMsg(res, 422, 'Email must not be empty!');
+    if (!userInfo.password) return handleErrorMsg(res, 422, 'Password must not be empty!');
+    if (!userInfo.confirmPassword) return handleErrorMsg(res, 422, 'Confirm Password must not be empty!');
+    if (userInfo.password !== userInfo.confirmPassword) return handleErrorMsg(res, 422, 'Passwords do not match!');
+    if (!clinicInfo.registeredName) return handleErrorMsg(res, 422, 'Please provide a name for your clinic!');
+
 
     const newUser = User.build({
-      email: email,
-      password: password,
-    });
+      email: userInfo.email
+    }, { fields: ['email'] });
 
-    newUser.setPassword(password);
+    newUser.setPassword(userInfo.password);
     const token = newUser.createVerifyToken();
     newUser.verifyToken = token;
 
     newUser.save()
-      .then(async user => {
+      .then(user => {
 
-        // console.log(Object.keys(user.__proto__));
-
-        let inst = await Institution.findOrCreate({ where: { registeredName: registeredName } });
-        await user.addInstitution(inst[0], { through: { access: access, isDefault: true } });
+        console.log(Object.keys(user.__proto__));
+        user.createInstitution({ registeredName: clinicInfo.registeredName }, { through: { access: clinicInfo.access, isDefault: true } });
 
         const mailer = new NodeMailer(user.email);
         const message = {
@@ -49,19 +47,18 @@ const controller = {
       .then(respondWithResult(res, 201))
       .catch(handleError(res));
   },
-  join: async (req, res) => {
+  join: (req, res) => {
     const { body: { email, password, access, institutionId, confirmPassword } } = req;
 
     if (password !== confirmPassword) return res.render('member-signup', { data: req.body, message: 'Passwords do not match!', class: 'danger' });
 
-    const member = await User.build({
+    const member = User.build({
       email: email,
-      password: password,
       verified: true
     });
 
-    await member.setPassword(password);
-    await member.save()
+    member.setPassword(password);
+    return member.save()
       .then(user => {
 
         user.addInstitution(institutionId, { through: { access: access } })
@@ -75,10 +72,11 @@ const controller = {
       .then(respondWithResult(res))
       .catch(handlErro(res));
   },
-  verify: async (req, res) => {
+  verify: (req, res) => {
     const { params: { email } } = req;
 
-    await User.findOne({ where: { email: email } })
+    return User
+      .findOne({ where: { email: email } })
       .then(handleEntityNotFound(res))
       .then(user => {
         const decodedToken = decode(user.verifyToken);
@@ -97,14 +95,17 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  resetPassword: async (req, res) => {
+  resetPassword: (req, res) => {
     const { body: { email, newPassword, confirmNewPassword } } = req;
 
     if (newPassword !== confirmNewPassword) return res.render('reset-password', { data: { email: email }, message: 'Passwords do not match!', class: 'danger' });
 
-    return await User.findOne({ where: { email: email } })
+    return User
+      .findOne({ where: { email: email } })
+      .then(handleEntityNotFound(res, 'User'))
       .then(user => {
-        if (!user) return res.render('message', { data: { message: 'We cannot find the user within our database', class: 'danger' } })
+        if (!user) return res.render('message', { data: { message: 'We cannot find the user within our database', class: 'danger' } });
+
         user.setPassword(newPassword);
         user.save()
           .then(() => res.render('message', { data: { message: 'Password Updated!', class: 'success', email: user.email } }))
@@ -112,7 +113,7 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  login: async (req, res, next) => {
+  login: (req, res, next) => {
     const { body: { email, password } } = req;
 
     if (!email) return handleErrorMsg(res, 422, 'Email is required!');
@@ -126,11 +127,11 @@ const controller = {
         // console.log(Object.keys(user.__proto__));
         // user.token = passportUser.createTokenSignature();
         const institutionInfo = {
-          institutionId: user.institutions[0].institutionId,
+          institutionId: user.institutions[0].id,
           access: user.institutions[0].user_institution.access
         }
 
-        return res.status(200).send({ userId: user.userId, token: user.generateToken(institutionInfo) });
+        return res.status(200).send({ userId: user.id, token: user.generateToken(institutionInfo) });
       }
       return res.send(info.status, info.message);
     })(req, res, next);

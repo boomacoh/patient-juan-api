@@ -44,9 +44,9 @@ const controller = {
       .catch(handleError(res));
   },
   getOne: (req, res) => {
-    const { params: { consultationId } } = req;
+    const { params: { id } } = req;
     return Consultation
-      .findByPk(consultationId)
+      .findByPk(id)
       .then(handleEntityNotFound(res, 'Consultation'))
       .then(consultation => {
         // console.log(Object.keys(consultation.__proto__));
@@ -65,9 +65,9 @@ const controller = {
       .catch(handleError(res));
   },
   update: (req, res) => {
-    const { params: { consultationId } } = req;
+    const { params: { id } } = req;
     return Consultation
-      .findByPk(consultationId)
+      .findByPk(id)
       .then(consultation => {
         return consultation.update(req.body);
       })
@@ -92,17 +92,17 @@ const controller = {
       .catch(handleError(res));
   },
   getAssociation: (req, res) => {
-    const { params: { consultationId, association } } = req;
+    const { params: { id, association } } = req;
     return Consultation
-      .findByPk(consultationId, { attributes: [], include: association })
+      .findByPk(id, { attributes: [], include: association })
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
   updateHpis: (req, res) => {
-    const { params: { consultationId } } = req;
+    const { params: { id } } = req;
     return Consultation
-      .findByPk(consultationId)
+      .findByPk(id)
       .then(consultation => {
 
         req.body.hpis.forEach(item => {
@@ -131,11 +131,11 @@ const controller = {
       .catch(handleError(res));
   },
   updateRosys: (req, res) => {
-    const { params: { consultationId } } = req;
+    const { params: { id } } = req;
     const rosData = req.body;
     console.log(req.body);
     return Consultation
-      .findByPk(consultationId)
+      .findByPk(id)
       .then(consultation => {
         consultation.rosGeneralHealth.update(rosData.rosGeneralHealth);
         consultation.rosHeent.update(rosData.rosHeent);
@@ -148,9 +148,9 @@ const controller = {
       .catch(handleError(res));
   },
   updateRosysGroup: (req, res) => {
-    const { params: { group, consultationId } } = req;
+    const { params: { group, id } } = req;
     return Consultation
-      .findByPk(consultationId)
+      .findByPk(id)
       .then(handleEntityNotFound(res, 'Consultation'))
       .then(consultation => {
         return consultation[group]
@@ -160,9 +160,9 @@ const controller = {
       .catch(handleError(res));
   },
   updatePhysicalExam: (req, res) => {
-    const { params: { consultationId } } = req;
+    const { params: { id } } = req;
     return Consultation
-      .findByPk(consultationId)
+      .findByPk(id)
       .then(consultation => {
         return consultation.getPhysicalExam();
       })
@@ -173,10 +173,10 @@ const controller = {
       .catch(handleError(res));
   },
   updateplan: (req, res) => {
-    const { params: { consultationId } } = req;
+    const { params: { id } } = req;
     const planData = req.body;
     return Consultation
-      .findByPk(consultationId)
+      .findByPk(id)
       .then(consultation => {
         return consultation.getPlan();
       })

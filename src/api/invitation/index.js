@@ -5,10 +5,10 @@ const association = require('./association-controller');
 const { jwtAuth, checkPermission } = require('../../services/auth/jwt');
 
 router.get('/', jwtAuth.optional, controller.getEntries);
-router.get('/:invitationId', jwtAuth.optional, controller.getEntry);
+router.get('/:id', jwtAuth.optional, controller.getEntry);
 
 
-router.get('/verify/:invitationId', jwtAuth.optional, association.verify, association.assign);
+router.get('/verify/:id', jwtAuth.optional, association.verify, association.assign);
 router.post('/', jwtAuth.optional, association.checkEmailInClinic, association.checkInInvites, controller.create);
 
 module.exports = router;

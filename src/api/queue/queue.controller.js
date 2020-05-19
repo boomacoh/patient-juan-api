@@ -21,16 +21,16 @@ const view = (data) => {
 }
 
 const controller = {
-  getAll: async (req, res) => {
-    return await Queue
+  getAll: (req, res) => {
+    return Queue
       .scope('patient')
       .findAll()
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
-  getOne: async (req, res) => {
+  getOne: (req, res) => {
     const { params: { queueId } } = req;
-    return await Queue
+    return Queue
       .scope('patient')
       .findByPk(queueId)
       .then(handleEntityNotFound(res, 'Queue'))
@@ -40,7 +40,7 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  getScopes: async (req, res) => {
+  getScopes: (req, res) => {
     const { query: { type, status, physicianId, institutionId, current } } = req;
 
     const scopes = [];
@@ -50,7 +50,7 @@ const controller = {
     if (institutionId) scopes.push({ method: ['institution', institutionId] })
     if (current) scopes.push('current')
 
-    return await Queue
+    return Queue
       .scope(scopes, 'patient')
       .findAll()
       .then(queues => {
@@ -61,26 +61,20 @@ const controller = {
         res.send(err)
       });
   },
-  update: async (req, res) => {
-    const { params: { queueId } } = req;
-    return await Queue
-      .update(req.body, { where: { queueId: queueId } })
+  update: (req, res) => {
+    const { params: { id } } = req;
+    return Queue
+      .update(req.body, { where: { id: id } })
       .then(() => res.json('queue Updated'))
       .catch(handleError(res));
   },
   create: async (req, res) => {
-
-    return await Queue.count({ where: { date: req.body.date, type: req.body.type } })
+    const queueData = req.body;
+    return Queue
+      .count({ where: { date: queueData.date, type: queueData.type, institutionId: queueData.institutionId } })
       .then(count => {
-        const queueNumber = count + 1;
-
-        return Queue.create(req.body)
-          .then(queue => {
-            queue.queueNumber = queueNumber;
-            queue.save();
-            return queue
-          })
-          .catch(handleError(res));
+        queueData['queueNumber'] = count + 1;
+        return Queue.create(queueData);
       })
       .then(respondWithResult(res))
       .catch(handleError(res));

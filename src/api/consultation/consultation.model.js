@@ -8,7 +8,7 @@ const PhysicalExam = require('../physical-exam/physical-exam.model');
 const Plan = require('../plan/plan.model');
 
 const Consultation = sequelize.define('consultation', {
-    consultationId: { type: Sequelize.INTEGER(11), allowNull: false, primaryKey: true, autoIncrement: true },
+    id: { type: Sequelize.UUID, allowNull: false, primaryKey: true, defaultValue: Sequelize.UUIDV1 },
     chiefComplaint: { type: Sequelize.STRING, allownNull: false },
     diagnosis: { type: Sequelize.STRING(1000) },
     queueId: { type: Sequelize.STRING }
@@ -18,26 +18,26 @@ const Consultation = sequelize.define('consultation', {
     }
 });
 
-Consultation.hasMany(Hpi, { as: 'hpis', foreignKey: 'consultationId' });
-Hpi.belongsTo(Consultation, { foreignKey: 'consultationId' });
+Consultation.hasMany(Hpi, { as: 'hpis'});
+Hpi.belongsTo(Consultation);
 
-Consultation.belongsTo(Patient, { as: 'patient', foreignKey: 'patientId' });
-Patient.hasMany(Consultation, { foreignKey: 'patientId' });
+Consultation.belongsTo(Patient, { as: 'patient'});
+Patient.hasMany(Consultation);
 
 Consultation.belongsTo(User, { as: 'physician', foreignKey: 'physicianId' });
 User.hasMany(Consultation, { as: 'consultation', foreignKey: 'physicianId' });
 
-Consultation.belongsTo(Institution, { as: 'institution', foreignKey: 'institutionId' });
-Institution.hasMany(Consultation, { foreignKey: 'institutionId' });
+Consultation.belongsTo(Institution);
+Institution.hasMany(Consultation);
 
-Consultation.hasOne(Ros_GeneralHealth, { as: 'rosGeneralHealth', foreignKey: 'consultationId' });
-Consultation.hasOne(Ros_Heent, { as: 'rosHeent', foreignKey: 'consultationId' });
-Consultation.hasOne(Ros_GastroIntestinalSystem, { as: 'rosGastroIntestinalSystem', foreignKey: 'consultationId' });
-Consultation.hasOne(Ros_RespiratorySystem, { as: 'rosRespiratorySystem', foreignKey: 'consultationId' });
-Consultation.hasOne(Ros_CardioVascularSystem, { as: 'rosCardiovascularSystem', foreignKey: 'consultationId' });
-Consultation.hasOne(Ros_NervousSystem, { as: 'rosNervousSystem', foreignKey: 'consultationId' });
+Consultation.hasOne(Ros_GeneralHealth, { as: 'rosGeneralHealth'});
+Consultation.hasOne(Ros_Heent, { as: 'rosHeent'});
+Consultation.hasOne(Ros_GastroIntestinalSystem, { as: 'rosGastroIntestinalSystem'});
+Consultation.hasOne(Ros_RespiratorySystem, { as: 'rosRespiratorySystem'});
+Consultation.hasOne(Ros_CardioVascularSystem, { as: 'rosCardiovascularSystem'});
+Consultation.hasOne(Ros_NervousSystem, { as: 'rosNervousSystem'});
 
-Consultation.hasOne(PhysicalExam, { as: 'physicalExam', foreignKey: 'consultationId' });
-Consultation.hasOne(Plan, { as: 'plan', foreignKey: 'consultationId' });
+Consultation.hasOne(PhysicalExam, { as: 'physicalExam'});
+Consultation.hasOne(Plan, { as: 'plan'});
 
 module.exports = Consultation;

@@ -5,16 +5,8 @@ const config = require('../../../config');
 const Profile = require('../../profile/profile.model');
 
 const User = sequelize.define('user', {
-    userId: {
-        type: Sequelize.INTEGER(11),
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true
-    },
     email: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-        unique: { args: true, msg: 'That email is already taken' },
+        type: Sequelize.STRING(255), allowNull: false, unique: { args: true, msg: 'That email is already taken' },
         validate: { isEmail: { args: true, msg: 'That is not a valid email address!' } }
     },
     hash: Sequelize.STRING(2000),
@@ -50,9 +42,9 @@ User.prototype.createTokenSignature = function (institutionInfo) {
     expiration.setDate(today.getDate() + 1);
 
     return jwt.sign({
-        userId: this.userId,
+        userId: this.id,
         exp: parseInt(expiration.getTime() / 1000, 10),
-        institutionId: institutionInfo.institutionId,
+        institutionId: institutionInfo.id,
         access: institutionInfo.access
     }, config.jwtSecret);
 }
@@ -71,7 +63,7 @@ User.prototype.generateToken = function (institutionInfo) {
     return this.createTokenSignature(institutionInfo);
 }
 
-User.hasOne(Profile, { foreignKey: { name: 'userId', unique: { args: true, msg: 'User already has existing profile' } } });
-Profile.belongsTo(User, { foreignKey: { name: 'userId', unique: { args: true, msg: 'User already has existing profile' } } });
+User.hasOne(Profile, { unique: { args: true, msg: 'User already has existing profile' } });
+Profile.belongsTo(User, { unique: { args: true, msg: 'User already has existing profile' } });
 
 module.exports = User;

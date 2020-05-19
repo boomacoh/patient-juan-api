@@ -1,9 +1,6 @@
 const Sequelize = require('sequelize');
-const Test = require('../test/test.model');
-const Institution = require('../institution/institution.model');
 
 const Patient = sequelize.define('patient', {
-    patientId: { type: Sequelize.INTEGER(11), allowNull: false, primaryKey: true, autoIncrement: true },
     firstName: { type: Sequelize.STRING(255), allowNull: false },
     middleName: Sequelize.STRING(255),
     lastName: { type: Sequelize.STRING(255), allowNull: false },
@@ -28,6 +25,9 @@ const Patient = sequelize.define('patient', {
     emergencyContactRelationship: Sequelize.STRING,
     emergencyContactNo: Sequelize.STRING
 }, {
+    scopes: {
+        institution: (institutionId) => { return { where: { institutionId: institutionId } } }
+    },
     setterMethods: {
         firstName(value) {
             this.setDataValue('firstName', value.charAt(0).toUpperCase() + value.slice(1));
@@ -61,15 +61,14 @@ const Patient = sequelize.define('patient', {
             contactNos = this.getDataValue('emergencyContactNo');
             if (contactNos) return contactNos.split(';');
         },
-        fullName(){
-            if(this.suffix) return `${this.firstName} ${this.lastName} ${this.suffix}`;
+        fullName() {
+            if (this.suffix) return `${this.firstName} ${this.lastName} ${this.suffix}`;
             return `${this.firstName} ${this.lastName}`;
         }
     }
 });
 
-Patient.belongsTo(Institution, { foreignKey: { name: 'institutionId', allowNull: false } });
-Institution.hasMany(Patient, { foreignKey: { name: 'institutionId', allowNull: false } });
+
 //hasOne -> targetModel
 //belongsTo -> sourceModel
 

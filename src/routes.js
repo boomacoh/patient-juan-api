@@ -1,6 +1,5 @@
 module.exports = (app) => {
   app.use('/', require('./api/main'));
-  app.use('/test', require('./api/test'));
   app.use('/patients', require('./api/patient'));
   app.use('/users', require('./api/user/user'))
   app.use('/auth', require('./api/user/auth'));
@@ -11,5 +10,4 @@ module.exports = (app) => {
   app.use('/queues', require('./api/queue'));
   app.use('/consultations', require('./api/consultation'));
   app.use('/medical-history', require('./api/medical-history'));
-  app.use('/review-of-systems', require('./api/review-of-systems'));
 }

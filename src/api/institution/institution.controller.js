@@ -4,8 +4,8 @@ const User = require('../user/user/user.model');
 const { handleEntityNotFound, handleError, respondWithResult, handleErrorMsg } = require('../../services/handlers');
 
 const controller = {
-  getEntries: async (req, res) => {
-    await Institution.findAll({
+  getEntries: (req, res) => {
+    return Institution.findAll({
       include: [User]
     })
       .then(handleEntityNotFound(res))
@@ -14,10 +14,10 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  getOne: async (req, res) => {
-    const { params: { institutionId } } = req;
-    await Institution
-      .findByPk(institutionId)
+  getOne: (req, res) => {
+    const { params: { id } } = req;
+    return Institution
+      .findByPk(id)
       .then(handleEntityNotFound(res))
       .then(institution => {
         console.log(Object.keys(institution.__proto__));
@@ -25,12 +25,27 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  create: async (req, res) => {
-    const institution = await Institution.build(req.body);
-
-    return await institution.save()
+  create: (req, res) => {
+    return institution
+      .create(req.body)
       .then(handleEntityNotFound(res))
       .then(institution => res.status(200).send(institution))
+      .catch(handleError(res));
+  },
+  getInvitations: (req, res) => {
+    const { params: { id } } = req;
+    return Institution
+      .findByPk(id)
+      .then(institution => institution.getInvitations())
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  },
+  getBillables: (req, res) => {
+    const { params: { id } } = req;
+    return Institution
+      .findByPk(id)
+      .then(institution => institution.getBillables())
+      .then(respondWithResult(res))
       .catch(handleError(res));
   }
 }

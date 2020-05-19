@@ -3,7 +3,6 @@ const User = require('../user/user/user.model');
 const config = require('../../config');
 
 const Profile = sequelize.define('profile', {
-  profileId: { type: Sequelize.INTEGER(11), allowNull: false, autoIncrement: true, primaryKey: true },
   fullName: Sequelize.VIRTUAL,
   firstName: { type: Sequelize.STRING(255), allowNull: false },
   lastName: { type: Sequelize.STRING(255), allowNull: false },
