@@ -8,6 +8,7 @@ const Patient = require('../patient/patient.model');
 
 
 const Institution = sequelize.define('institution', {
+  id: { type: Sequelize.UUID, primaryKey: true, defaultValue: Sequelize.UUIDV1, unique: true },
   tradeName: Sequelize.STRING,
   registeredName: { type: Sequelize.STRING, allowNull: false },
   businessStructure: Sequelize.STRING,
@@ -34,6 +35,8 @@ const Institution = sequelize.define('institution', {
 
 Institution.belongsToMany(User, { through: UserInstitution });
 User.belongsToMany(Institution, { through: UserInstitution });
+User.hasMany(Institution, { as: 'ownedInstitutions', foreignKey: 'ownerId' });
+Institution.belongsTo(User, { as: 'owner', allowNull: false, foreignKey: 'ownerId' });
 Institution.hasMany(Billable);
 Institution.hasMany(Package);
 Institution.hasMany(Invitation);

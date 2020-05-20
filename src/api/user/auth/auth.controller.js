@@ -29,7 +29,10 @@ const controller = {
       .then(user => {
 
         console.log(Object.keys(user.__proto__));
-        user.createInstitution({ registeredName: clinicInfo.registeredName }, { through: { access: clinicInfo.access, isDefault: true } });
+        user
+          .createOwnedInstitution({ registeredName: clinicInfo.registeredName })
+          .then(institution => user.addInstitution(institution, { through: { access: clinicInfo.access, isDefault: true } }))
+          .catch(handleError(res));
 
         const mailer = new NodeMailer(user.email);
         const message = {

@@ -14,14 +14,17 @@ const controller = {
             .then(patients => res.status(200).send(patients))
             .catch(handleError(res));
     },
-    getOne: async (req, res) => {
-        const { params: { patientId } } = req;
-        return await Patient.findOne({ where: { patientId: patientId } })
-            .then(patient => res.send(patient))
+    getOne: (req, res) => {
+        const { params: { id } } = req;
+        return Patient
+            .findByPk(id)
+            .then(handleEntityNotFound(res, 'Patient'))
+            .then(respondWithResult(res))
             .catch(handleError(res));
     },
-    create: async (req, res) => {
-        await Patient.create(req.body)
+    create: (req, res) => {
+        Patient
+            .create(req.body)
             .then(patient => {
                 patient
                     .createMedicalHistory()
@@ -36,17 +39,17 @@ const controller = {
             .then(respondWithResult(res))
             .catch(handleError(res));
     },
-    update: async (req, res) => {
-        const { params: { patientId } } = req;
-        return await Patient
-            .update(req.body, { where: { patientId: patientId } })
-            .then(() => { return Patient.findByPk(patientId) })
+    update: (req, res) => {
+        const { params: { id } } = req;
+        return Patient
+            .update(req.body, { where: { id: id } })
+            .then(() => { return Patient.findByPk(id) })
             .then(respondWithResult(res))
             .catch(handleError(res));
     },
-    destroy: async (req, res) => {
+    destroy: (req, res) => {
         const { params: { patientId } } = req;
-        return await Patient
+        return Patient
             .destroy({ where: { patientId: patientId } })
             .then(respondWithResult(res, 204))
             .catch(handleError(res));

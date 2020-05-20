@@ -5,19 +5,19 @@ const moment = require('moment');
 
 const view = (data) => {
   const consultation = {
-    consultationId: data.consultationId,
+    id: data.id,
     queueId: data.queueId,
     chiefComplaint: data.chiefComplaint,
     hpis: data.hpis,
     patient: {
-      patientId: data.patient.patientId,
+      id: data.patient.id,
       fullName: data.patient.fullName,
       sex: data.patient.sex,
       birthdate: data.patient.birthdate,
       age: moment().diff(data.patient.birthdate, 'years')
     },
     physician: {
-      userId: data.physician.userId,
+      id: data.physician.userId,
       specialization: data.physician.profile.specialization,
       fullName: data.physician.profile.fullName
     },

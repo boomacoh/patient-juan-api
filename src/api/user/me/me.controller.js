@@ -57,8 +57,8 @@ const controller = {
     const { payload: { userId } } = req;
     return User
       .findByPk(userId)
-      .then(user => user.getInstitutions())
-      .then(respondWithResult(res))
+      .then(user => user.hasInstitution('80ebaf0-9a58-11ea-9547-c3e8c5232f68'))
+      .then(result => res.json(result))
       .catch(handleError(res));
   },
   changePassword: (req, res) => {
@@ -70,12 +70,11 @@ const controller = {
     if (!repeatNewPassword) return handleErrorMsg(res, 403, 'Confirm your new password!');
     if (newPassword !== repeatNewPassword) return handleErrorMsg(res, 403, 'Password does not match!');
 
-    return User.findByPk(userId)
+    return User.
+      findByPk(userId)
       .then(user => {
-        const isCurrentValid = user.validatePassword(currentPassword);
-        const isNewValid = user.validatePassword(newPassword);
-        if (!isCurrentValid) res.status(400).send('Current password is incorrect!');
-        if (isNewValid) res.status(400).send('New password must not be the same with the current password!');
+        if (user.validatePassword(currentPassword)) return res.status(400).send('Current password is incorrect!');
+        if (user.validatePassword(newPassword)) return res.status(400).send('New password must not be the same with the current password!');
 
         user.setPassword(newPassword);
         user.save()
@@ -97,11 +96,11 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  switchInstitution: async (req, res) => {
+  switchInstitution: (req, res) => {
     const { payload: { userId } } = req;
     const { params: { institutionId } } = req;
 
-    return await User
+    return User
       .findOne({ where: { userId: userId }, include: [{ model: Institution, where: { institutionId: institutionId } }] })
       .then(handleEntityNotFound(res))
       .then(me => {
@@ -157,37 +156,39 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  updateProfileImage: (req, res) => {
+  updateProfileImage: async (req, res) => {
     const { payload: { userId } } = req;
 
-    return User
-    .findByPk(userId)
-    .then(user => user.getProfile)
-    .then(profile => {
-      if(profile.image){
-        const oldImage = profile.image.split('/');
-        fs.unlink(path.join(__dirname, '../../../public/images/profile/', oldImage[oldImage.length -1]));
-      }
-      const upload = new UploadImage(req.file);
-      upload.saveImage()
-      then(image => {
-        profile.image = image.filename;
-        profile.save();
-
-        const data = {
-          userInfo: {
-            profile: {
-              fullName: profile.fullName,
-              specializatin: profile.specialization,
-              image: profile.image
-            }
-          }
+    return await Profile.findOne({ where: { userId: userId }, include: [{ model: User }] })
+      .then(handleEntityNotFound(res))
+      .then(profile => {
+        if (profile.image) {
+          let oldImage = profile.image.split('/');
+          fs.unlinkSync(path.join(__dirname, '../../../public/images/profile/', oldImage[oldImage.length - 1]));
         }
-        return res.status(200).send(view(data));
+        const upload = new UploadImage(req.file);
+        upload.saveImage()
+          .then(image => {
+            profile.image = image.filename;
+            profile.save();
+
+            const data = {
+              userInfo: {
+                profile: {
+                  fullName: profile.fullName,
+                  specialization: profile.specialization,
+                  image: profile.image
+                }
+              }
+            }
+
+            return res.status(200).send(view(data));
+          })
+          .catch(err => {
+            return res.status(500).send(err);
+          });
       })
       .catch(handleError(res));
-    })
-    .catch(handleError(res));
   }
 
 }

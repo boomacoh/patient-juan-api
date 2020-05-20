@@ -11,7 +11,7 @@ const controller = {
         if (type) scopes.push({ method: ['type', type] });
 
         return User
-            .scope(scopes)
+            // .scope(scopes)
             .findAll()
             .then((users) => {
                 return res.status(200).send(users)
@@ -21,10 +21,11 @@ const controller = {
     getOne: (req, res) => {
         const { params: { userId } } = req;
         return User
-            .scope('verified', 'profile')
+            // .scope('verified', 'profile')
             .findByPk(userId, { attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] } })
             .then(handleEntityNotFound(res))
             .then(user => {
+                console.log(Object.keys(user.__proto__));
                 return res.status(200).send(user)
             })
             .catch(handleError(res));

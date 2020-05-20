@@ -15,14 +15,12 @@ const User = sequelize.define('user', {
     verifyToken: { type: Sequelize.STRING(1000) }
 }, {
     defaultScope: {
-        include: [
-            { model: Profile, attributes: { exclude: ['createdAt', 'updatedAt', 'userId'] } }
-        ]
+        attributes: { exclude: ['hash', 'salt'] }, include: [Profile]
     },
     scopes: {
         verified: { where: { verified: true } },
         profile: { include: [{ model: Profile, attributes: { exclude: ['userId'] } }] },
-        type(type) { return { include: [{ model: Profile, where: { type: type } }] } }
+        type(type) { return { attributes: {exclude: ['hash', 'salt']}, include: [{ model: Profile, where: { type: type } }] } }
     }
 });
 
