@@ -2,9 +2,11 @@ const Sequelize = require('sequelize');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const config = require('../../../config');
+const Patient = require('../../patient/patient.model');
 const Profile = require('../../profile/profile.model');
 
 const User = sequelize.define('user', {
+    id: { type: Sequelize.UUID, primaryKey: true, defaultValue: Sequelize.UUIDV1 },
     email: {
         type: Sequelize.STRING(255), allowNull: false, unique: { args: true, msg: 'That email is already taken' },
         validate: { isEmail: { args: true, msg: 'That is not a valid email address!' } }
@@ -15,12 +17,12 @@ const User = sequelize.define('user', {
     verifyToken: { type: Sequelize.STRING(1000) }
 }, {
     defaultScope: {
-        attributes: { exclude: ['hash', 'salt'] }, include: [Profile]
+        include: [Profile]
     },
     scopes: {
         verified: { where: { verified: true } },
         profile: { include: [{ model: Profile, attributes: { exclude: ['userId'] } }] },
-        type(type) { return { attributes: {exclude: ['hash', 'salt']}, include: [{ model: Profile, where: { type: type } }] } }
+        type(type) { return { attributes: { exclude: ['hash', 'salt'] }, include: [{ model: Profile, where: { type: type } }] } }
     }
 });
 
@@ -63,5 +65,8 @@ User.prototype.generateToken = function (institutionInfo) {
 
 User.hasOne(Profile, { unique: { args: true, msg: 'User already has existing profile' } });
 Profile.belongsTo(User, { unique: { args: true, msg: 'User already has existing profile' } });
+User.belongsToMany(Patient, {through: 'user_patient', freezeTableName: true});
+Patient.belongsToMany(User, {through: 'user_patient', freezeTableName: true, as: 'physicians'})
+
 
 module.exports = User;

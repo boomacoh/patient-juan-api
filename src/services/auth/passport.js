@@ -11,12 +11,15 @@ passport.use(new LocalStrategy({
     .findOne({ where: { email: email }, include: [{ model: Institution, through: { where: { isDefault: true } } }] })
     .then((user) => {
       if (!user || !user.validatePassword(password)) {
-        return done(null, false, { message: 'User not found!', status: 404 });
+        return done(null, false, { message: 'User not found', status: 404 });
       }
       if (!user.verified) {
-        return done(null, false, { message: 'Account not verified!', status: 401 });
+        return done(null, false, { message: 'Account not verified. Please check your email to complete the sign up process', status: 401 });
       }
       return done(null, user);
     })
-    .catch(done);
+    .catch(err => {
+      console.log(err);
+      done
+    });
 }));
