@@ -5,10 +5,8 @@ const { handleEntityNotFound, handleError, respondWithResult, handleErrorMsg } =
 
 const controller = {
   getEntries: (req, res) => {
-    return Institution.findAll({
-      include: [User]
-    })
-      .then(handleEntityNotFound(res))
+    return Institution
+      .findAll()
       .then(institutions => {
         return res.status(200).send(institutions);
       })

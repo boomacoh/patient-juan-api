@@ -40,7 +40,5 @@ Institution.belongsTo(User, { as: 'owner', allowNull: false, foreignKey: 'ownerI
 Institution.hasMany(Billable);
 Institution.hasMany(Package);
 Institution.hasMany(Invitation);
-Patient.belongsTo(Institution, { allowNull: false });
-Institution.hasMany(Patient, { allowNull: false });
 
 module.exports = Institution;

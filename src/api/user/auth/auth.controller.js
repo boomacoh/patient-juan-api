@@ -8,14 +8,11 @@ const decode = require('jwt-decode');
 
 const controller = {
   register: (req, res) => {
-    const { body: { userInfo, clinicInfo } } = req;
+    const { body: { userInfo, clinicInfo, profileInfo } } = req;
 
     if (!userInfo.email) return handleErrorMsg(res, 422, 'Email must not be empty!');
     if (!userInfo.password) return handleErrorMsg(res, 422, 'Password must not be empty!');
-    if (!userInfo.confirmPassword) return handleErrorMsg(res, 422, 'Confirm Password must not be empty!');
-    if (userInfo.password !== userInfo.confirmPassword) return handleErrorMsg(res, 422, 'Passwords do not match!');
     if (!clinicInfo.registeredName) return handleErrorMsg(res, 422, 'Please provide a name for your clinic!');
-
 
     const newUser = User.build({
       email: userInfo.email
@@ -30,9 +27,12 @@ const controller = {
 
         console.log(Object.keys(user.__proto__));
         user
-          .createOwnedInstitution({ registeredName: clinicInfo.registeredName })
+          .createOwnedInstitution(clinicInfo)
           .then(institution => user.addInstitution(institution, { through: { access: clinicInfo.access, isDefault: true } }))
           .catch(handleError(res));
+
+        user
+        .createProfile(profileInfo);
 
         const mailer = new NodeMailer(user.email);
         const message = {
