@@ -11,7 +11,7 @@ const Consultation = sequelize.define('consultation', {
     id: { type: Sequelize.UUID, allowNull: false, primaryKey: true, defaultValue: Sequelize.UUIDV1 },
     chiefComplaint: { type: Sequelize.STRING, allownNull: false },
     diagnosis: { type: Sequelize.STRING(1000) },
-    queueId: { type: Sequelize.STRING }
+    queueId: { type: Sequelize.UUID }
 }, {
     defaultScope: {
         include: [{ all: true, attributes: { exclude: ['createdAt', 'updatedAt', 'consultationId'] } }]

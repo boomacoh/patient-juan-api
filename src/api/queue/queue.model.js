@@ -5,7 +5,7 @@ const moment = require('moment');
 
 const Queue = sequelize.define('queue', {
   id: { type: Sequelize.UUID, allowNull: false, defaultValue: Sequelize.UUIDV1, primaryKey: true },
-  physicianId: { type: Sequelize.INTEGER, },
+  physicianId: { type: Sequelize.UUID, },
   institutionId: { type: Sequelize.UUID },
   date: { type: Sequelize.DATEONLY, allowNull: false },
   queueNumber: { type: Sequelize.INTEGER, allowNull: false },

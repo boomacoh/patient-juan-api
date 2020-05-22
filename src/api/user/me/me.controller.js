@@ -57,8 +57,8 @@ const controller = {
     const { payload: { userId } } = req;
     return User
       .findByPk(userId)
-      .then(user => user.hasInstitution('80ebaf0-9a58-11ea-9547-c3e8c5232f68'))
-      .then(result => res.json(result))
+      .then(user => user.getInstitutions())
+      .then(respondWithResult(res))
       .catch(handleError(res));
   },
   changePassword: (req, res) => {

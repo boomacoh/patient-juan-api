@@ -19,7 +19,10 @@ const controller = {
         return Patient
             .findByPk(id)
             .then(handleEntityNotFound(res, 'Patient'))
-            .then(respondWithResult(res))
+            .then(patient => {
+                res.send(patient);
+                console.log(Object.keys(patient.__proto__));
+            })
             .catch(handleError(res));
     },
     create: (req, res) => {
@@ -27,11 +30,13 @@ const controller = {
             .create(req.body)
             .then(patient => {
                 patient
+                    .addPhysician(req.body.physicianId);
+                patient
                     .createMedicalHistory()
-                    .then(async mh => {
-                        await mh.createPastMedicalHistory();
-                        await mh.createFamilyMedicalHistory();
-                        await mh.createSocialPersonalHistory();
+                    .then(mh => {
+                        mh.createPastMedicalHistory();
+                        mh.createFamilyMedicalHistory();
+                        mh.createSocialPersonalHistory();
                     })
                     .catch(handleError(res));
                 return patient;
