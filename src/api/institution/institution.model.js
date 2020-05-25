@@ -1,10 +1,7 @@
 const Sequelize = require('sequelize');
 const User = require('../user/user/user.model');
 const UserInstitution = require('../user-institution/user-institution.model');
-const Billable = require('../billable/billlable.model');
-const Package = require('../billable/package.model');
 const Invitation = require('../invitation/invitation.model');
-const Patient = require('../patient/patient.model');
 
 
 const Institution = sequelize.define('institution', {
@@ -37,8 +34,6 @@ Institution.belongsToMany(User, { through: UserInstitution });
 User.belongsToMany(Institution, { through: UserInstitution });
 User.hasMany(Institution, { as: 'ownedInstitutions', foreignKey: 'ownerId' });
 Institution.belongsTo(User, { as: 'owner', allowNull: false, foreignKey: 'ownerId' });
-Institution.hasMany(Billable);
-Institution.hasMany(Package);
 Institution.hasMany(Invitation);
 
 module.exports = Institution;

@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const config = require('../../../config');
 const Patient = require('../../patient/patient.model');
 const Profile = require('../../profile/profile.model');
+const Billable = require('../../billable/billlable.model');
+const Package = require('../../billable/package.model');
 
 const User = sequelize.define('user', {
     id: { type: Sequelize.UUID, primaryKey: true, defaultValue: Sequelize.UUIDV1 },
@@ -67,6 +69,8 @@ User.hasOne(Profile, { unique: { args: true, msg: 'User already has existing pro
 Profile.belongsTo(User, { unique: { args: true, msg: 'User already has existing profile' } });
 User.belongsToMany(Patient, {through: 'user_patient', freezeTableName: true});
 Patient.belongsToMany(User, {through: 'user_patient', freezeTableName: true, as: 'physicians'})
+User.hasMany(Package);
+User.hasMany(Billable);
 
 
 module.exports = User;
