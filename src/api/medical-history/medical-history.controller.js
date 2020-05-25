@@ -38,14 +38,6 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  getPatientMedicalHistory: (req, res) => {
-    const { params: { patientId } } = req;
-    return MedicalHistory
-      .findOne({ where: { patientId: patientId } })
-      .then(handleEntityNotFound(res, 'Medical History'))
-      .then(respondWithResult(res))
-      .catch(handleError(res));
-  },
   updateSph: (req, res) => {
     const { params: { id } } = req;
     return SocialPersonalHistory

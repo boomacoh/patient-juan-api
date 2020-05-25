@@ -2,16 +2,10 @@ const Patient = require('./patient.model');
 const { handleErrorMsg, handleEntityNotFound, handleError, respondWithResult } = require('../../services/handlers');
 
 const controller = {
-    getAll: async (req, res) => {
-        const { query: { institutionId } } = req;
-        const scopes = [];
-        if (institutionId) scopes.push({ method: ['institution', institutionId] });
-
-        await Patient
-            .scope(scopes)
+    getAll: (req, res) => {
+        return Patient
             .findAll()
-            .then(handleEntityNotFound(res))
-            .then(patients => res.status(200).send(patients))
+            .then(respondWithResult(res))
             .catch(handleError(res));
     },
     getOne: (req, res) => {
@@ -53,10 +47,18 @@ const controller = {
             .catch(handleError(res));
     },
     destroy: (req, res) => {
-        const { params: { patientId } } = req;
+        const { params: { id } } = req;
         return Patient
-            .destroy({ where: { patientId: patientId } })
+            .destroy({ where: { id: id } })
             .then(respondWithResult(res, 204))
+            .catch(handleError(res));
+    },
+    getMedicalHistory: (req, res) => {
+        const { params: { id } } = req;
+        return Patient
+            .findByPk(id)
+            .then(patient => patient.getMedicalHistory())
+            .then(respondWithResult(res))
             .catch(handleError(res));
     }
 }

@@ -23,7 +23,8 @@ const Patient = sequelize.define('patient', {
     email: Sequelize.STRING(255),
     emergencyContactFullName: Sequelize.STRING(255),
     emergencyContactRelationship: Sequelize.STRING,
-    emergencyContactNo: Sequelize.STRING
+    emergencyContactNo: Sequelize.STRING,
+    image: Sequelize.STRING
 }, {
     scopes: {
         institution: (institutionId) => { return { where: { institutionId: institutionId } } }

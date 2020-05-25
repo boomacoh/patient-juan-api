@@ -4,7 +4,6 @@ const { jwtAuth, checkPermission } = require('../../services/auth/jwt');
 
 router.get('/', controller.getAll);
 router.get('/:medicalHistoryId', jwtAuth.required, controller.getOne);
-router.get('/patient/:patientId', jwtAuth.required, controller.getPatientMedicalHistory);
 
 router.post('/past-illness', jwtAuth.required, controller.updateIllnesses);
 router.post('/obh', jwtAuth.required, controller.createObGyneHistory);
