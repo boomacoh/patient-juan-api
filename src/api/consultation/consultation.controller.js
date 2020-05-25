@@ -2,6 +2,7 @@ const Consultation = require('./consultation.model');
 const Hpi = require('../history-of-present-illness/hpi.model');
 const { handleErrorMsg, handleEntityNotFound, respondWithResult, handleError } = require('../../services/handlers');
 const moment = require('moment');
+const sequelize = require('sequelize');
 
 const view = (data) => {
   const consultation = {
@@ -233,6 +234,13 @@ const controller = {
       })
       .then(() => res.status(200).json('Plan Updated'))
       .catch(handleError(res));
+  },
+  getHistory: (req, res) => {
+    return Consultation
+      .scope('history')
+      .findAll()
+      .then(result => res.json(result))
+      .catch(err => res.status(500).send(err));
   }
 }
 

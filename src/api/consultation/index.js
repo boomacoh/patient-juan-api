@@ -4,6 +4,7 @@ const { jwtAuth, checkPermission } = require('../../services/auth/jwt');
 
 router.get('/', jwtAuth.required, controller.getAll);
 router.get('/:id', jwtAuth.required, controller.getOne);
+router.get('/history/history', controller.getHistory);
 router.get('/find/options', jwtAuth.required, controller.find);
 router.get('/association/:id/:association', controller.getAssociation);
 
