@@ -23,8 +23,8 @@ const Queue = sequelize.define('queue', {
   }
 });
 
-Queue.belongsTo(Patient, { foreignKey: 'patientId' });
-Patient.hasMany(Queue, { foreignKey: 'patientId' })
+Queue.belongsTo(Patient);
+Patient.hasMany(Queue);
 
 
 module.exports = Queue;

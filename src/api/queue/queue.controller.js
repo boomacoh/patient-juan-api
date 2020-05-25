@@ -6,7 +6,7 @@ const view = (data) => {
   const queue = {
     queueId: data.id,
     institutionId: data.institutionId,
-    doctorId: data.doctorId,
+    physicianId: data.physicianId,
     patientId: data.patientId,
     date: moment(data.date).format('MMMM DD, YYYY'),
     queueNumber: data.queueNumber,
