@@ -11,13 +11,13 @@ const view = (data) => {
   const user = {
     userInfo: data.userInfo,
     institution: data.institution,
-    sessionToken: data.sessionToken,
+    token: data.token,
     profile: data.profile
   }
 
   if (!user.userInfo) delete user.userInfo;
   if (!user.institution) delete user.institutions;
-  if (!user.sessionToken) delete user.sessionToken;
+  if (!user.token) delete user.token;
   if (!user.profile) delete user.profile;
 
   return user;
@@ -61,6 +61,17 @@ const controller = {
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
+  getInstitutionAccess: (req, res) => {
+    const { payload: { userId } } = req;
+    const { query: { institutionId } } = req;
+    return User
+      .findByPk(userId, { include: [{ model: Institution, where: { id: institutionId } }] })
+      .then(handleEntityNotFound(res, 'User'))
+      .then(user => {
+        res.send(user.institutions[0].user_institution.access);
+      })
+      .catch(handleError(res));
+  },
   changePassword: (req, res) => {
     const { body: { currentPassword, newPassword, repeatNewPassword } } = req;
     const { payload: { userId } } = req;
@@ -93,33 +104,6 @@ const controller = {
       .then(profile => {
         profile.update(req.body);
         res.status(200).json('Profile Updated');
-      })
-      .catch(handleError(res));
-  },
-  switchInstitution: (req, res) => {
-    const { payload: { userId } } = req;
-    const { params: { institutionId } } = req;
-
-    return User
-      .findOne({ where: { userId: userId }, include: [{ model: Institution, where: { institutionId: institutionId } }] })
-      .then(handleEntityNotFound(res))
-      .then(me => {
-
-        const institutionInfo = {
-          institutionId: me.institutions[0].institutionId,
-          access: me.institutions[0].user_institution.access
-        }
-        const token = me.generateToken(institutionInfo);
-
-        const data = {
-          institution: {
-            insitutionId: me.institutions[0].institutionId,
-            registeredName: me.institutions[0].registeredName,
-            memberSince: moment(me.institutions[0].user_institution.createdAt).format('MMMM DD, YYYY')
-          },
-          token: token
-        }
-        res.status(200).send(view(data));
       })
       .catch(handleError(res));
   },
