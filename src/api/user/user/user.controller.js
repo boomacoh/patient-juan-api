@@ -19,11 +19,11 @@ const controller = {
             .catch(handleError(res));
     },
     getOne: (req, res) => {
-        const { params: { userId } } = req;
+        const { params: { id } } = req;
         return User
             // .scope('verified', 'profile')
-            .findByPk(userId, { attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] } })
-            .then(handleEntityNotFound(res))
+            .findByPk(id, { attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] } })
+            .then(handleEntityNotFound(res, 'User'))
             .then(user => {
                 console.log(Object.keys(user.__proto__));
                 return res.status(200).send(user)

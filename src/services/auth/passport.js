@@ -8,7 +8,7 @@ passport.use(new LocalStrategy({
   passwordField: 'password',
 }, (email, password, done) => {
   User
-    .findOne({ where: { email: email }, include: [{ model: Institution, through: { where: { isDefault: true } } }] })
+    .findOne({ where: { email: email }})
     .then((user) => {
       if (!user || !user.validatePassword(password)) {
         return done(null, false, { message: 'User not found', status: 404 });

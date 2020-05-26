@@ -38,7 +38,7 @@ User.prototype.validatePassword = function (password) {
     return this.hash === hash;
 }
 
-User.prototype.createTokenSignature = function (institutionInfo) {
+User.prototype.createTokenSignature = function () {
     const today = new Date();
     const expiration = new Date(today);
     expiration.setDate(today.getDate() + 1);
@@ -46,8 +46,6 @@ User.prototype.createTokenSignature = function (institutionInfo) {
     return jwt.sign({
         userId: this.id,
         exp: parseInt(expiration.getTime() / 1000, 10),
-        institutionId: institutionInfo.id,
-        access: institutionInfo.access
     }, config.jwtSecret);
 }
 
@@ -61,8 +59,8 @@ User.prototype.createVerifyToken = function () {
     }, config.jwtSecret);
 }
 
-User.prototype.generateToken = function (institutionInfo) {
-    return this.createTokenSignature(institutionInfo);
+User.prototype.generateToken = function () {
+    return this.createTokenSignature();
 }
 
 User.hasOne(Profile, { unique: { args: true, msg: 'User already has existing profile' } });

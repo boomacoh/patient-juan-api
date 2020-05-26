@@ -129,12 +129,8 @@ const controller = {
 
         // console.log(Object.keys(user.__proto__));
         // user.token = passportUser.createTokenSignature();
-        const institutionInfo = {
-          institutionId: user.institutions[0].id,
-          access: user.institutions[0].user_institution.access
-        }
 
-        return res.status(200).send({ userId: user.id, token: user.generateToken(institutionInfo) });
+        return res.status(200).send({ userId: user.id, token: user.generateToken() });
       }
       return res.send(info.status, info.message);
     })(req, res, next);
