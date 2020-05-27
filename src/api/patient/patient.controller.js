@@ -42,7 +42,7 @@ const controller = {
         const { params: { id } } = req;
         return Patient
             .update(req.body, { where: { id: id } })
-            .then(() => { return Patient.findByPk(id) })
+            .then(() => Patient.findByPk(id))
             .then(respondWithResult(res))
             .catch(handleError(res));
     },
