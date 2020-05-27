@@ -19,7 +19,7 @@ const User = sequelize.define('user', {
     verifyToken: { type: Sequelize.STRING(1000) }
 }, {
     defaultScope: {
-        include: [Profile]
+        include: [{ model: Profile, required: true }]
     },
     scopes: {
         verified: { where: { verified: true } },
@@ -65,8 +65,8 @@ User.prototype.generateToken = function () {
 
 User.hasOne(Profile, { unique: { args: true, msg: 'User already has existing profile' } });
 Profile.belongsTo(User, { unique: { args: true, msg: 'User already has existing profile' } });
-User.belongsToMany(Patient, {through: 'user_patient', freezeTableName: true});
-Patient.belongsToMany(User, {through: 'user_patient', freezeTableName: true, as: 'physicians'})
+User.belongsToMany(Patient, { through: 'physician_patient', freezeTableName: true, foreignKey: 'physicianId' });
+Patient.belongsToMany(User, { as: 'physicians', through: 'physician_patient', freezeTableName: true })
 User.hasMany(Package);
 User.hasMany(Billable);
 
