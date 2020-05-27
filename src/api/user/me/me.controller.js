@@ -64,12 +64,11 @@ const controller = {
   getInstitutionAccess: (req, res) => {
     const { payload: { userId } } = req;
     const { query: { institutionId } } = req;
+
     return User
       .findByPk(userId, { include: [{ model: Institution, where: { id: institutionId } }] })
       .then(handleEntityNotFound(res, 'User'))
-      .then(user => {
-        res.send(user.institutions[0].user_institution.access);
-      })
+      .then(user => res.send(user.institutions[0].user_institution.access))
       .catch(handleError(res));
   },
   changePassword: (req, res) => {
@@ -100,7 +99,7 @@ const controller = {
 
     return User
       .findByPk(userId)
-      .then(user => { return user.getProfile() })
+      .then(user => user.getProfile())
       .then(profile => {
         profile.update(req.body);
         res.status(200).json('Profile Updated');
@@ -140,10 +139,10 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  updateProfileImage: async (req, res) => {
+  updateProfileImage: (req, res) => {
     const { payload: { userId } } = req;
 
-    return await Profile.findOne({ where: { userId: userId }, include: [{ model: User }] })
+    return Profile.findOne({ where: { userId: userId }, include: [{ model: User }] })
       .then(handleEntityNotFound(res))
       .then(profile => {
         if (profile.image) {
@@ -173,6 +172,32 @@ const controller = {
           });
       })
       .catch(handleError(res));
+  },
+  getPatients: (req, res) => {
+    const { payload: { userId } } = req;
+    return User
+      .findByPk(userId)
+      .then(user => user.getPatients())
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  },
+  createPatient: (req, res) => {
+    const { payload: { userId } } = req;
+    return User
+      .findByPk(userId)
+      .then(user => user.createPatient(req.body))
+      .then(patient => {
+        patient.createMedicalHistory()
+          .then(mh => {
+            mh.createPastMedicalHistory();
+            mh.createFamilyMedicalHistory();
+            mh.createSocialPersonalHistory();
+          })
+          .catch(handleError(res));
+        return patient;
+      })
+      .then(respondWithResult(res))
+      .catch(handleError(res))
   }
 
 }
