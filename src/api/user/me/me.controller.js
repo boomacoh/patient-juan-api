@@ -130,7 +130,7 @@ const controller = {
             image: profile.image,
             specialization: profile.specialization,
             PRCLicenseNo: profile.PRCLicenseNo,
-            medicalDesignation: profile.medicalDesignation,
+            title: profile.title,
             createdAt: moment(profile.createdAt).format('MMMM DD, YYYY'),
             updatedAt: moment(profile.updatedAt).fromNow()
           }
@@ -198,6 +198,22 @@ const controller = {
       })
       .then(respondWithResult(res))
       .catch(handleError(res))
+  },
+  getBillables: (req, res) => {
+    const { payload: { userId } } = req;
+    return User
+      .findByPk(userId)
+      .then(user => user.getBillables())
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  },
+  createBillable: (req, res) => {
+    const { payload: { userId } } = req;
+    return User
+      .findByPk(userId)
+      .then(user => user.createBillable(req.body))
+      .then(respondWithResult(res))
+      .catch(handleError(res));
   }
 
 }
