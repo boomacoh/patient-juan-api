@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const User = require('../user/user/user.model');
 const config = require('../../config');
 
 const Profile = sequelize.define('profile', {
@@ -23,7 +22,7 @@ const Profile = sequelize.define('profile', {
   image: Sequelize.STRING,
   contactNo: Sequelize.STRING,
   address: Sequelize.STRING,
-  medicalDesignation: Sequelize.STRING,
+  title: Sequelize.STRING,
   type: { type: Sequelize.STRING }
 }, {
   setterMethods: {
@@ -44,9 +43,9 @@ const Profile = sequelize.define('profile', {
       if (value) return this.setDataValue('specialization', value.join(';'));
       this.setDataValue('specialization', null);
     },
-    medicalDesignation(value){
-      if(value) return this.setDataValue('medicalDesignation', value.join(';'));
-      this.setDataValue('medicalDesignation', null);
+    title(value){
+      if(value) return this.setDataValue('title', value.join(';'));
+      this.setDataValue('title', null);
     },
     image(value) {
       if (value) return this.setDataValue('image', `${config.apiUrl}/images/profile/${value}`);
@@ -68,9 +67,9 @@ const Profile = sequelize.define('profile', {
       if (specializations) return specializations.split(';');
       return [];
     },
-    medicalDesignation(){
-      designations = this.getDataValue('medicalDesignation');
-      if(designations) return designations.split(';');
+    title(){
+      titles = this.getDataValue('title');
+      if(titles) return titles.split(';');
       return [];
     }
   }
