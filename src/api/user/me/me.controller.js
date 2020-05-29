@@ -214,6 +214,14 @@ const controller = {
       .then(user => user.createBillable(req.body))
       .then(respondWithResult(res))
       .catch(handleError(res));
+  },
+  getPackages: (req, res) => {
+    const { payload: { userId } } = req;
+    return User
+      .findByPk(userId)
+      .then(user => user.getPackages())
+      .then(count => res.json(count))
+      .catch(handleError(res));
   }
 
 }

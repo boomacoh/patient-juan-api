@@ -10,6 +10,7 @@ router.get('/institutions', jwtAuth.required, controller.getInstitutions);
 router.get('/institutions/access', jwtAuth.required, controller.getInstitutionAccess);
 router.get('/patients', jwtAuth.required, controller.getPatients);
 router.get('/billables', jwtAuth.required, controller.getBillables);
+router.get('/packages', jwtAuth.required, controller.getPackages);
 
 router.put('/profile', jwtAuth.required, controller.updateProfile);
 
