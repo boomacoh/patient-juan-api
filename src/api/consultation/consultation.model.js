@@ -38,7 +38,7 @@ Consultation.belongsTo(Patient, { as: 'patient' });
 Patient.hasMany(Consultation);
 
 Consultation.belongsTo(User, { as: 'physician', foreignKey: 'physicianId' });
-User.hasMany(Consultation, { as: 'consultation', foreignKey: 'physicianId' });
+User.hasMany(Consultation, { as: 'consultations', foreignKey: 'physicianId' });
 
 Consultation.belongsTo(Institution);
 Institution.hasMany(Consultation);
