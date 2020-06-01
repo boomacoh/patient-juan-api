@@ -222,6 +222,15 @@ const controller = {
       .then(user => user.getPackages())
       .then(count => res.json(count))
       .catch(handleError(res));
+  },
+  createPackage: (req, res) => {
+    const { payload: { userId } } = req;
+    return User
+      .findByPk(userId)
+      .then(user => user.createPackage({ name: req.body.name, price: req.body.price }))
+      .then(package => package.setBillables(req.body.billables))
+      .then(respondWithResult(res))
+      .catch(handleError(res));
   }
 
 }
