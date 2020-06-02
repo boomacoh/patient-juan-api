@@ -1,18 +1,22 @@
 const Billable = require('./billlable.model');
 const Package = require('./package.model');
+const User = require('../user/user/user.model');
 const { handleErrorMsg, respondWithResult, handleEntityNotFound, handleError } = require('../../services/handlers');
 
 const controller = {
   getBillables: (req, res) => {
     const { payload: { userId } } = req;
-    return Billable
-      .findAll({ where: { userId: userId } })
+    return User
+      .findByPk(userId)
+      .then(user => user.getBillables())
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
   createBillable: (req, res) => {
-    return Billable
-      .create(req.body)
+    const { payload: { userId } } = req;
+    return User
+      .findByPk(userId)
+      .then(user => user.createBillable(req.body))
       .then(respondWithResult(res, 201))
       .catch(handleError(res));
   },
@@ -27,21 +31,29 @@ const controller = {
   deleteBillable: (req, res) => {
     const { params: { id } } = req;
     return Billable
-      .destroy({ where: { id: id } })
-      .then(respondWithResult(res, 204))
+      .findByPk(id)
+      .then(async billable => {
+        count = await billable.countPackages({ scope: false });
+        if (count > 0) return res.status(500).json(`Unable to delete. Item belongs to ${count} ${count === 1 ? 'Package' : 'Packages'}`);
+        return billable.destroy()
+          .then(respondWithResult(res, 204))
+          .catch(handleError(res));
+      })
       .catch(handleError(res));
   },
   getPackages: (req, res) => {
     const { payload: { userId } } = req;
-    return Package
-      .findAll({ where: { userId: userId } })
+    return User
+      .findByPk(userId)
+      .then(user => user.getPackages())
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
   createPackage: (req, res) => {
     const { payload: { userId } } = req;
-    return Package
-      .create({ name: req.body.name, price: req.body.price, userId: userId })
+    return User
+      .findByPk(userId)
+      .then(user => user.createPackage({ name: req.body.name, price: req.body.price }))
       .then(package => package.setBillables(req.body.billables))
       .then(respondWithResult(res, 201))
       .catch(handleError(res));
