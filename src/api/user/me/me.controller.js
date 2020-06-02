@@ -186,16 +186,6 @@ const controller = {
     return User
       .findByPk(userId)
       .then(user => user.createPatient(req.body))
-      .then(patient => {
-        patient.createMedicalHistory()
-          .then(mh => {
-            mh.createPastMedicalHistory();
-            mh.createFamilyMedicalHistory();
-            mh.createSocialPersonalHistory();
-          })
-          .catch(handleError(res));
-        return patient;
-      })
       .then(respondWithResult(res))
       .catch(handleError(res))
   },

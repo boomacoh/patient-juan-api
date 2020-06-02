@@ -66,6 +66,16 @@ const Patient = sequelize.define('patient', {
             if (this.suffix) return `${this.firstName} ${this.lastName} ${this.suffix}`;
             return `${this.firstName} ${this.lastName}`;
         }
+    },
+    hooks: {
+        afterCreate: (patient, options) => {
+            patient.createMedicalHistory({ hooks: true })
+            .then(mh => {
+                mh.createPastMedicalHistory();
+                mh.createFamilyMedicalHistory();
+                mh.createSocialPersonalHistory();
+            });
+        }
     }
 });
 

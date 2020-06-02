@@ -6,8 +6,8 @@ const { Allergy, PastIllness, Medication, Substance, Surgery } = require('./sub-
 const MedicalHistory = sequelize.define('medicalHistory', {
     id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
 }, {
+    freezeTableName: true,
     defaultScope: { include: [{ all: true, attributes: { exclude: ['createdAt', 'updatedAt', 'medicalHistoryId'] } }] },
-    freezeTableName: true
 });
 
 MedicalHistory.hasOne(PastMedicalHistory);

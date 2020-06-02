@@ -24,10 +24,17 @@ const controller = {
       .catch(handleError(res));
   },
   create: (req, res) => {
-    return institution
+    return Institution
       .create(req.body)
-      .then(handleEntityNotFound(res))
       .then(institution => res.status(200).send(institution))
+      .catch(handleError(res));
+  },
+  update: (req, res) => {
+    const { params: { id } } = req;
+    return Institution
+      .findByPk(id)
+      .then(institution => institution.update(req.body))
+      .then(res.status(200).json('Clinic Updated'))
       .catch(handleError(res));
   },
   getInvitations: (req, res) => {
@@ -37,15 +44,8 @@ const controller = {
       .then(institution => institution.getInvitations())
       .then(respondWithResult(res))
       .catch(handleError(res));
-  },
-  getBillables: (req, res) => {
-    const { params: { id } } = req;
-    return Institution
-      .findByPk(id)
-      .then(institution => institution.getBillables())
-      .then(respondWithResult(res))
-      .catch(handleError(res));
   }
+
 }
 
 

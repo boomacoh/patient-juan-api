@@ -1,4 +1,5 @@
 const Patient = require('./patient.model');
+const User = require('../user/user/user.model');
 const { handleErrorMsg, handleEntityNotFound, handleError, respondWithResult } = require('../../services/handlers');
 
 const controller = {
@@ -20,21 +21,8 @@ const controller = {
             .catch(handleError(res));
     },
     create: (req, res) => {
-        Patient
-            .create(req.body)
-            .then(patient => {
-                patient
-                    .addPhysician(req.body.physicianId);
-                patient
-                    .createMedicalHistory()
-                    .then(mh => {
-                        mh.createPastMedicalHistory();
-                        mh.createFamilyMedicalHistory();
-                        mh.createSocialPersonalHistory();
-                    })
-                    .catch(handleError(res));
-                return patient;
-            })
+        return Patient
+            .create(req.body, { hooks: true })
             .then(respondWithResult(res))
             .catch(handleError(res));
     },
