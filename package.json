@@ -1,12 +1,12 @@
 {
-  "name": "mysql-sequelize",
+  "name": "patient-juan-api",
   "version": "1.0.0",
   "description": "mysql with nodejs using sequelize",
   "main": "./src/index.js",
   "scripts": {
     "serve": "nodemon ./src/index.js"
   },
-  "author": "ADB",
+  "author": "Anthony D. Ballug Jr.",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^3.0.8",
