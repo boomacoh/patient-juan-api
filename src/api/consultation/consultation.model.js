@@ -6,6 +6,7 @@ const Institution = require('../institution/institution.model');
 const { Ros_CardioVascularSystem, Ros_GastroIntestinalSystem, Ros_GeneralHealth, Ros_Heent, Ros_NervousSystem, Ros_RespiratorySystem } = require('../review-of-systems/review-of-systems.models');
 const PhysicalExam = require('../physical-exam/physical-exam.model');
 const Plan = require('../plan/plan.model');
+const Billing = require('../billing/billing.model');
 
 const Consultation = sequelize.define('consultation', {
     id: { type: Sequelize.UUID, allowNull: false, primaryKey: true, defaultValue: Sequelize.UUIDV1 },
@@ -52,5 +53,7 @@ Consultation.hasOne(Ros_NervousSystem, { as: 'rosNervousSystem' });
 
 Consultation.hasOne(PhysicalExam, { as: 'physicalExam' });
 Consultation.hasOne(Plan, { as: 'plan' });
+
+Consultation.hasOne(Billing);
 
 module.exports = Consultation;

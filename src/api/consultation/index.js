@@ -7,6 +7,7 @@ router.get('/:id', jwtAuth.required, controller.getOne);
 router.get('/history/history', controller.getHistory);
 router.get('/find/options', jwtAuth.required, controller.find);
 router.get('/association/:id/:association', controller.getAssociation);
+router.get('/billing/:id', jwtAuth.required, controller.getBilling);
 
 router.put('/:id', jwtAuth.required, controller.update);
 

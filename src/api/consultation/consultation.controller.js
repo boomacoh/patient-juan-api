@@ -32,7 +32,8 @@ const view = (data) => {
     },
     physicalExam: data.physicalExam,
     diagnosis: data.diagnosis,
-    plan: data.plan
+    plan: data.plan,
+    billing: data.billing
   }
 
   return consultation;
@@ -41,7 +42,7 @@ const controller = {
   getAll: (req, res) => {
     return Consultation
       .findAll()
-      .then(consultations => res.send(consultations.map(consultation => { return view(consultation) })))
+      .then(consultations => res.send(consultations.map(view)))
       .catch(handleError(res));
   },
   getOne: (req, res) => {
@@ -241,6 +242,14 @@ const controller = {
       .findAll()
       .then(result => res.json(result))
       .catch(err => res.status(500).send(err));
+  },
+  getBilling: (req, res) => {
+    const { params: { id } } = req;
+    return Consultation
+      .findByPk(id)
+      .then(consultation => consultation.getBilling())
+      .then(respondWithResult(res))
+      .catch(handleError(res));
   }
 }
 
