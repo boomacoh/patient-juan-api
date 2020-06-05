@@ -10,6 +10,10 @@ const view = (data) => {
     queueId: data.queueId,
     chiefComplaint: data.chiefComplaint,
     hpis: data.hpis,
+    institution: {
+      id: data.institution.id,
+      registeredName: data.institution.registeredName
+    },
     patient: {
       id: data.patient.id,
       fullName: data.patient.fullName,
@@ -56,16 +60,6 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  find: (req, res) => {
-    const query = req.query || {};
-    return Consultation
-      .findOne({ where: query })
-      .then(consultation => {
-        if (!consultation) return res.json(false);
-        res.json(true);
-      })
-      .catch(handleError(res));
-  },
   update: (req, res) => {
     const { params: { id } } = req;
     return Consultation
@@ -90,14 +84,6 @@ const controller = {
         consultation.createPlan();
         return consultation;
       })
-      .then(respondWithResult(res))
-      .catch(handleError(res));
-  },
-  getAssociation: (req, res) => {
-    const { params: { id, association } } = req;
-    return Consultation
-      .findByPk(id, { attributes: [], include: association })
-      .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
@@ -235,13 +221,6 @@ const controller = {
       })
       .then(() => res.status(200).json('Plan Updated'))
       .catch(handleError(res));
-  },
-  getHistory: (req, res) => {
-    return Consultation
-      .scope('history')
-      .findAll()
-      .then(result => res.json(result))
-      .catch(err => res.status(500).send(err));
   },
   getBilling: (req, res) => {
     const { params: { id } } = req;

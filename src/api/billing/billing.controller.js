@@ -3,11 +3,20 @@ const BillingItems = require('./billing-items.model');
 const { handleEntityNotFound, respondWithResult, handleErrorMsg, handleError } = require('../../services/handlers');
 
 const controller = {
+  getBillings: (req, res) => {
+    const {query:{institutionId, userId}}
+  },
   getOne: (req, res) => {
     const { params: { id } } = req;
     return Billing
       .findByPk(id)
       .then(handleEntityNotFound(res, 'Billing'))
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  },
+  create: (req, res) => {
+    return Billing
+      .create(req.body)
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
