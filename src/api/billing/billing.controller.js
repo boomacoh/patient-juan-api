@@ -3,9 +3,7 @@ const BillingItems = require('./billing-items.model');
 const { handleEntityNotFound, respondWithResult, handleErrorMsg, handleError } = require('../../services/handlers');
 
 const controller = {
-  getBillings: (req, res) => {
-    const {query:{institutionId, userId}}
-  },
+
   getOne: (req, res) => {
     const { params: { id } } = req;
     return Billing
