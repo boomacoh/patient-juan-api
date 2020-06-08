@@ -9,13 +9,15 @@ const Billing = sequelize.define('billing', {
   id: { type: Datatypes.UUID, defaultValue: Datatypes.UUIDV1, primaryKey: true },
   status: { type: Datatypes.STRING, allowNull: false, defaultValue: 'unpaid' }
 }, {
-  defaultScope: {
-    include: [
-      'billingItems',
-      { model: User, as: 'physician', attributes: ['email'], include: [{ model: Profile, attributes: ['firstName', 'lastName', 'fullName', 'title'] }] },
-      { model: Patient, as: 'patient', attributes: ['fullName', 'firstName', 'lastName', 'mailingAddress'] },
-      { model: Institution, as: 'institution', attributes: ['registeredName', 'mailingAddress'] }
-    ]
+  scopes: {
+    details: {
+      include: [
+        { model: User, as: 'physician', attributes: ['email'], include: [{ model: Profile, attributes: ['firstName', 'lastName', 'fullName', 'title'] }] },
+        { model: Patient, as: 'patient', attributes: ['fullName', 'firstName', 'lastName', 'mailingAddress'] },
+        { model: Institution, as: 'institution', attributes: ['registeredName', 'mailingAddress', 'image'] }
+      ]
+    },
+    institution: (id) => { return { where: { institutionId: id } } },
   }
 });
 
