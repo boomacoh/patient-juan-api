@@ -2,14 +2,22 @@ const Datatypes = require('sequelize');
 
 const BillingItems = sequelize.define('billing_items', {
   name: { type: Datatypes.STRING, allowNull: false },
+  price: { type: Datatypes.FLOAT, allowNull: false },
+  tag: { type: Datatypes.STRING, allowNull: false },
   qty: { type: Datatypes.INTEGER, allowNull: false },
   discount: Datatypes.STRING,
   discountType: Datatypes.STRING,
-  discountValue: {type: Datatypes.FLOAT, defaultValue: 0},
+  discountValue: { type: Datatypes.FLOAT, defaultValue: 0 },
   hmo: { type: Datatypes.BOOLEAN, defaultValue: false },
-  price: { type: Datatypes.FLOAT, allowNull: false },
+  items: Datatypes.STRING,
   total: { type: Datatypes.VIRTUAL(Datatypes.FLOAT) }
 }, {
+  setterMethods: {
+    items(value) {
+      if (value) return this.setDataValue('items').join(';');
+      this.setDataValue('items', null);
+    }
+  },
   getterMethods: {
     total() {
       const discount = this.getDataValue('discount');
@@ -19,6 +27,11 @@ const BillingItems = sequelize.define('billing_items', {
         if (this.discountType === 'percent') return totalValue - (totalValue * (this.discountValue / 100));
       }
       return totalValue;
+    },
+    items() {
+      const items = this.getDataValue('items');
+      if (items) return items.split(';');
+      return [];
     }
   }
 });
