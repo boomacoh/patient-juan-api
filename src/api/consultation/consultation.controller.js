@@ -226,7 +226,7 @@ const controller = {
     const { params: { id } } = req;
     return Consultation
       .findByPk(id)
-      .then(consultation => consultation.getBilling())
+      .then(consultation => consultation.getBilling({ scope: 'details' }))
       .then(respondWithResult(res))
       .catch(handleError(res));
   }
