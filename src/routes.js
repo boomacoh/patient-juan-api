@@ -11,5 +11,5 @@ module.exports = (app) => {
   app.use('/consultations', require('./api/consultation'));
   app.use('/medical-history', require('./api/medical-history'));
   app.use('/billables', require('./api/billable'));
-  app.use('/billing', require('./api/billing'));
+  app.use('/billings', require('./api/billing'));
 }
