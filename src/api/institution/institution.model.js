@@ -11,7 +11,8 @@ const Institution = sequelize.define('institution', {
   businessStructure: Sequelize.STRING,
   tinNo: Sequelize.STRING,
   mailingAddress: Sequelize.STRING,
-  contactNo: Sequelize.STRING
+  contactNo: Sequelize.STRING,
+  image: Sequelize.STRING
 }, {
   setterMethods: {
     registeredName(value) {
