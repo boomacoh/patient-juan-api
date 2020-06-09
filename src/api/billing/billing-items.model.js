@@ -1,6 +1,6 @@
 const Datatypes = require('sequelize');
 
-const BillingItems = sequelize.define('billing_items', {
+const BillingItem = sequelize.define('billing_items', {
   name: { type: Datatypes.STRING, allowNull: false },
   price: { type: Datatypes.FLOAT, allowNull: false },
   tag: { type: Datatypes.STRING, allowNull: false },
@@ -36,4 +36,4 @@ const BillingItems = sequelize.define('billing_items', {
   }
 });
 
-module.exports = BillingItems;
+module.exports = BillingItem;
