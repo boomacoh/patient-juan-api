@@ -10,7 +10,7 @@ const BillingItems = sequelize.define('billing_items', {
   discountValue: { type: Datatypes.FLOAT, defaultValue: 0 },
   hmo: { type: Datatypes.BOOLEAN, defaultValue: false },
   items: Datatypes.STRING,
-  total: { type: Datatypes.VIRTUAL(Datatypes.FLOAT) }
+  total: Datatypes.VIRTUAL(Datatypes.FLOAT)
 }, {
   setterMethods: {
     items(value) {
