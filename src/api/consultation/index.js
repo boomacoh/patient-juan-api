@@ -12,7 +12,7 @@ router.post('/', jwtAuth.required, controller.create);
 router.post('/:id/hpis', controller.updateHpis);
 router.post('/:id/rosys', jwtAuth.required, controller.updateRosys);
 router.post('/:id/rosys/:group', jwtAuth.required, controller.updateRosysGroup);
-router.post('/:id:/physical-exam', jwtAuth.required, controller.updatePhysicalExam);
-router.post('/:id:/plan/', jwtAuth.required, controller.updateplan);
+router.post('/:id/physical-exam', jwtAuth.required, controller.updatePhysicalExam);
+router.post('/:id/plan/', jwtAuth.required, controller.updateplan);
 
 module.exports = router;

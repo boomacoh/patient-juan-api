@@ -64,9 +64,7 @@ const controller = {
     const { params: { id } } = req;
     return Consultation
       .findByPk(id)
-      .then(consultation => {
-        return consultation.update(req.body);
-      })
+      .then(consultation => consultation.update(req.body))
       .then(() => res.status(200).json('Consultation Updated'))
       .catch(err => res.json(err));
   },
@@ -140,10 +138,7 @@ const controller = {
     return Consultation
       .findByPk(id)
       .then(handleEntityNotFound(res, 'Consultation'))
-      .then(consultation => {
-        return consultation[group]
-          .update(req.body)
-      })
+      .then(consultation => consultation[group].update(req.body))
       .then(() => res.status(200).json(`${group} updated`))
       .catch(handleError(res));
   },
@@ -151,12 +146,8 @@ const controller = {
     const { params: { id } } = req;
     return Consultation
       .findByPk(id)
-      .then(consultation => {
-        return consultation.getPhysicalExam();
-      })
-      .then(physicalExam => {
-        return physicalExam.update(req.body)
-      })
+      .then(consultation => consultation.getPhysicalExam())
+      .then(physicalExam => physicalExam.update(req.body))
       .then(() => res.status(200).json('Physical Exam updated'))
       .catch(handleError(res));
   },
@@ -165,9 +156,7 @@ const controller = {
     const planData = req.body;
     return Consultation
       .findByPk(id)
-      .then(consultation => {
-        return consultation.getPlan();
-      })
+      .then(consultation => consultation.getPlan())
       .then(plan => {
         plan.diet = planData.diet;
         plan.disposition = planData.disposition;
