@@ -54,6 +54,6 @@ Consultation.hasOne(Ros_NervousSystem, { as: 'rosNervousSystem' });
 Consultation.hasOne(PhysicalExam, { as: 'physicalExam' });
 Consultation.hasOne(Plan, { as: 'plan' });
 
-Consultation.hasOne(Billing);
+Consultation.hasOne(Billing, { onDelete: 'CASCADE' });
 
 module.exports = Consultation;

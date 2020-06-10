@@ -26,7 +26,7 @@ const Billing = sequelize.define('billing', {
   getterMethods: {
     total() {
       let totalValue = 0;
-      if(this.billingItems){
+      if (this.billingItems) {
         this.billingItems.forEach(item => totalValue += item.total);
       }
       return totalValue
@@ -34,7 +34,7 @@ const Billing = sequelize.define('billing', {
   }
 });
 
-Billing.hasMany(BillingItem, { as: 'billingItems' });
+Billing.hasMany(BillingItem, { as: 'billingItems', onDelete: 'CASCADE' });
 Billing.belongsTo(Patient, { as: 'patient' })
 Billing.belongsTo(Institution, { as: 'institution' });
 Billing.belongsTo(User, { as: 'physician', foreignKey: 'physicianId' })
