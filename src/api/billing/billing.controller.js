@@ -12,7 +12,7 @@ const controller = {
 
     return Billing
       .scope(scopes, 'details', 'billingItems')
-      .findAll()
+      .findAll({ order: [['createdAt', 'DESC']] })
       .then(respondWithResult(res))
       // .catch(handleError(res));
       .catch(err => res.status(500).send(err));
