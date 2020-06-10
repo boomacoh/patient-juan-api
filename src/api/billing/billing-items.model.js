@@ -14,7 +14,7 @@ const BillingItem = sequelize.define('billing_items', {
 }, {
   setterMethods: {
     items(value) {
-      if (value) return this.setDataValue('items').join(';');
+      if (value) return this.setDataValue('items', value.join(';'));
       this.setDataValue('items', null);
     }
   },
