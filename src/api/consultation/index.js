@@ -4,7 +4,6 @@ const { jwtAuth, checkPermission } = require('../../services/auth/jwt');
 
 router.get('/', jwtAuth.required, controller.getAll);
 router.get('/:id', jwtAuth.required, controller.getOne);
-router.get('/:id/billing', jwtAuth.required, controller.getBilling);
 
 router.put('/:id', jwtAuth.required, controller.update);
 

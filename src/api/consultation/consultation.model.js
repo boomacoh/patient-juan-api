@@ -7,28 +7,35 @@ const { Ros_CardioVascularSystem, Ros_GastroIntestinalSystem, Ros_GeneralHealth,
 const PhysicalExam = require('../physical-exam/physical-exam.model');
 const Plan = require('../plan/plan.model');
 const Billing = require('../billing/billing.model');
+const moment = require('moment');
 
 const Consultation = sequelize.define('consultation', {
     id: { type: Sequelize.UUID, allowNull: false, primaryKey: true, defaultValue: Sequelize.UUIDV1 },
     chiefComplaint: { type: Sequelize.STRING, allownNull: false },
-    diagnosis: { type: Sequelize.STRING(1000) },
-    queueId: { type: Sequelize.UUID }
+    diagnosis: Sequelize.STRING(1000),
+    queueId: Sequelize.UUID
 }, {
     defaultScope: {
         include: [{ all: true, attributes: { exclude: ['createdAt', 'updatedAt', 'consultationId'] } }]
     },
     scopes: {
+        details: {
+
+        },
         history: {
             attributes: [
                 'id',
                 'createdAt',
                 'updatedAt',
                 'chiefComplaint',
+                'diagnosis',
                 [Sequelize.fn('YEAR', Sequelize.col('createdAt')), 'year'],
                 [Sequelize.fn('MONTHNAME', Sequelize.col('createdAt')), 'month'],
                 [Sequelize.fn('DAY', Sequelize.col('createdAt')), 'day']
-            ]
-        }
+            ],
+        },
+        physician: (physicianId) => { return { where: { physicianId: physicianId } } },
+        patient: (patientId) => { return { where: { patientId: patientId } } }
     }
 });
 

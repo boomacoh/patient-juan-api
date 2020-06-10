@@ -45,8 +45,10 @@ const view = (data) => {
 const controller = {
   getAll: (req, res) => {
     return Consultation
+      .scope('history')
       .findAll()
-      .then(consultations => res.send(consultations.map(view)))
+      .then(respondWithResult(res))
+      // .then(consultations => res.send(consultations.map(view)))
       .catch(handleError(res));
   },
   getOne: (req, res) => {
@@ -210,15 +212,8 @@ const controller = {
       })
       .then(() => res.status(200).json('Plan Updated'))
       .catch(handleError(res));
-  },
-  getBilling: (req, res) => {
-    const { params: { id } } = req;
-    return Consultation
-      .findByPk(id)
-      .then(consultation => consultation.getBilling({ scope: 'details' }))
-      .then(respondWithResult(res))
-      .catch(handleError(res));
   }
+
 }
 
 module.exports = controller;
