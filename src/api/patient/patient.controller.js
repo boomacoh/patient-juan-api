@@ -48,6 +48,18 @@ const controller = {
             .then(patient => patient.getMedicalHistory())
             .then(respondWithResult(res))
             .catch(handleError(res));
+    },
+    getConsultationHistory: (req, res) => {
+        const { params: { id } } = req;
+        const { query: { physicianId } } = req;
+        const scopes = ['history'];
+        if (physicianId) scopes.push({ method: ['physician', physicianId] })
+        return Patient
+            .findByPk(id)
+            .then(patient => patient.getConsultations({ scope: scopes }))
+            .then(respondWithResult(res))
+            .catch(handleError(res));
+
     }
 }
 
