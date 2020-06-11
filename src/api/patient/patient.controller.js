@@ -45,7 +45,7 @@ const controller = {
         const { params: { id } } = req;
         return Patient
             .findByPk(id)
-            .then(patient => patient.getMedicalHistory())
+            .then(patient => patient.getMedicalHistory({ scope: 'all' }))
             .then(respondWithResult(res))
             .catch(handleError(res));
     },

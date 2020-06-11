@@ -54,6 +54,7 @@ const controller = {
   getOne: (req, res) => {
     const { params: { id } } = req;
     return Consultation
+      .scope('all')
       .findByPk(id)
       .then(handleEntityNotFound(res, 'Consultation'))
       .then(consultation => {

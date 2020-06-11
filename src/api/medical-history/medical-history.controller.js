@@ -30,6 +30,7 @@ const controller = {
   getOne: (req, res) => {
     const { params: { medicalHistoryId } } = req;
     return MedicalHistory
+      .scope('all')
       .findByPk(medicalHistoryId)
       .then(handleEntityNotFound(res))
       .then(history => {

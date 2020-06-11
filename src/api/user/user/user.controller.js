@@ -21,7 +21,7 @@ const controller = {
     getOne: (req, res) => {
         const { params: { id } } = req;
         return User
-            // .scope('verified', 'profile')
+            .scope('profile')
             .findByPk(id, { attributes: { exclude: ['createdAt', 'updatedAt', 'hash', 'salt'] } })
             .then(handleEntityNotFound(res, 'User'))
             .then(user => {

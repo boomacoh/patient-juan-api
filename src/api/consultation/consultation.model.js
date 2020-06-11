@@ -13,14 +13,12 @@ const Consultation = sequelize.define('consultation', {
     id: { type: Sequelize.UUID, allowNull: false, primaryKey: true, defaultValue: Sequelize.UUIDV1 },
     chiefComplaint: { type: Sequelize.STRING, allownNull: false },
     diagnosis: Sequelize.STRING(1000),
-    queueId: Sequelize.UUID
+    queueId: Sequelize.UUID,
+    status: { type: Sequelize.STRING, defaultValue: 'active' }
 }, {
-    defaultScope: {
-        include: [{ all: true, attributes: { exclude: ['createdAt', 'updatedAt', 'consultationId'] } }]
-    },
     scopes: {
-        details: {
-
+        all: {
+            include: [{ all: true }]
         },
         history: {
             attributes: [

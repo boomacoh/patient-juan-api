@@ -7,7 +7,11 @@ const MedicalHistory = sequelize.define('medicalHistory', {
     id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
 }, {
     freezeTableName: true,
-    defaultScope: { include: [{ all: true, attributes: { exclude: ['createdAt', 'updatedAt', 'medicalHistoryId'] } }] },
+    scopes: {
+        all: {
+            include: [{ all: true, attributes: { exclude: ['medicalHistoryId'] } }]
+        }
+    }
 });
 
 MedicalHistory.hasOne(PastMedicalHistory);

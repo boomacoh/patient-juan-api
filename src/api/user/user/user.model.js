@@ -18,12 +18,9 @@ const User = sequelize.define('user', {
     verified: { type: Sequelize.BOOLEAN, defaultValue: false, allowNull: false },
     verifyToken: { type: Sequelize.STRING(1000) }
 }, {
-    defaultScope: {
-        include: [{ model: Profile, required: true }]
-    },
     scopes: {
         verified: { where: { verified: true } },
-        profile: { include: [{ model: Profile, attributes: { exclude: ['userId'] } }] },
+        profile: { include: [{ model: Profile, required: true }] },
         type(type) { return { attributes: { exclude: ['hash', 'salt'] }, include: [{ model: Profile, where: { type: type } }] } }
     }
 });
