@@ -45,7 +45,6 @@ const view = (data) => {
 const controller = {
   getAll: (req, res) => {
     return Consultation
-      .scope('history')
       .findAll()
       .then(respondWithResult(res))
       // .then(consultations => res.send(consultations.map(view)))
@@ -58,6 +57,7 @@ const controller = {
       .findByPk(id)
       .then(handleEntityNotFound(res, 'Consultation'))
       .then(consultation => {
+        return res.send(consultation);
         // console.log(Object.keys(consultation.__proto__));
         res.send(view(consultation));
       })

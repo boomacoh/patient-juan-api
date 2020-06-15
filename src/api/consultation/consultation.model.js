@@ -49,15 +49,15 @@ User.hasMany(Consultation, { as: 'consultations', foreignKey: 'physicianId' });
 Consultation.belongsTo(Institution);
 Institution.hasMany(Consultation);
 
-Consultation.hasOne(Ros_GeneralHealth, { as: 'rosGeneralHealth' });
-Consultation.hasOne(Ros_Heent, { as: 'rosHeent' });
-Consultation.hasOne(Ros_GastroIntestinalSystem, { as: 'rosGastroIntestinalSystem' });
-Consultation.hasOne(Ros_RespiratorySystem, { as: 'rosRespiratorySystem' });
-Consultation.hasOne(Ros_CardioVascularSystem, { as: 'rosCardiovascularSystem' });
-Consultation.hasOne(Ros_NervousSystem, { as: 'rosNervousSystem' });
+Consultation.hasOne(Ros_GeneralHealth, { as: 'rosGeneralHealth', foreignKey: 'consultationId' });
+Consultation.hasOne(Ros_Heent, { as: 'rosHeent', foreignKey: 'consultationId' });
+Consultation.hasOne(Ros_GastroIntestinalSystem, { as: 'rosGastroIntestinalSystem', foreignKey: 'consultationId' });
+Consultation.hasOne(Ros_RespiratorySystem, { as: 'rosRespiratorySystem', foreignKey: 'consultationId' });
+Consultation.hasOne(Ros_CardioVascularSystem, { as: 'rosCardiovascularSystem', foreignKey: 'consultationId' });
+Consultation.hasOne(Ros_NervousSystem, { as: 'rosNervousSystem', foreignKey: 'consultationId' });
 
-Consultation.hasOne(PhysicalExam, { as: 'physicalExam' });
-Consultation.hasOne(Plan, { as: 'plan' });
+Consultation.hasOne(PhysicalExam, { as: 'physicalExam', foreignKey: 'consultationId' });
+Consultation.hasOne(Plan, { as: 'plan', foreignKey: 'consultationId' });
 
 Consultation.hasOne(Billing, { onDelete: 'CASCADE' });
 
