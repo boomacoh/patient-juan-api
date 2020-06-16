@@ -11,7 +11,7 @@ const controller = {
         if (type) scopes.push({ method: ['type', type] });
 
         return User
-            // .scope(scopes)
+            .scope(scopes)
             .findAll()
             .then((users) => {
                 return res.status(200).send(users)

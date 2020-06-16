@@ -22,9 +22,9 @@ const view = (data) => {
       age: moment().diff(data.patient.birthdate, 'years')
     },
     physician: {
-      id: data.physician.userId,
-      specialization: data.physician.profile.specialization,
-      fullName: data.physician.profile.fullName
+      id: data.physician.id,
+      // specialization: data.physician.profile.specialization,
+      // fullName: data.physician.profile.fullName
     },
     reviewOfSystems: {
       generalHealth: data.rosGeneralHealth,
@@ -37,7 +37,9 @@ const view = (data) => {
     physicalExam: data.physicalExam,
     diagnosis: data.diagnosis,
     plan: data.plan,
-    billing: data.billing
+    billing: data.billing,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt
   }
 
   return consultation;
@@ -57,7 +59,7 @@ const controller = {
       .findByPk(id)
       .then(handleEntityNotFound(res, 'Consultation'))
       .then(consultation => {
-        return res.send(consultation);
+        // return res.send(consultation);
         // console.log(Object.keys(consultation.__proto__));
         res.send(view(consultation));
       })
@@ -124,8 +126,10 @@ const controller = {
     const rosData = req.body;
     console.log(req.body);
     return Consultation
+      .scope('all')
       .findByPk(id)
       .then(consultation => {
+        console.log(consultation.rosGeneralHealth);
         consultation.rosGeneralHealth.update(rosData.rosGeneralHealth);
         consultation.rosHeent.update(rosData.rosHeent);
         consultation.rosCardiovascularSystem.update(rosData.rosCardiovascularSystem);
