@@ -4,14 +4,7 @@ const { Allergy, PastIllness, Medication, Substance, Surgery } = require('../sub
 const PastMedicalHistory = sequelize.define('pastMedicalHistory', {
 }, {
   freezeTableName: true,
-  defaultScope: {
-    include: [
-      { model: Allergy, attributes: { exclude: ['createdAt', 'updatedAt'] } },
-      { model: PastIllness, attributes: { exclude: ['createdAt', 'updatedAt'] } },
-      { model: Medication, attributes: { exclude: ['createdAt', 'updatedAt'] } },
-      { model: Surgery, attributes: { exclude: ['createdAt', 'updatedAt'] } }
-    ]
-  }
+  defaultScope: { include: [Allergy, PastIllness, Medication, Surgery] }
 });
 
 PastMedicalHistory.hasMany(Allergy);
@@ -22,7 +15,7 @@ PastMedicalHistory.hasMany(Surgery);
 const FamilyMedicalHistory = sequelize.define('familyMedicalHistory', {
 }, {
   freezeTableName: true,
-  defaultScope: { include: [{ model: PastIllness, attributes: { exclude: ['createdAt', 'updatedAt', 'id'] } }] }
+  defaultScope: { include: [PastIllness] }
 });
 
 FamilyMedicalHistory.hasMany(PastIllness, { foreignKey: 'parentId', scope: { parent: 'fmh' } });
