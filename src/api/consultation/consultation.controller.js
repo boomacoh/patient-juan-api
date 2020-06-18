@@ -143,6 +143,7 @@ const controller = {
   updateRosysGroup: (req, res) => {
     const { params: { group, id } } = req;
     return Consultation
+      .scope('all')
       .findByPk(id)
       .then(handleEntityNotFound(res, 'Consultation'))
       .then(consultation => consultation[group].update(req.body))

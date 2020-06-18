@@ -9,7 +9,7 @@ const MedicalHistory = sequelize.define('medicalHistory', {
     freezeTableName: true,
     scopes: {
         all: {
-            include: [{ all: true, attributes: { exclude: ['medicalHistoryId'] } }]
+            include: [{ all: true }]
         }
     }
 });

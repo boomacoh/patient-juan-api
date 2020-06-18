@@ -69,7 +69,7 @@ const Patient = sequelize.define('patient', {
     },
     hooks: {
         afterCreate: (patient, options) => {
-            patient.createMedicalHistory({ hooks: true })
+            patient.createMedicalHistory()
             .then(mh => {
                 mh.createPastMedicalHistory();
                 mh.createFamilyMedicalHistory();
