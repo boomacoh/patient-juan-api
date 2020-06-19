@@ -56,7 +56,7 @@ const controller = {
         if (physicianId) scopes.push({ method: ['physician', physicianId] })
         return Patient
             .findByPk(id)
-            .then(patient => patient.getConsultations({ scope: scopes }))
+            .then(patient => patient.getConsultations({ scope: scopes, order: [['createdAt', 'DESC']] }))
             .then(respondWithResult(res))
             .catch(handleError(res));
 
