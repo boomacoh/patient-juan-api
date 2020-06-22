@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const AntrophometricData = sequelize.define('antrophometricData', {
+const AnthropometricData = sequelize.define('anthropometricData', {
   height: Sequelize.INTEGER,
   weight: Sequelize.INTEGER,
   remarks: Sequelize.STRING
@@ -8,4 +8,4 @@ const AntrophometricData = sequelize.define('antrophometricData', {
   freezeTableName: true
 });
 
-module.exports = AntrophometricData;
+module.exports = AnthropometricData;

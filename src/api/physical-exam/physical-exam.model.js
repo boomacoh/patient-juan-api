@@ -1,6 +1,4 @@
 const Sequelize = require('sequelize');
-const VitalSigns = require('./vital-signs.model');
-const AntrophometricData = require('./antrophometric-data.model');
 
 const PhysicalExam = sequelize.define('physicalExam', {
   generalSurvey: Sequelize.STRING,
