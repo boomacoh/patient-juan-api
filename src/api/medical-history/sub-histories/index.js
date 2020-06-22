@@ -16,19 +16,19 @@ const PastIllness = sequelize.define('pastIllness', {
 });
 
 const Surgery = sequelize.define('surgery', {
-  approximateDate: Sequelize.DATEONLY,
+  approximateDate: Sequelize.STRING,
   type: Sequelize.STRING,
   reason: Sequelize.STRING,
   complications: Sequelize.STRING
 });
 
 const Medication = sequelize.define('medication', {
-  generic: Sequelize.STRING,
+  generic: { type: Sequelize.STRING, allowNull: false },
   brand: Sequelize.STRING,
   preparation: Sequelize.STRING,
   frequency: Sequelize.STRING,
   route: Sequelize.STRING,
-  purpose: Sequelize.STRING
+  remarks: Sequelize.STRING
 });
 
 const Substance = sequelize.define('substance', {
