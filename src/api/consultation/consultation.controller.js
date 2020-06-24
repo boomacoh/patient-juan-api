@@ -207,8 +207,8 @@ const controller = {
           let index = planData.diagnostics.findIndex(j => j.id === diagnostic.id);
           if (index !== -1) {
             return diagnostic.update({
-              diagnostic: planData.diagnostics[index].diagnostic,
-              details: planData.diagnostics[index].details
+              test: planData.diagnostics[index].test,
+              instructions: planData.diagnostics[index].instructions
             });
           }
           diagnostic.destroy();
@@ -218,8 +218,7 @@ const controller = {
       })
       .then(() => res.status(200).json('Plan Updated'))
       .catch(handleError(res));
-  }
-
+  },
 }
 
 module.exports = controller;
