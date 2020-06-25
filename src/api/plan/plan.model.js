@@ -4,7 +4,8 @@ const Diagnostic = require('./diagnostic.model');
 
 const Plan = sequelize.define('plan', {
   diet: Sequelize.STRING,
-  disposition: Sequelize.STRING
+  disposition: Sequelize.STRING,
+  specificInstructions: Sequelize.STRING
 }, {
   defaultScope: { include: [Drug, Diagnostic] }
 });
