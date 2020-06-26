@@ -28,10 +28,10 @@ const controller = {
       .catch(handleError(res));
   },
   getOne: (req, res) => {
-    const { params: { medicalHistoryId } } = req;
+    const { params: { id } } = req;
     return MedicalHistory
       .scope('all')
-      .findByPk(medicalHistoryId)
+      .findByPk(id)
       .then(handleEntityNotFound(res))
       .then(history => {
         console.log(Object.keys(history.__proto__));
@@ -112,11 +112,28 @@ const controller = {
       .then(respondWithResult(res))
       .catch(handleError(res));
   },
-  updateSubstance: (req, res) => {
+  updateSubstances: (req, res) => {
     const { params: { id } } = req;
-    return Substance
-      .update(req.body, { where: { id: id } })
-      .then(() => res.status(200).json('Substance updated'))
+    const formData = req.body;
+    return SocialPersonalHistory
+      .findByPk(id)
+      .then(handleEntityNotFound(res, 'Data'))
+      .then(async sph => {
+        formData.forEach(data => {
+          if (!data.id) sph.createSubstance(data);
+        });
+        const substances = await sph.getSubstances();
+        substances.forEach(substance => {
+          let index = formData.findIndex(i => i.id === substance.id);
+          if (index !== -1) {
+            return substance.update({ substanceIntake: formData[index].substanceIntake, remarks: formData[index].remarks });
+          }
+          substance.destroy();
+        })
+        return sph;
+
+      })
+      .then(res.status(200).json('Substances Updated'))
       .catch(handleError(res));
   },
   deleteSubstance: (req, res) => {

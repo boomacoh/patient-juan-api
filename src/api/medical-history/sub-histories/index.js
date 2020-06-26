@@ -33,7 +33,7 @@ const Medication = sequelize.define('medication', {
 
 const Substance = sequelize.define('substance', {
   substance: Sequelize.STRING,
-  isConsuming: Sequelize.BOOLEAN,
+  substanceIntake: Sequelize.STRING,
   remarks: Sequelize.STRING
 });
 

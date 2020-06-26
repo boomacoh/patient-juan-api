@@ -2,10 +2,10 @@ const Sequelize = require('sequelize');
 
 const Drug = sequelize.define('drug', {
   generic: { type: Sequelize.STRING, allowNull: false },
-  qty: Sequelize.INTEGER,
-  preparation: Sequelize.STRING,
+  qty: { type: Sequelize.INTEGER, allowNull: false },
+  preparation: { type: Sequelize.STRING, allowNull: false },
   brand: Sequelize.STRING,
-  instructions: Sequelize.STRING,
+  instructions: { type: Sequelize.STRING, allowNull: false },
 });
 
 module.exports = Drug;
