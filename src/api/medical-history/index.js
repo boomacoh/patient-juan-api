@@ -3,20 +3,19 @@ const controller = require('./medical-history.controller');
 const { jwtAuth, checkPermission } = require('../../services/auth/jwt');
 
 router.get('/', controller.getAll);
-router.get('/:medicalHistoryId', jwtAuth.required, controller.getOne);
+router.get('/:id', jwtAuth.required, controller.getOne);
 
-router.post('/past-illness', jwtAuth.required, controller.updateIllnesses);
+router.post('/pmh/conditions', jwtAuth.required, controller.updateIllnesses);
 router.post('/obh', jwtAuth.required, controller.createObGyneHistory);
+router.post('/sph/:id/substances', jwtAuth.required, controller.updateSubstances);
 
 router.post('/surgery', jwtAuth.required, controller.addSurgery);
 router.post('/medication', jwtAuth.required, controller.addMedication);
 router.post('/allergy', jwtAuth.required, controller.addAllergy);
-router.post('/substance', jwtAuth.required, controller.addSubstance);
 
 router.put('/surgery/:id', jwtAuth.required, controller.updateSurgery);
 router.put('/medication/:id', jwtAuth.required, controller.updateMedication);
 router.put('/allergy/:id', jwtAuth.required, controller.updateAllergy);
-router.put('/substance/:id', jwtAuth.required, controller.updateSubstance);
 router.put('/sph/:id', jwtAuth.required, controller.updateSph);
 router.put('/obh/:id', jwtAuth.required, controller.updateObGyneHistory);
 

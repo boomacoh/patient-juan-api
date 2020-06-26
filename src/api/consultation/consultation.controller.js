@@ -193,11 +193,10 @@ const controller = {
           if (index !== -1) {
             return drug.update({
               generic: planData.drugs[index].generic,
+              qty: planData.drugs[index].qty,
               brand: planData.drugs[index].brand,
               preparation: planData.drugs[index].preparation,
-              frequency: planData.drugs[index].frequency,
-              route: planData.drugs[index].route,
-              purpose: planData.drugs[index].purpose
+              instructions: planData.drugs[index].instructions,
             });
           }
           drug.destroy();
