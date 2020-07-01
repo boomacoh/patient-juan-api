@@ -74,6 +74,7 @@ const Patient = sequelize.define('patient', {
                 mh.createPastMedicalHistory();
                 mh.createFamilyMedicalHistory();
                 mh.createSocialPersonalHistory();
+                if(patient.sex === 'Female') mh.createObGyneHistory();
             });
         }
     }
