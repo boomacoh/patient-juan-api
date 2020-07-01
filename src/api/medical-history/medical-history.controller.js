@@ -1,7 +1,7 @@
 const MedicalHistory = require('./medical-history.model');
 const { respondWithResult, handleErrorMsg, handleEntityNotFound, handleError } = require('../../services/handlers');
 const { FamilyMedicalHistory, ObGyneHistory, PastMedicalHistory, SocialPersonalHistory } = require('./histories');
-const { Medication, Allergy, PastIllness, Substance, Surgery } = require('./sub-histories');
+const { Medication, Allergy, Substance, Surgery } = require('./sub-histories');
 
 const mhView = (data) => {
   const medicalHistory = {
@@ -79,7 +79,7 @@ const controller = {
       .then(() => res.status(200).json('Medication updated'))
       .catch(handleError(res));
   },
-  deleteMedication: (req, res) => {
+  deleteMedication: (req, res) => { 
     const { params: { id } } = req;
     return Medication
       .destroy({ where: { id: id } })
@@ -104,76 +104,6 @@ const controller = {
     return Allergy
       .destroy({ where: { id: id } })
       .then(respondWithResult(res, 204))
-      .catch(handleError(res));
-  },
-  addSubstance: (req, res) => {
-    return Substance
-      .create(req.body)
-      .then(respondWithResult(res))
-      .catch(handleError(res));
-  },
-  updateSubstances: (req, res) => {
-    const { params: { id } } = req;
-    const formData = req.body;
-    return SocialPersonalHistory
-      .findByPk(id)
-      .then(handleEntityNotFound(res, 'Data'))
-      .then(async sph => {
-        formData.forEach(data => {
-          if (!data.id) sph.createSubstance(data);
-        });
-        const substances = await sph.getSubstances();
-        substances.forEach(substance => {
-          let index = formData.findIndex(i => i.id === substance.id);
-          if (index !== -1) {
-            return substance.update({ substanceIntake: formData[index].substanceIntake, remarks: formData[index].remarks });
-          }
-          substance.destroy();
-        })
-        return sph;
-
-      })
-      .then(res.status(200).json('Substances Updated'))
-      .catch(handleError(res));
-  },
-  deleteSubstance: (req, res) => {
-    const { params: { id } } = req;
-    return Substance
-      .destroy({ where: { id: id } })
-      .then(respondWithResult(res))
-      .catch(handleError(res));
-  },
-  updateIllnesses: (req, res) => {
-    const { query: { scope, parentId } } = req;
-    const formData = req.body;
-    let model;
-    if (scope === 'pmh') model = PastMedicalHistory;
-    if (scope === 'fmh') model = FamilyMedicalHistory;
-
-    return model
-      .findByPk(parentId)
-      .then(result => {
-
-        formData.forEach(data => {
-          if (!data.id) result.createPastIllness(data);
-        });
-
-        return result;
-      })
-      .then(async result => {
-
-        const illnesses = await result.getPastIllnesses();
-
-        illnesses.forEach(illness => {
-          let index = formData.findIndex(i => i.id === illness.id);
-          if (index !== -1) {
-            illness.remarks = formData[index].remarks;
-            return illness.save();
-          }
-          illness.destroy();
-        });
-      })
-      .then(() => res.status(200).json('Illnesses updated'))
       .catch(handleError(res));
   },
   createObGyneHistory: (req, res) => {

@@ -5,9 +5,7 @@ const { jwtAuth, checkPermission } = require('../../services/auth/jwt');
 router.get('/', controller.getAll);
 router.get('/:id', jwtAuth.required, controller.getOne);
 
-router.post('/pmh/conditions', jwtAuth.required, controller.updateIllnesses);
 router.post('/obh', jwtAuth.required, controller.createObGyneHistory);
-router.post('/sph/:id/substances', jwtAuth.required, controller.updateSubstances);
 
 router.post('/surgery', jwtAuth.required, controller.addSurgery);
 router.post('/medication', jwtAuth.required, controller.addMedication);
@@ -22,6 +20,5 @@ router.put('/obh/:id', jwtAuth.required, controller.updateObGyneHistory);
 router.delete('/surgery/:id', jwtAuth.required, controller.deleteSurgery);
 router.delete('/medication/:id', jwtAuth.required, controller.deleteMedication);
 router.delete('/allergy/:id', jwtAuth.required, controller.deleteAllergy);
-router.delete('/substance/:id', jwtAuth.required, controller.deleteSubstance);
 
 module.exports = router;
