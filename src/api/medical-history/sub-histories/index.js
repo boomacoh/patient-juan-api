@@ -5,14 +5,11 @@ const Allergy = sequelize.define('allergy', {
   remarks: Sequelize.STRING
 });
 
-const PastIllness = sequelize.define('pastIllness', {
-  illness: Sequelize.STRING,
+const MedicalCondition = sequelize.define('medicalConditions', {
+  condition: { type: Sequelize.STRING, allowNull: false },
   remarks: Sequelize.STRING,
-  parent: Sequelize.STRING
-}, {
-  scopes: {
-    parent(parent) { return { where: { parent: parent } } }
-  }
+  dateOccured: Sequelize.STRING,
+  parent: { type: Sequelize.STRING, allowNull: false }
 });
 
 const Surgery = sequelize.define('surgery', {
@@ -37,12 +34,4 @@ const Substance = sequelize.define('substance', {
   remarks: Sequelize.STRING
 });
 
-// PastIllness.removeAttribute('id');
-
-// Illness.removeAttribute('id');
-// Allergy.removeAttribute('id');
-// Surgery.removeAttribute('id');
-// Medication.removeAttribute('id');
-// Substance.removeAttribute('id');
-
-module.exports = { Allergy, Medication, Surgery, PastIllness, Substance }
+module.exports = { Allergy, Medication, Surgery, Substance, MedicalCondition }
