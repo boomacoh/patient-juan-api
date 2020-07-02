@@ -1,16 +1,21 @@
 const Sequelize = require('sequelize');
-const { Allergy, Medication, Substance, Surgery, MedicalCondition } = require('../sub-histories');
+const { MedicalCondition, Medication, ChildHoodDisease, Hospitalization, Surgery, Injury, BloodTransfusion, Allergy, Psychiatric } = require('../sub-histories');
 
 const PastMedicalHistory = sequelize.define('pastMedicalHistory', {
 }, {
   freezeTableName: true,
-  defaultScope: { include: [Allergy, Medication, Surgery, MedicalCondition] }
+  defaultScope: { include: [MedicalCondition, Medication, ChildHoodDisease, Hospitalization, Surgery, Injury, BloodTransfusion, Allergy, Psychiatric] }
 });
 
-PastMedicalHistory.hasMany(Allergy);
 PastMedicalHistory.hasMany(MedicalCondition, { foreignKey: 'parentId', scope: { parent: 'pmh' } });
 PastMedicalHistory.hasMany(Medication);
+PastMedicalHistory.hasMany(ChildHoodDisease);
+PastMedicalHistory.hasMany(Hospitalization);
 PastMedicalHistory.hasMany(Surgery);
+PastMedicalHistory.hasMany(Injury);
+PastMedicalHistory.hasMany(BloodTransfusion);
+PastMedicalHistory.hasMany(Allergy);
+PastMedicalHistory.hasMany(Psychiatric);
 
 const FamilyMedicalHistory = sequelize.define('familyMedicalHistory', {
 }, {
@@ -52,11 +57,8 @@ const SocialPersonalHistory = sequelize.define('socialPersonalHistory', {
   hadStiRemarks: Sequelize.TEXT,
   nvp: { type: Sequelize.TEXT, comment: 'Number and Variety of Partners' }
 }, {
-  freezeTableName: true,
-  defaultScope: { include: [Substance] }
+  freezeTableName: true
 });
-
-SocialPersonalHistory.hasMany(Substance);
 
 const ObGyneHistory = sequelize.define('obGyneHistory', {
   unremarkable: { type: Sequelize.BOOLEAN, defaultValue: false },
@@ -79,7 +81,8 @@ const ObGyneHistory = sequelize.define('obGyneHistory', {
   AOGinLastUltrasoundW: Sequelize.INTEGER,
   AOGinLastUltraSoundD: Sequelize.INTEGER,
   AOGbyUTZ: { type: Sequelize.DATEONLY, comment: 'current date - last ultrasound date' },
-  EDDfromLMP: { type: Sequelize.DATEONLY, comment: 'last menstruation period + 280 days' }
+  EDDfromLMP: { type: Sequelize.DATEONLY, comment: 'last menstruation period + 280 days' },
+  EDDfromUTZ: {type: Sequelize.DATEONLY, comment: '(last ultrasound date + 280 days) - AOG in last ultrasound'}
 }, {
   freezeTableName: true,
   setterMethods: {
