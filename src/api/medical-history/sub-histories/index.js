@@ -1,10 +1,5 @@
 const Sequelize = require('sequelize');
 
-const Allergy = sequelize.define('allergy', {
-  trigger: Sequelize.STRING,
-  remarks: Sequelize.STRING
-});
-
 const MedicalCondition = sequelize.define('medicalConditions', {
   condition: { type: Sequelize.STRING, allowNull: false },
   remarks: Sequelize.STRING,
@@ -12,26 +7,51 @@ const MedicalCondition = sequelize.define('medicalConditions', {
   parent: { type: Sequelize.STRING, allowNull: false }
 });
 
-const Surgery = sequelize.define('surgery', {
-  approximateDate: Sequelize.STRING,
-  type: Sequelize.STRING,
-  reason: Sequelize.STRING,
-  complications: Sequelize.STRING
-});
-
 const Medication = sequelize.define('medication', {
   generic: { type: Sequelize.STRING, allowNull: false },
   brand: Sequelize.STRING,
   preparation: Sequelize.STRING,
-  frequency: Sequelize.STRING,
-  route: Sequelize.STRING,
   remarks: Sequelize.STRING
 });
 
-const Substance = sequelize.define('substance', {
-  substance: Sequelize.STRING,
-  substanceIntake: Sequelize.STRING,
+const ChildHoodDisease = sequelize.define('childhoodDisease', {
+  disease: { type: Sequelize.STRING, allowNull: false },
+  remarks: Sequelize.TEXT
+});
+
+const Hospitalization = sequelize.define('hospitalization', {
+  approximateDate: Sequelize.STRING,
+  reason: { type: Sequelize.STRING, allowNull: false },
+  remarks: Sequelize.TEXT
+});
+
+const Surgery = sequelize.define('surgery', {
+  approximateDate: Sequelize.STRING,
+  type: { type: Sequelize.STRING, allowNull: false },
+  reason: Sequelize.STRING,
+  remarks: Sequelize.TEXT
+});
+
+const Injury = sequelize.define('injury', {
+  approximateDate: Sequelize.STRING,
+  type: { type: Sequelize.STRING, allowNull: false },
+  remarks: Sequelize.TEXT
+});
+
+const BloodTransfusion = sequelize.define('bloodTransfusion', {
+  approximateDate: { type: Sequelize.STRING, allowNull: false },
+  indications: Sequelize.STRING,
+  remarks: Sequelize.TEXT
+});
+
+const Allergy = sequelize.define('allergy', {
+  trigger: { type: Sequelize.STRING, allowNull: false },
   remarks: Sequelize.STRING
 });
 
-module.exports = { Allergy, Medication, Surgery, Substance, MedicalCondition }
+const Psychiatric = sequelize.define('psychiatric', {
+  approximateDate: { type: Sequelize.STRING, allowNull: false },
+  remarks: Sequelize.TEXT
+});
+
+module.exports = { MedicalCondition, Medication, ChildHoodDisease, Hospitalization, Surgery, Injury, BloodTransfusion, Allergy, Psychiatric }
