@@ -1,7 +1,7 @@
 const MedicalHistory = require('./medical-history.model');
 const { respondWithResult, handleErrorMsg, handleEntityNotFound, handleError } = require('../../services/handlers');
 const { FamilyMedicalHistory, ObGyneHistory, PastMedicalHistory, SocialPersonalHistory } = require('./histories');
-const { Medication, Allergy, Substance, Surgery } = require('./sub-histories');
+const { MedicalCondition, Medication, ChildHoodDisease, Hospitalization, Surgery, Injury, BloodTransfusion, Allergy, Psychiatric } = require('./sub-histories');
 
 const mhView = (data) => {
   const medicalHistory = {
@@ -39,11 +39,63 @@ const controller = {
       })
       .catch(handleError(res));
   },
-  updateSph: (req, res) => {
+  addMedicalCondition: (req, res) => {
+    return MedicalCondition
+      .create(req.body)
+      .then(respondWithResult(res, 201))
+      .catch(handleError(res));
+  },
+  updateMedicalCondition: (req, res) => {
     const { params: { id } } = req;
-    return SocialPersonalHistory
+    return MedicalCondition
       .update(req.body, { where: { id: id } })
-      .then(() => res.status(200).json('SPH updated'))
+      .then(() => res.status(200).json('Medical Conditon Updated'))
+      .catch(handleError(res));
+  },
+  addMedication: (req, res) => {
+    return Medication
+      .create(req.body)
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  },
+  updateMedication: (req, res) => {
+    const { params: { id } } = req;
+    return Medication
+      .update(req.body, { where: { id: id } })
+      .then(() => res.status(200).json('Medication updated'))
+      .catch(handleError(res));
+  },
+  deleteMedication: (req, res) => {
+    const { params: { id } } = req;
+    return Medication
+      .destroy({ where: { id: id } })
+      .then(respondWithResult(res, 204))
+      .catch(handleError(res));
+  },
+  addChildhoodDisease: (req, res) => {
+    return ChildHoodDisease
+      .create(req.body)
+      .then(respondWithResult(res, 201))
+      .catch(handleError(res));
+  },
+  updateChildhoodDisease: (req, res) => {
+    const { params: { id } } = req;
+    return ChildHoodDisease
+      .update(req.body, { where: { id: id } })
+      .then(() => res.status(200).json('Childhood Disease Updated'))
+      .catch(handleError(res));
+  },
+  addHospitalization: (req, res) => {
+    return Hospitalization
+      .create(req.body)
+      .then(respondWithResult(res, 201))
+      .catch(handleError(res));
+  },
+  updateHospitalization: (req, res) => {
+    const { params: { id } } = req;
+    return Hospitalization
+      .update(req.body, { where: { id: id } })
+      .then(() => res.status(200).json('Hospitalization Updated'))
       .catch(handleError(res));
   },
   addSurgery: (req, res) => {
@@ -66,24 +118,30 @@ const controller = {
       .then(respondWithResult(res, 204))
       .catch(handleError(res));
   },
-  addMedication: (req, res) => {
-    return Medication
+  addInjury: (req, res) => {
+    return Injury
       .create(req.body)
-      .then(respondWithResult(res))
+      .then(respondWithResult(res, 201))
       .catch(handleError(res));
   },
-  updateMedication: (req, res) => {
+  updateInjury: (req, res) => {
     const { params: { id } } = req;
-    return Medication
+    return Injury
       .update(req.body, { where: { id: id } })
-      .then(() => res.status(200).json('Medication updated'))
+      .then(() => res.status(200).json('Injury Updated'))
       .catch(handleError(res));
   },
-  deleteMedication: (req, res) => { 
+  addBloodTransfusion: (req, res) => {
+    return BloodTransfusion
+      .create(req.body)
+      .then(respondWithResult(res, 201))
+      .catch(handleError(res));
+  },
+  updateBloodTransfusion: (req, res) => {
     const { params: { id } } = req;
-    return Medication
-      .destroy({ where: { id: id } })
-      .then(respondWithResult(res, 204))
+    return BloodTransfusion
+      .update(req.body, { where: { id: id } })
+      .then(() => res.status(200).json('Blood Transfusion Updated'))
       .catch(handleError(res));
   },
   addAllergy: (req, res) => {
@@ -106,10 +164,24 @@ const controller = {
       .then(respondWithResult(res, 204))
       .catch(handleError(res));
   },
-  createObGyneHistory: (req, res) => {
-    return ObGyneHistory
+  addPsychiatric: (req, res) => {
+    return Psychiatric
       .create(req.body)
-      .then(respondWithResult(res))
+      .then(respondWithResult(res, 201))
+      .catch(handleError(res));
+  },
+  updatePsychiatric: (req, res) => {
+    const { params: { id } } = req;
+    return Psychiatric
+      .update(req.body, { where: { id: id } })
+      .then(() => res.status(200).json('Psychiatric Updated'))
+      .catch(handleError(res));
+  },
+  updateSph: (req, res) => {
+    const { params: { id } } = req;
+    return SocialPersonalHistory
+      .update(req.body, { where: { id: id } })
+      .then(() => res.status(200).json('SPH updated'))
       .catch(handleError(res));
   },
   updateObGyneHistory: (req, res) => {
