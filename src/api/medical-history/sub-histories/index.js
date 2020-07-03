@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const MedicalCondition = sequelize.define('medicalConditions', {
+const MedicalCondition = sequelize.define('medicalCondition', {
   condition: { type: Sequelize.STRING, allowNull: false },
   remarks: Sequelize.STRING,
   dateOccured: Sequelize.STRING,
@@ -54,4 +54,16 @@ const Psychiatric = sequelize.define('psychiatric', {
   remarks: Sequelize.TEXT
 });
 
-module.exports = { MedicalCondition, Medication, ChildHoodDisease, Hospitalization, Surgery, Injury, BloodTransfusion, Allergy, Psychiatric }
+const Pregnancy = sequelize.define('pregnancy', {
+  ageOfGestation: Sequelize.STRING,
+  term: Sequelize.STRING,
+  no: Sequelize.INTEGER,
+  sex: {type: Sequelize.STRING, allowNull: false},
+  birthdate: Sequelize.DATEONLY,
+  modeOfDelivery: Sequelize.STRING,
+  weight: Sequelize.FLOAT,
+  currentStatus: Sequelize.STRING,
+  remarks: Sequelize.TEXT
+});
+
+module.exports = { MedicalCondition, Medication, ChildHoodDisease, Hospitalization, Surgery, Injury, BloodTransfusion, Allergy, Psychiatric, Pregnancy }

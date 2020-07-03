@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const { MedicalCondition, Medication, ChildHoodDisease, Hospitalization, Surgery, Injury, BloodTransfusion, Allergy, Psychiatric } = require('../sub-histories');
+const { MedicalCondition, Medication, ChildHoodDisease, Hospitalization, Surgery, Injury, BloodTransfusion, Allergy, Psychiatric, Pregnancy } = require('../sub-histories');
 
 const PastMedicalHistory = sequelize.define('pastMedicalHistory', {
 }, {
@@ -62,11 +62,12 @@ const SocialPersonalHistory = sequelize.define('socialPersonalHistory', {
 
 const ObGyneHistory = sequelize.define('obGyneHistory', {
   unremarkable: { type: Sequelize.BOOLEAN, defaultValue: false },
-  gravidity: Sequelize.INTEGER,
-  parity: Sequelize.INTEGER,
-  termPregnancy: Sequelize.INTEGER,
-  noOfAbortion: Sequelize.INTEGER,
-  noOfLivingChildren: Sequelize.INTEGER,
+  gravidity: { type: Sequelize.INTEGER, allowNull: false },
+  parity: { type: Sequelize.INTEGER, allowNull: false },
+  termPregnancy: { type: Sequelize.INTEGER, allowNull: false },
+  preTermPregnancy: { type: Sequelize.INTEGER, allowNull: false },
+  noOfAbortion: { type: Sequelize.INTEGER, allowNull: false },
+  noOfLivingChildren: { type: Sequelize.INTEGER, allowNull: false },
   menarche: Sequelize.STRING,
   interval: Sequelize.STRING,
   duration: Sequelize.STRING,
@@ -76,25 +77,19 @@ const ObGyneHistory = sequelize.define('obGyneHistory', {
   lastPapsmear: Sequelize.STRING,
   lastMenstruationPeriod: Sequelize.DATEONLY,
   previousMenstruationPeriod: Sequelize.DATEONLY,
-  AOGbyLMP: { type: Sequelize.DATEONLY, comment: 'current date - last menstruation period (by weeks)' },
+  AOGbyLMP: { type: Sequelize.STRING, comment: 'current date - last menstruation period (by weeks)' },
   lastUltrasoundDate: Sequelize.DATEONLY,
   AOGinLastUltrasoundW: Sequelize.INTEGER,
-  AOGinLastUltraSoundD: Sequelize.INTEGER,
-  AOGbyUTZ: { type: Sequelize.DATEONLY, comment: 'current date - last ultrasound date' },
+  AOGinLastUltrasoundD: Sequelize.INTEGER,
+  AOGbyUTZ: { type: Sequelize.STRING, comment: 'current date - last ultrasound date' },
   EDDfromLMP: { type: Sequelize.DATEONLY, comment: 'last menstruation period + 280 days' },
-  EDDfromUTZ: {type: Sequelize.DATEONLY, comment: '(last ultrasound date + 280 days) - AOG in last ultrasound'}
+  EDDfromUTZ: { type: Sequelize.DATEONLY, comment: '(last ultrasound date + 280 days) - AOG in last ultrasound' }
 }, {
   freezeTableName: true,
-  setterMethods: {
-    lastMenstruationPeriod(value) {
-      if (!value) this.setDataValue('lastMenstruationPeriod', null);
-    },
-    lastPapsmearDate(value) {
-      if (!value) this.setDataValue('lastPapsmearDate', null);
-    }
-
-  }
+  defaultScope: { include: [Pregnancy] }
 });
+
+ObGyneHistory.hasMany(Pregnancy);
 
 
 module.exports = { PastMedicalHistory, SocialPersonalHistory, ObGyneHistory, FamilyMedicalHistory };
