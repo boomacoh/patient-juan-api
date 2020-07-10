@@ -70,6 +70,8 @@ const controller = {
   },
   create: async (req, res) => {
     const queueData = req.body;
+    const { payload: { userId } } = req;
+    queueData.physicianId = userId;
     return Queue
       .count({ where: { date: queueData.date, type: queueData.type, institutionId: queueData.institutionId } })
       .then(count => {
