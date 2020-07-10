@@ -14,6 +14,7 @@ router.post('/injuries', jwtAuth.required, controller.addInjury);
 router.post('/blood-transfusions', jwtAuth.required, controller.addBloodTransfusion);
 router.post('/allergies', jwtAuth.required, controller.addAllergy);
 router.post('/psychiatrics', jwtAuth.required, controller.addPsychiatric);
+router.post('/obh/pregnancies', jwtAuth.required, controller.addPregnancy);
 
 router.put('/medical-conditions/:id', jwtAuth.required, controller.updateMedicalCondition);
 router.put('/medications/:id', jwtAuth.required, controller.updateMedication);

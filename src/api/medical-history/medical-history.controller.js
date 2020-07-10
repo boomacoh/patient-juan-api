@@ -1,7 +1,7 @@
 const MedicalHistory = require('./medical-history.model');
 const { respondWithResult, handleErrorMsg, handleEntityNotFound, handleError } = require('../../services/handlers');
 const { FamilyMedicalHistory, ObGyneHistory, PastMedicalHistory, SocialPersonalHistory } = require('./histories');
-const { MedicalCondition, Medication, ChildHoodDisease, Hospitalization, Surgery, Injury, BloodTransfusion, Allergy, Psychiatric } = require('./sub-histories');
+const { MedicalCondition, Medication, ChildHoodDisease, Hospitalization, Surgery, Injury, BloodTransfusion, Allergy, Psychiatric, Pregnancy, Birth } = require('./sub-histories');
 
 const mhView = (data) => {
   const medicalHistory = {
@@ -189,6 +189,13 @@ const controller = {
     return ObGyneHistory
       .update(req.body, { where: { id: id } })
       .then(() => res.status(200).json('Ob-Gyne History Updated'))
+      .catch(handleError(res));
+  },
+  addPregnancy: (req, res) => {
+    return Pregnancy
+      .create(req.body, {include: [Birth]})
+      .then(respondWithResult(res))
+      .then(respondWithResult(res))
       .catch(handleError(res));
   }
 
