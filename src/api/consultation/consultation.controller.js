@@ -3,6 +3,8 @@ const Hpi = require('../history-of-present-illness/hpi.model');
 const { handleErrorMsg, handleEntityNotFound, respondWithResult, handleError } = require('../../services/handlers');
 const moment = require('moment');
 const sequelize = require('sequelize');
+const { Ros } = require('../review-of-systems/review-of-systems.model');
+const handlers = require('../../services/handlers');
 
 const view = (data) => {
   const consultation = {
@@ -26,18 +28,13 @@ const view = (data) => {
       // specialization: data.physician.profile.specialization,
       // fullName: data.physician.profile.fullName
     },
-    reviewOfSystems: {
-      generalHealth: data.rosGeneralHealth,
-      heent: data.rosHeent,
-      cardiovascularSystem: data.rosCardiovascularSystem,
-      respiratorySystem: data.rosRespiratorySystem,
-      gastroIntestinalSystem: data.rosGastroIntestinalSystem,
-      nervousSystem: data.rosNervousSystem,
-    },
+    ros: data.rosystem,
     physicalExam: data.physicalExam,
+    diagnostics: data.diagnostics,
     diagnosis: data.diagnosis,
     plan: data.plan,
     billing: data.billing,
+    status: data.status,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt
   }
@@ -60,7 +57,6 @@ const controller = {
       .then(handleEntityNotFound(res, 'Consultation'))
       .then(consultation => {
         // return res.send(consultation);
-        // console.log(Object.keys(consultation.__proto__));
         res.send(view(consultation));
       })
       .catch(handleError(res));
@@ -75,16 +71,10 @@ const controller = {
   },
   create: (req, res) => {
     return Consultation
-      .create(req.body)
+      .create(req.body, { hooks: true })
       .then(consultation => {
-        consultation.createRosGeneralHealth();
-        consultation.createRosHeent();
-        consultation.createRosCardiovascularSystem();
-        consultation.createRosRespiratorySystem();
-        consultation.createRosNervousSystem();
-        consultation.createRosGastroIntestinalSystem();
-        consultation.createPhysicalExam();
-        consultation.createPlan();
+        // consultation.createPhysicalExam();
+        // consultation.createPlan();
         return consultation;
       })
       .then(respondWithResult(res))
@@ -94,7 +84,7 @@ const controller = {
     const { params: { id } } = req;
     return Consultation
       .findByPk(id)
-      .then(consultation => {
+      .then(async consultation => {
 
         req.body.hpis.forEach(item => {
           if (!item.id) consultation.createHpi(item);
@@ -150,6 +140,23 @@ const controller = {
       .then(() => res.status(200).json(`${group} updated`))
       .catch(handleError(res));
   },
+  updateRosGroup: (req, res) => {
+    const { params: { id } } = req;
+    const formData = req.body;
+    return Consultation
+      .findByPk(id)
+      .then(async consultation => {
+        console.log(Object.keys(consultation.__proto__));
+
+        const rosGroup = await consultation.getRosystem({ where: { group: req.body.group } });
+        if (!rosGroup[0]) {
+          return await consultation.createRosystem(req.body);
+        }
+        return await rosGroup[0].update(formData);
+      })
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  },
   updatePhysicalExam: (req, res) => {
     const { params: { id } } = req;
     return Consultation
@@ -158,6 +165,32 @@ const controller = {
       .then(physicalExam => physicalExam.update(req.body))
       .then(() => res.status(200).json('Physical Exam updated'))
       .catch(handleError(res));
+  },
+  updateDiagnostic: (req, res) => {
+    const { params: { id } } = req;
+    return Consultation
+      .findByPk(id)
+      .then(async consultation => {
+
+        const updated = [];
+
+        req.body.diagnostics.forEach(async d => {
+          if (d.id) return updated.push(d.id);
+          let x = await consultation.createDiagnostic(d)
+          updated.push(x.id);
+        });
+
+        const current = await consultation.getDiagnostics();
+
+        current.forEach(b => {
+          let index = req.body.diagnostics.findIndex(i => i.id === b.id);
+          if (index !== -1) return b.update({ date: req.body.diagnostics[index].date, test: req.body.diagnostics[index].test, remrarks: req.body.diagnostics[index].remarks });
+          b.destroy();
+        });
+        return consultation.setDiagnostics(updated);
+      })
+      .then(respondWithResult(res))
+      .catch(handleError(res))
   },
   updateplan: (req, res) => {
     const { params: { id } } = req;
@@ -174,8 +207,8 @@ const controller = {
             if (!drug.id) plan.createDrug(drug);
           });
         }
-        if (planData.diagnostics.length > 0) {
-          planData.diagnostics.forEach(diagnostic => {
+        if (planData.diagnosticTests.length > 0) {
+          planData.diagnosticTests.forEach(diagnostic => {
             if (!diagnostic.id) plan.createDiagnostic(diagnostic);
           });
         }
@@ -186,7 +219,7 @@ const controller = {
       })
       .then(async plan => {
         const drugs = await plan.getDrugs();
-        const diagnostics = await plan.getDiagnostics();
+        const diagnostics = await plan.getDiagnosticTests();
 
         drugs.forEach(drug => {
           let index = planData.drugs.findIndex(i => i.id === drug.id);
