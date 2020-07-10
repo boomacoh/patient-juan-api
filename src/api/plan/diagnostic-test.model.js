@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize');
 
-const Diagnostic = sequelize.define('diagnostic', {
+const DiagnosticTest = sequelize.define('diagnosticTest', {
   test: Sequelize.STRING,
   instructions: Sequelize.STRING
 });
 
-module.exports = Diagnostic;
+module.exports = DiagnosticTest;
