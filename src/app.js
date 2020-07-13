@@ -4,6 +4,7 @@ const cors = require('cors');
 const logger = require('morgan');
 const path = require('path');
 const expresshbs = require('express-handlebars');
+const router = express.Router();
 
 const app = express();
 
@@ -19,9 +20,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 require('./services/sequelize');
 
-require('./routes')(app);
+// require('./routes')(app);
+require('./routes')(router);
 
 require('./services/auth/passport');
+
+app.use('/api', router);
+
 
 // app.use(function (err, req, res, next) {
 //   if (err.code === 'permission_denied') res.status(403).send('Forbidden');
