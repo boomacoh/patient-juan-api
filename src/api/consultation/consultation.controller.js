@@ -19,9 +19,12 @@ const view = (data) => {
     patient: {
       id: data.patient.id,
       fullName: data.patient.fullName,
+      age: moment().diff(data.patient.birthdate, 'years'),
       sex: data.patient.sex,
+      addresss: data.patient.mailingAddress,
+      contactNo: data.patient.contactNo,
+      nationality: data.patient.nationality,
       birthdate: data.patient.birthdate,
-      age: moment().diff(data.patient.birthdate, 'years')
     },
     physician: {
       id: data.physician.id,
