@@ -62,12 +62,12 @@ const SocialPersonalHistory = sequelize.define('socialPersonalHistory', {
 
 const ObGyneHistory = sequelize.define('obGyneHistory', {
   unremarkable: { type: Sequelize.BOOLEAN, defaultValue: false },
-  gravidity: { type: Sequelize.INTEGER, allowNull: false },
-  parity: { type: Sequelize.INTEGER, allowNull: false },
-  termPregnancy: { type: Sequelize.INTEGER, allowNull: false },
-  preTermPregnancy: { type: Sequelize.INTEGER, allowNull: false },
-  noOfAbortion: { type: Sequelize.INTEGER, allowNull: false },
-  noOfLivingChildren: { type: Sequelize.INTEGER, allowNull: false },
+  gravidity: { type: Sequelize.INTEGER },
+  parity: { type: Sequelize.INTEGER },
+  termPregnancy: { type: Sequelize.INTEGER },
+  preTermPregnancy: { type: Sequelize.INTEGER },
+  noOfAbortion: { type: Sequelize.INTEGER },
+  noOfLivingChildren: { type: Sequelize.INTEGER },
   menarche: Sequelize.STRING,
   interval: Sequelize.STRING,
   duration: Sequelize.STRING,
