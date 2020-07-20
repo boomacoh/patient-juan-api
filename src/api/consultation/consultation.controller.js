@@ -14,7 +14,8 @@ const view = (data) => {
     hpis: data.hpis,
     institution: {
       id: data.institution.id,
-      registeredName: data.institution.registeredName
+      registeredName: data.institution.registeredName,
+      address: data.institution.mailingAddress
     },
     patient: {
       id: data.patient.id,
@@ -87,7 +88,7 @@ const controller = {
     const { params: { id } } = req;
     return Consultation
       .findByPk(id)
-      .then(async consultation => {
+      .then(consultation => {
 
         req.body.hpis.forEach(item => {
           if (!item.id) consultation.createHpi(item);
@@ -103,7 +104,7 @@ const controller = {
         consultation.getHpis()
           .then(hpis => {
             hpis.forEach(hpi => {
-              let index = req.body.hpis.findIndex(i => { return i.id === hpi.id });
+              let index = req.body.hpis.findIndex(i => i.id === hpi.id);
               if (index !== -1) return hpi.update({ timeFrame: req.body.hpis[index].timeFrame, details: req.body.hpis[index].details });
               hpi.destroy();
             });
@@ -112,35 +113,6 @@ const controller = {
         return consultation;
       })
       .then(respondWithResult(res))
-      .catch(handleError(res));
-  },
-  updateRosys: (req, res) => {
-    const { params: { id } } = req;
-    const rosData = req.body;
-    console.log(req.body);
-    return Consultation
-      .scope('all')
-      .findByPk(id)
-      .then(consultation => {
-        console.log(consultation.rosGeneralHealth);
-        consultation.rosGeneralHealth.update(rosData.rosGeneralHealth);
-        consultation.rosHeent.update(rosData.rosHeent);
-        consultation.rosCardiovascularSystem.update(rosData.rosCardiovascularSystem);
-        consultation.rosRespiratorySystem.update(rosData.rosRespiratorySystem);
-        consultation.rosGastroIntestinalSystem.update(rosData.rosGastroIntestinalSystem);
-        consultation.rosNervousSystem.update(rosData.rosNervousSystem);
-      })
-      .then(() => res.status(200).json('Consultation Updated'))
-      .catch(handleError(res));
-  },
-  updateRosysGroup: (req, res) => {
-    const { params: { group, id } } = req;
-    return Consultation
-      .scope('all')
-      .findByPk(id)
-      .then(handleEntityNotFound(res, 'Consultation'))
-      .then(consultation => consultation[group].update(req.body))
-      .then(() => res.status(200).json(`${group} updated`))
       .catch(handleError(res));
   },
   updateRosGroup: (req, res) => {
@@ -153,7 +125,7 @@ const controller = {
 
         const rosGroup = await consultation.getRosystem({ where: { group: req.body.group } });
         if (!rosGroup[0]) {
-          return await consultation.createRosystem(req.body);
+          return await consultation.createRosystem(formData);
         }
         return await rosGroup[0].update(formData);
       })
@@ -175,12 +147,8 @@ const controller = {
       .findByPk(id)
       .then(async consultation => {
 
-        const updated = [];
-
-        req.body.diagnostics.forEach(async d => {
-          if (d.id) return updated.push(d.id);
-          let x = await consultation.createDiagnostic(d)
-          updated.push(x.id);
+        req.body.diagnostics.forEach(d => {
+          if (!d.id) consultation.createDiagnostic(d);
         });
 
         const current = await consultation.getDiagnostics();
@@ -190,20 +158,26 @@ const controller = {
           if (index !== -1) return b.update({ date: req.body.diagnostics[index].date, test: req.body.diagnostics[index].test, remrarks: req.body.diagnostics[index].remarks });
           b.destroy();
         });
-        return consultation.setDiagnostics(updated);
+
+        return consultation;
       })
       .then(respondWithResult(res))
       .catch(handleError(res))
   },
-  updateplan: (req, res) => {
+  updateplan: async (req, res) => {
     const { params: { id } } = req;
     const planData = req.body;
     return Consultation
       .findByPk(id)
       .then(consultation => consultation.getPlan())
       .then(plan => {
+
         plan.diet = planData.diet;
         plan.disposition = planData.disposition;
+        plan.specificInstructions = planData.specificInstructions;
+        plan.followUpDate = planData.followUpDate;
+        plan.followUpTime = planData.followUpTime;
+        plan.followUpInstructions = planData.followUpInstructions;
 
         if (planData.drugs.length > 0) {
           planData.drugs.forEach(drug => {
@@ -211,18 +185,16 @@ const controller = {
           });
         }
         if (planData.diagnosticTests.length > 0) {
-          planData.diagnosticTests.forEach(diagnostic => {
-            if (!diagnostic.id) plan.createDiagnostic(diagnostic);
+          planData.diagnosticTests.forEach(dt => {
+            if (!dt.id) plan.createDiagnosticTest(dt);
           });
         }
 
         plan.save();
         return plan;
-
       })
       .then(async plan => {
         const drugs = await plan.getDrugs();
-        const diagnostics = await plan.getDiagnosticTests();
 
         drugs.forEach(drug => {
           let index = planData.drugs.findIndex(i => i.id === drug.id);
@@ -237,16 +209,19 @@ const controller = {
           }
           drug.destroy();
         });
-
-        diagnostics.forEach(diagnostic => {
-          let index = planData.diagnostics.findIndex(j => j.id === diagnostic.id);
-          if (index !== -1) {
-            return diagnostic.update({
-              test: planData.diagnostics[index].test,
-              instructions: planData.diagnostics[index].instructions
+        return plan;
+      })
+      .then(async plan => {
+        const diagnosticTests = await plan.getDiagnosticTests();
+        diagnosticTests.forEach(dTest => {
+          let dtIndex = planData.diagnosticTests.findIndex(j => j.id === dTest.id);
+          if (dtIndex !== -1) {
+            return dTest.update({
+              test: planData.diagnosticTests[dtIndex].test,
+              instructions: planData.diagnosticTests[dtIndex].instructions
             });
           }
-          diagnostic.destroy();
+          dTest.destroy();
         });
 
         return plan;
