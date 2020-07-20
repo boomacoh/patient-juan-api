@@ -4,7 +4,7 @@ const moment = require('moment');
 
 const view = (data) => {
   const queue = {
-    queueId: data.id,
+    id: data.id,
     institutionId: data.institutionId,
     physicianId: data.physicianId,
     patientId: data.patientId,
@@ -34,10 +34,7 @@ const controller = {
       .scope('patient')
       .findByPk(id)
       .then(handleEntityNotFound(res, 'Queue'))
-      .then(queue => {
-        // console.log(Object.keys(queue.__proto__))
-        res.send(queue);
-      })
+      .then(respondWithResult(res))
       .catch(handleError(res));
   },
   getScopes: (req, res) => {
