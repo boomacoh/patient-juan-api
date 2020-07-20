@@ -34,7 +34,7 @@ const view = (data) => {
     },
     ros: data.rosystem,
     physicalExam: data.physicalExam,
-    diagnostics: data.diagnostics,
+    labsAndImaging: data.labsAndImaging,
     diagnosis: data.diagnosis,
     plan: data.plan,
     billing: data.billing,
@@ -141,21 +141,21 @@ const controller = {
       .then(() => res.status(200).json('Physical Exam updated'))
       .catch(handleError(res));
   },
-  updateDiagnostic: (req, res) => {
+  updateLabsAndImaging: (req, res) => {
     const { params: { id } } = req;
     return Consultation
       .findByPk(id)
       .then(async consultation => {
 
-        req.body.diagnostics.forEach(d => {
-          if (!d.id) consultation.createDiagnostic(d);
+        req.body.labsAndImaging.forEach(d => {
+          if (!d.id) consultation.createLabsAndImaging(d);
         });
 
-        const current = await consultation.getDiagnostics();
+        const current = await consultation.getLabsAndImaging();
 
         current.forEach(b => {
-          let index = req.body.diagnostics.findIndex(i => i.id === b.id);
-          if (index !== -1) return b.update({ date: req.body.diagnostics[index].date, test: req.body.diagnostics[index].test, remrarks: req.body.diagnostics[index].remarks });
+          let index = req.body.labsAndImaging.findIndex(i => i.id === b.id);
+          if (index !== -1) return b.update({ date: req.body.labsAndImaging[index].date, test: req.body.labsAndImaging[index].test, remrarks: req.body.labsAndImaging[index].remarks });
           b.destroy();
         });
 

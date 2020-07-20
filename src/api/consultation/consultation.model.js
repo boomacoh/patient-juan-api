@@ -7,7 +7,7 @@ const Ros = require('../review-of-systems/review-of-systems.model');
 const PhysicalExam = require('../physical-exam/physical-exam.model');
 const Plan = require('../plan/plan.model');
 const Billing = require('../billing/billing.model');
-const Diagnostic = require('../diagnostic/diagnostic-model');
+const LabsAndImaging = require('../labs-and-imaging/labs-and-imaging.model');
 const moment = require('moment');
 
 const Consultation = sequelize.define('consultation', {
@@ -58,7 +58,7 @@ Institution.hasMany(Consultation);
 
 Consultation.hasMany(Ros, { as: 'rosystem', foreignKey: 'consultationId', onDelete: 'CASCADE' });
 Consultation.hasOne(PhysicalExam, { as: 'physicalExam', foreignKey: 'consultationId', onDelete: 'CASCADE' });
-Consultation.hasMany(Diagnostic, { as: 'diagnostics', foreignKey: 'consultationId', onDelete: 'CASCADE' })
+Consultation.hasMany(LabsAndImaging, { as: 'labsAndImaging', foreignKey: 'consultationId', onDelete: 'CASCADE' })
 Consultation.hasOne(Plan, { as: 'plan', foreignKey: 'consultationId', onDelete: 'CASCADE' });
 Consultation.hasOne(Billing, { onDelete: 'CASCADE' });
 

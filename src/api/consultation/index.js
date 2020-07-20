@@ -11,7 +11,7 @@ router.post('/', jwtAuth.required, controller.create);
 router.post('/:id/hpis', controller.updateHpis);
 router.post('/:id/ros', jwtAuth.required, controller.updateRosGroup);
 router.post('/:id/physical-exam', jwtAuth.required, controller.updatePhysicalExam);
-router.post('/:id/diagnostics', jwtAuth.required, controller.updateDiagnostic);
+router.post('/:id/labs-and-imaging', jwtAuth.required, controller.updateLabsAndImaging);
 router.post('/:id/plan', jwtAuth.required, controller.updateplan);
 
 module.exports = router;

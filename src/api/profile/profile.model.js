@@ -35,10 +35,6 @@ const Profile = sequelize.define('profile', {
     middleName(value) {
       if (value) return this.setDataValue('middleName', value.charAt(0).toUpperCase() + value.slice(1));
     },
-    contactNo(value) {
-      if (value) return this.setDataValue('contactNo', value.join(';'));
-      this.setDataValue('contactNo', null);
-    },
     specialization(value) {
       if (value) return this.setDataValue('specialization', value.join(';'));
       this.setDataValue('specialization', null);
@@ -56,11 +52,6 @@ const Profile = sequelize.define('profile', {
     fullName(){
       if(this.suffix) return `${this.firstName} ${this.lastName} ${this.suffix}`;
       return `${this.firstName} ${this.lastName}`;
-    },
-    contactNo() {
-      contactNos = this.getDataValue('contactNo');
-      if (contactNos) return contactNos.split(';');
-      return [];
     },
     specialization() {
       specializations = this.getDataValue('specialization');
