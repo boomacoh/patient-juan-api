@@ -29,8 +29,14 @@ router.put('/psychiatrics/:id', jwtAuth.required, controller.updatePsychiatric);
 router.put('/sph/:id', jwtAuth.required, controller.updateSph);
 router.put('/obh/:id', jwtAuth.required, controller.updateObGyneHistory);
 
-router.delete('/surgeries/:id', jwtAuth.required, controller.deleteSurgery);
+router.delete('/medical-conditions/:id', jwtAuth.required, controller.deleteMedicalCondition);
 router.delete('/medications/:id', jwtAuth.required, controller.deleteMedication);
+router.delete('/childhood-diseases/:id', jwtAuth.required, controller.deleteChildhoodDisease);
+router.delete('/hospitalizations/:id', jwtAuth.required, controller.deleteHospitalization);
+router.delete('/surgeries/:id', jwtAuth.required, controller.deleteSurgery);
+router.delete('/injuries/:id', jwtAuth.required, controller.deleteInjury);
+router.delete('/blood-transfusions/:id', jwtAuth.required, controller.deleteBloodTransfusion);
 router.delete('/allergies/:id', jwtAuth.required, controller.deleteAllergy);
+router.delete('/psychiatrics/:id', jwtAuth.required, controller.deletePsychiatric);
 
 module.exports = router;

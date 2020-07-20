@@ -52,6 +52,14 @@ const controller = {
       .then(() => res.status(200).json('Medical Conditon Updated'))
       .catch(handleError(res));
   },
+  deleteMedicalCondition: (req, res) => {
+    const { params: { id } } = req;
+    const { query: { parent } } = req;
+    return MedicalCondition
+      .destroy({ where: { id: id, parent: parent } })
+      .then(respondWithResult(res, 204))
+      .catch(handleError(res));
+  },
   addMedication: (req, res) => {
     return Medication
       .create(req.body)
@@ -85,6 +93,13 @@ const controller = {
       .then(() => res.status(200).json('Childhood Disease Updated'))
       .catch(handleError(res));
   },
+  deleteChildhoodDisease: (req, res) => {
+    const { params: { id } } = req;
+    return ChildHoodDisease
+      .destroy({ where: { id: id } })
+      .then(respondWithResult(res, 204))
+      .catch(handleError(res));
+  },
   addHospitalization: (req, res) => {
     return Hospitalization
       .create(req.body)
@@ -96,6 +111,13 @@ const controller = {
     return Hospitalization
       .update(req.body, { where: { id: id } })
       .then(() => res.status(200).json('Hospitalization Updated'))
+      .catch(handleError(res));
+  },
+  deleteHospitalization: (req, res) => {
+    const { params: { id } } = req;
+    return Hospitalization
+      .destroy({ where: { id: id } })
+      .then(respondWithResult(res, 204))
       .catch(handleError(res));
   },
   addSurgery: (req, res) => {
@@ -131,6 +153,13 @@ const controller = {
       .then(() => res.status(200).json('Injury Updated'))
       .catch(handleError(res));
   },
+  deleteInjury: (req, res) => {
+    const { params: { id } } = req;
+    return Injury
+      .destroy({ where: { id: id } })
+      .then(respondWithResult(res, 204))
+      .catch(handleError(res));
+  },
   addBloodTransfusion: (req, res) => {
     return BloodTransfusion
       .create(req.body)
@@ -142,6 +171,13 @@ const controller = {
     return BloodTransfusion
       .update(req.body, { where: { id: id } })
       .then(() => res.status(200).json('Blood Transfusion Updated'))
+      .catch(handleError(res));
+  },
+  deleteBloodTransfusion: (req, res) => {
+    const { params: { id } } = req;
+    return BloodTransfusion
+      .destroy({ where: { id: id } })
+      .then(respondWithResult(res))
       .catch(handleError(res));
   },
   addAllergy: (req, res) => {
@@ -177,6 +213,13 @@ const controller = {
       .then(() => res.status(200).json('Psychiatric Updated'))
       .catch(handleError(res));
   },
+  deletePsychiatric: (req, res) => {
+    const { params: { id } } = req;
+    return Psychiatric
+      .destroy({ where: { id: id } })
+      .then(respondWithResult(res, 204))
+      .catch(handleError(res));
+  },
   updateSph: (req, res) => {
     const { params: { id } } = req;
     return SocialPersonalHistory
@@ -193,7 +236,7 @@ const controller = {
   },
   addPregnancy: (req, res) => {
     return Pregnancy
-      .create(req.body, {include: [Birth]})
+      .create(req.body, { include: [Birth] })
       .then(respondWithResult(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
