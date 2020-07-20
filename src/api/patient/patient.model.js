@@ -15,9 +15,7 @@ const Patient = sequelize.define('patient', {
     religion: Sequelize.STRING(50),
     bloodType: Sequelize.STRING(50),
     philhealthId: Sequelize.STRING(50),
-    withHMO: Sequelize.BOOLEAN,
-    mipId: Sequelize.INTEGER,
-    memberId: Sequelize.STRING(255),
+    hmo: Sequelize.STRING,
     mailingAddress: Sequelize.STRING(255),
     contactNo: Sequelize.STRING,
     email: Sequelize.STRING(255),
@@ -43,25 +41,9 @@ const Patient = sequelize.define('patient', {
         nickname(value) {
             if (value) return this.setDataValue('nickname', value.charAt(0).toUpperCase() + value.slice(1))
             this.setDataValue('nickname', null)
-        },
-        // contactNo(value) {
-        //     if (value) return this.setDataValue('contactNo', value.join(';'));
-        //     this.setDataValue('contactNo', null)
-        // },
-        // emergencyContactNo(value) {
-        //     if (value) return this.setDataValue('emergencyContactNo', value.join(';'));
-        //     this.setDataValue('emergencyContactNo', null)
-        // }
+        }
     },
     getterMethods: {
-        // contactNo() {
-        //     contactNos = this.getDataValue('contactNo');
-        //     if (contactNos) return contactNos.split(';');
-        // },
-        // emergencyContactNo() {
-        //     contactNos = this.getDataValue('emergencyContactNo');
-        //     if (contactNos) return contactNos.split(';');
-        // },
         fullName() {
             if (this.suffix) return `${this.firstName} ${this.lastName} ${this.suffix}`;
             return `${this.firstName} ${this.lastName}`;
