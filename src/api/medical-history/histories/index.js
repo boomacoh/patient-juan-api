@@ -75,15 +75,15 @@ const ObGyneHistory = sequelize.define('obGyneHistory', {
   symptoms: Sequelize.STRING,
   contraception: Sequelize.STRING,
   lastPapsmear: Sequelize.STRING,
-  lastMenstruationPeriod: Sequelize.DATEONLY,
-  previousMenstruationPeriod: Sequelize.DATEONLY,
+  lastMenstruationPeriod: { type: Sequelize.DATEONLY, defaultValue: null },
+  previousMenstruationPeriod: { type: Sequelize.DATEONLY, defaultValue: null },
   AOGbyLMP: { type: Sequelize.STRING, comment: 'current date - last menstruation period (by weeks)' },
-  lastUltrasoundDate: Sequelize.DATEONLY,
+  lastUltrasoundDate: { type: Sequelize.DATEONLY, defaultValue: null },
   AOGinLastUltrasoundW: Sequelize.INTEGER,
   AOGinLastUltrasoundD: Sequelize.INTEGER,
   AOGbyUTZ: { type: Sequelize.STRING, comment: 'current date - last ultrasound date' },
-  EDDfromLMP: { type: Sequelize.DATEONLY, comment: 'last menstruation period + 280 days' },
-  EDDfromUTZ: { type: Sequelize.DATEONLY, comment: '(last ultrasound date + 280 days) - AOG in last ultrasound' }
+  EDDfromLMP: { type: Sequelize.DATEONLY, comment: 'last menstruation period + 280 days', defaultValue: null },
+  EDDfromUTZ: { type: Sequelize.DATEONLY, comment: '(last ultrasound date + 280 days) - AOG in last ultrasound', defaultValue: null }
 }, {
   freezeTableName: true,
   defaultScope: { include: [Pregnancy] }

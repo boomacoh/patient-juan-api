@@ -65,7 +65,7 @@ const Birth = sequelize.define('birth', {
 const Pregnancy = sequelize.define('pregnancy', {
   term: Sequelize.STRING,
   ageOfGestation: Sequelize.STRING,
-  dateOfDelivery: Sequelize.DATEONLY,
+  dateOfDelivery: { type: Sequelize.DATEONLY, defaultValue: null },
   type: Sequelize.STRING
 }, {
   defaultScope: { include: [Birth] }
