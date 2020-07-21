@@ -8,8 +8,8 @@ const BillingItem = sequelize.define('billing_items', {
   discount: Datatypes.STRING,
   discountType: Datatypes.STRING,
   discountValue: { type: Datatypes.FLOAT, defaultValue: 0 },
-  hmo: { type: Datatypes.BOOLEAN, defaultValue: false },
-  items: Datatypes.STRING,
+  hmo: { type: Datatypes.STRING },
+  hmoValue: { type: Datatypes.FLOAT, defaultValue: 0 },
   total: Datatypes.VIRTUAL(Datatypes.FLOAT)
 }, {
   setterMethods: {
@@ -23,7 +23,7 @@ const BillingItem = sequelize.define('billing_items', {
       const discount = this.getDataValue('discount');
       const totalValue = this.price * this.qty;
       if (discount) {
-        if (this.discountType === 'amt') return totalValue - this.discountValue;
+        if (this.discountType === 'amt') return totalValue - (this.discountValue + hmoValue);
         if (this.discountType === 'percent') return totalValue - (totalValue * (this.discountValue / 100));
       }
       return totalValue;
