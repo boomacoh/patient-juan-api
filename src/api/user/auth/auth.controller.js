@@ -32,7 +32,7 @@ const controller = {
           .catch(handleError(res));
 
         user
-        .createProfile(profileInfo);
+          .createProfile(profileInfo);
 
         const mailer = new NodeMailer(user.email);
         const message = {
@@ -134,6 +134,16 @@ const controller = {
       }
       return res.send(info.status, info.message);
     })(req, res, next);
+  },
+  validateEmail: (req, res) => {
+    const { query: { email } } = req;
+    return User
+      .findOne({ where: { email: email } })
+      .then(user => {
+        if (user) return res.send(true);
+        return res.send(false);
+      })
+      .catch(handleError(res));
   }
 }
 
