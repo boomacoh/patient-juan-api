@@ -1,10 +1,6 @@
 const Consultation = require('./consultation.model');
-const Hpi = require('../history-of-present-illness/hpi.model');
 const { handleErrorMsg, handleEntityNotFound, respondWithResult, handleError } = require('../../services/handlers');
 const moment = require('moment');
-const sequelize = require('sequelize');
-const { Ros } = require('../review-of-systems/review-of-systems.model');
-const handlers = require('../../services/handlers');
 
 const view = (data) => {
   const consultation = {
@@ -15,14 +11,14 @@ const view = (data) => {
     institution: {
       id: data.institution.id,
       registeredName: data.institution.registeredName,
-      address: data.institution.mailingAddress
+      mailingAddress: data.institution.mailingAddress
     },
     patient: {
       id: data.patient.id,
       fullName: data.patient.fullName,
       age: moment().diff(data.patient.birthdate, 'years'),
       sex: data.patient.sex,
-      addresss: data.patient.mailingAddress,
+      mailingAddress: data.patient.mailingAddress,
       contactNo: data.patient.contactNo,
       nationality: data.patient.nationality,
       birthdate: data.patient.birthdate,
@@ -32,9 +28,9 @@ const view = (data) => {
       // specialization: data.physician.profile.specialization,
       // fullName: data.physician.profile.fullName
     },
-    ros: data.rosystem,
+    rosystems: data.rosystems,
     physicalExam: data.physicalExam,
-    labsAndImaging: data.labsAndImaging,
+    labsAndImagings: data.labsAndImagings,
     diagnosis: data.diagnosis,
     plan: data.plan,
     billing: data.billing,
@@ -49,8 +45,11 @@ const controller = {
   getAll: (req, res) => {
     return Consultation
       .findAll()
+      .then(consultations => {
+        console.log(Object.keys(consultations[0].__proto__));
+        res.send(consultations);
+      })
       .then(respondWithResult(res))
-      // .then(consultations => res.send(consultations.map(view)))
       .catch(handleError(res));
   },
   getOne: (req, res) => {
@@ -121,9 +120,8 @@ const controller = {
     return Consultation
       .findByPk(id)
       .then(async consultation => {
-        console.log(Object.keys(consultation.__proto__));
 
-        const rosGroup = await consultation.getRosystem({ where: { group: req.body.group } });
+        const rosGroup = await consultation.getRosystems({ where: { group: req.body.group } });
         if (!rosGroup[0]) {
           return await consultation.createRosystem(formData);
         }
@@ -133,6 +131,7 @@ const controller = {
       .catch(handleError(res));
   },
   updatePhysicalExam: (req, res) => {
+    console.log(req.body);
     const { params: { id } } = req;
     return Consultation
       .findByPk(id)
@@ -141,94 +140,107 @@ const controller = {
       .then(() => res.status(200).json('Physical Exam updated'))
       .catch(handleError(res));
   },
-  updateLabsAndImaging: (req, res) => {
+  updateplan: (req, res) => {
     const { params: { id } } = req;
     return Consultation
       .findByPk(id)
-      .then(async consultation => {
-
-        req.body.labsAndImaging.forEach(d => {
-          if (!d.id) consultation.createLabsAndImaging(d);
-        });
-
-        const current = await consultation.getLabsAndImaging();
-
-        current.forEach(b => {
-          let index = req.body.labsAndImaging.findIndex(i => i.id === b.id);
-          if (index !== -1) return b.update({ date: req.body.labsAndImaging[index].date, test: req.body.labsAndImaging[index].test, remrarks: req.body.labsAndImaging[index].remarks });
-          b.destroy();
-        });
-
-        return consultation;
+      .then(consultation => consultation.getPlan())
+      .then(plan => plan.update(req.body.planData))
+      .then(res.status(200).json('Plan Updated'))
+      .catch(handleError(res));
+  },
+  addLabsAndImaging: (req, res) => {
+    const { params: { id } } = req;
+    return Consultation
+      .findByPk(id)
+      .then(consultation => consultation.createLabsAndImaging(req.body))
+      .then(respondWithResult(res, 201))
+      .catch(handleError(res));
+  },
+  updateLabsAndImaging: (req, res) => {
+    const { params: { id } } = req;
+    const { query: { laiId } } = req;
+    return Consultation
+      .findByPk(id)
+      .then(consultation => consultation.getLabsAndImagings({ where: { id: laiId } }))
+      .then(lai => {
+        return lai[0].update(req.body);
       })
       .then(respondWithResult(res))
       .catch(handleError(res))
   },
-  updateplan: async (req, res) => {
+  deleteLabsAndImaging: (req, res) => {
     const { params: { id } } = req;
-    const planData = req.body;
+    const { query: { laiId } } = req;
+    return Consultation
+      .findByPk(id)
+      .then(consultation => consultation.getLabsAndImagings({ where: { id: laiId } }))
+      .then(lai => lai[0].destroy())
+      .then(respondWithResult(res, 204))
+      .catch(handleError(res));
+  },
+  addPlanDrug: (req, res) => {
+    const { params: { id } } = req;
     return Consultation
       .findByPk(id)
       .then(consultation => consultation.getPlan())
-      .then(plan => {
-
-        plan.diet = planData.diet;
-        plan.disposition = planData.disposition;
-        plan.specificInstructions = planData.specificInstructions;
-        plan.followUpDate = planData.followUpDate;
-        plan.followUpTime = planData.followUpTime;
-        plan.followUpInstructions = planData.followUpInstructions;
-
-        if (planData.drugs.length > 0) {
-          planData.drugs.forEach(drug => {
-            if (!drug.id) plan.createDrug(drug);
-          });
-        }
-        if (planData.diagnosticTests.length > 0) {
-          planData.diagnosticTests.forEach(dt => {
-            if (!dt.id) plan.createDiagnosticTest(dt);
-          });
-        }
-
-        plan.save();
-        return plan;
-      })
-      .then(async plan => {
-        const drugs = await plan.getDrugs();
-
-        drugs.forEach(drug => {
-          let index = planData.drugs.findIndex(i => i.id === drug.id);
-          if (index !== -1) {
-            return drug.update({
-              generic: planData.drugs[index].generic,
-              qty: planData.drugs[index].qty,
-              brand: planData.drugs[index].brand,
-              preparation: planData.drugs[index].preparation,
-              instructions: planData.drugs[index].instructions,
-            });
-          }
-          drug.destroy();
-        });
-        return plan;
-      })
-      .then(async plan => {
-        const diagnosticTests = await plan.getDiagnosticTests();
-        diagnosticTests.forEach(dTest => {
-          let dtIndex = planData.diagnosticTests.findIndex(j => j.id === dTest.id);
-          if (dtIndex !== -1) {
-            return dTest.update({
-              test: planData.diagnosticTests[dtIndex].test,
-              instructions: planData.diagnosticTests[dtIndex].instructions
-            });
-          }
-          dTest.destroy();
-        });
-
-        return plan;
-      })
-      .then(() => res.status(200).json('Plan Updated'))
+      .then(plan => plan.createDrug(req.body))
+      .then(respondWithResult(res))
       .catch(handleError(res));
   },
+  updatePlanDrug: (req, res) => {
+    const { params: { id } } = req;
+    const { query: { drugId } } = req;
+    return Consultation
+      .findByPk(id)
+      .then(consultation => consultation.getPlan())
+      .then(plan => plan.getDrugs({ where: { id: drugId } }))
+      .then(drugs => drugs[0].update(req.body))
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  },
+  deletePlanDrug: (req, res) => {
+    const { params: { id } } = req;
+    const { query: { drugId } } = req;
+    return Consultation
+      .findByPk(id)
+      .then(consultation => consultation.getPlan())
+      .then(plan => plan.getDrugs({ where: { id: drugId } }))
+      .then(drugs => drugs[0].destroy())
+      .then(respondWithResult(res, 204))
+      .catch(handleError(res));
+  },
+  addPlanTest: (req, res) => {
+    const { params: { id } } = req;
+    return Consultation
+      .findByPk(id)
+      .then(consultation => consultation.getPlan())
+      .then(plan => plan.createDiagnosticTest(req.body))
+      .then(respondWithResult(res, 201))
+      .catch(handleError(res));
+  },
+  updatePlanTest: (req, res) => {
+    const { params: { id } } = req;
+    const { query: { testId } } = req;
+    return Consultation
+      .findByPk(id)
+      .then(consultation => consultation.getPlan())
+      .then(plan => plan.getDiagnosticTests({ where: { id: testId } }))
+      .then(tests => tests[0].update(req.body))
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  },
+  deletePlanTest: (req, res) => {
+    const { params: { id } } = req;
+    const { query: { testId } } = req;
+    return Consultation
+      .findByPk(id)
+      .then(consultation => consultation.getPlan())
+      .then(plan => plan.getDiagnosticTests({ where: { id: testId } }))
+      .then(tests => tests[0].destroy())
+      .then(respondWithResult(res, 204))
+      .catch(handleError(res));
+  }
 }
 
 module.exports = controller;
