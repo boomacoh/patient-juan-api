@@ -39,8 +39,8 @@ const Profile = sequelize.define('profile', {
       if (value) return this.setDataValue('specialization', value.join(';'));
       this.setDataValue('specialization', null);
     },
-    title(value){
-      if(value) return this.setDataValue('title', value.join(';'));
+    title(value) {
+      if (value) return this.setDataValue('title', value.join(';'));
       this.setDataValue('title', null);
     },
     image(value) {
@@ -49,8 +49,10 @@ const Profile = sequelize.define('profile', {
     }
   },
   getterMethods: {
-    fullName(){
-      if(this.suffix) return `${this.firstName} ${this.lastName} ${this.suffix}`;
+    fullName() {
+      if (this.suffix) return `${this.firstName} ${this.lastName} ${this.suffix}`;
+      if (this.middleName) return `${this.firstName} ${this.middleName.charAt(0).toUpperCase()}. ${this.lastName}`;
+      if (this.suffix && this.middleName) return `${this.firstName} ${this.middleName.charAt(0).toUpperCase()}. ${this.lastName} ${this.suffix}`;
       return `${this.firstName} ${this.lastName}`;
     },
     specialization() {
@@ -58,9 +60,9 @@ const Profile = sequelize.define('profile', {
       if (specializations) return specializations.split(';');
       return [];
     },
-    title(){
+    title() {
       titles = this.getDataValue('title');
-      if(titles) return titles.split(';');
+      if (titles) return titles.split(';');
       return [];
     }
   }
