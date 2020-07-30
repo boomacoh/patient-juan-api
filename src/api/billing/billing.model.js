@@ -13,9 +13,9 @@ const Billing = sequelize.define('billing', {
   scopes: {
     details: {
       include: [
-        { model: User, as: 'physician', attributes: ['email'], include: [{ model: Profile, attributes: ['firstName', 'lastName', 'fullName', 'title'] }] },
+        { model: User, as: 'physician', attributes: ['email'], include: [{ model: Profile, attributes: ['firstName', 'lastName', 'middleName', 'fullName', 'title'] }] },
         { model: Patient, as: 'patient', attributes: ['fullName', 'firstName', 'lastName', 'mailingAddress'] },
-        { model: Institution, as: 'institution', attributes: ['registeredName', 'mailingAddress', 'image'] }
+        { model: Institution, as: 'institution', attributes: ['registeredName', 'mailingAddress', 'image'] },
       ]
     },
     billingItems: { include: 'billingItems' },

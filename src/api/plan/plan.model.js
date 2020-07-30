@@ -13,7 +13,7 @@ const Plan = sequelize.define('plan', {
   defaultScope: { include: [Drug, DiagnosticTest] },
 });
 
-Plan.hasMany(Drug);
-Plan.hasMany(DiagnosticTest);
+Plan.hasMany(Drug, { onDelete: 'CASCADE' });
+Plan.hasMany(DiagnosticTest, { onDelete: 'CASCADE' });
 
 module.exports = Plan;

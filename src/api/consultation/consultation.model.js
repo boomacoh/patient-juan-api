@@ -3,7 +3,7 @@ const Hpi = require('../history-of-present-illness/hpi.model');
 const Patient = require('../patient/patient.model');
 const User = require('../user/user/user.model');
 const Institution = require('../institution/institution.model');
-const Ros = require('../review-of-systems/review-of-systems.model');
+const Rosystem = require('../review-of-systems/review-of-systems.model');
 const PhysicalExam = require('../physical-exam/physical-exam.model');
 const Plan = require('../plan/plan.model');
 const Billing = require('../billing/billing.model');
@@ -44,22 +44,19 @@ const Consultation = sequelize.define('consultation', {
     }
 });
 
-Consultation.hasMany(Hpi, { as: 'hpis' });
-Hpi.belongsTo(Consultation);
-
 Consultation.belongsTo(Patient, { as: 'patient' });
 Patient.hasMany(Consultation);
-
 Consultation.belongsTo(User, { as: 'physician', foreignKey: 'physicianId' });
 User.hasMany(Consultation, { as: 'consultations', foreignKey: 'physicianId' });
-
 Consultation.belongsTo(Institution);
 Institution.hasMany(Consultation);
 
-Consultation.hasMany(Ros, { as: 'rosystem', foreignKey: 'consultationId', onDelete: 'CASCADE' });
 Consultation.hasOne(PhysicalExam, { as: 'physicalExam', foreignKey: 'consultationId', onDelete: 'CASCADE' });
-Consultation.hasMany(LabsAndImaging, { as: 'labsAndImaging', foreignKey: 'consultationId', onDelete: 'CASCADE' })
 Consultation.hasOne(Plan, { as: 'plan', foreignKey: 'consultationId', onDelete: 'CASCADE' });
 Consultation.hasOne(Billing, { onDelete: 'CASCADE' });
 
+Consultation.hasMany(Hpi, { as: 'hpis' });
+Hpi.belongsTo(Consultation);
+Consultation.hasMany(Rosystem, { as: 'rosystems', foreignKey: 'consultationId', onDelete: 'CASCADE' });
+Consultation.hasMany(LabsAndImaging, { as: 'labsAndImagings', foreignKey: 'consultationId', onDelete: 'CASCADE' })
 module.exports = Consultation;

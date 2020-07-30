@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const Ros = sequelize.define('ros', {
+const Rosystem = sequelize.define('rosystem', {
   unremarkable: { type: Sequelize.BOOLEAN, defaultValue: false },
   symptoms: Sequelize.TEXT,
   remarks: Sequelize.TEXT,
@@ -32,4 +32,4 @@ const Ros = sequelize.define('ros', {
   }
 });
 
-module.exports = Ros;
+module.exports = Rosystem;
