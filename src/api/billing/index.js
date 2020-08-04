@@ -11,7 +11,7 @@ router.put('/billing-items/:id', jwtAuth.required, controller.updateBillingItem)
 router.post('/', jwtAuth.required, controller.create);
 router.post('/billing-items', jwtAuth.required, controller.createBillingItem)
 
-router.delete('/billing-items/:id', controller.deleteBillingItem);
+router.delete('/billing-items/:id', jwtAuth.required, controller.deleteBillingItem);
 
 
 module.exports = router;

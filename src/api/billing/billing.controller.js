@@ -2,6 +2,24 @@ const Billing = require('./billing.model');
 const BillingItem = require('./billing-items.model');
 const { handleEntityNotFound, respondWithResult, handleErrorMsg, handleError } = require('../../services/handlers');
 
+const billingItemView = (data) => {
+  const billingItem = {
+    id: data.id,
+    name: data.name,
+    price: data.price,
+    tag: data.tag,
+    qty: data.qty,
+    discount: data.discount,
+    discountValue: data.discountValue,
+    hmo: data.hmo,
+    hmoValue: data.hmoValue,
+    items: data.items,
+    total: data.total < 0 ? 0 : data.total,
+    billingId: data.billingId
+  }
+  return billingItem;
+}
+
 const controller = {
   getAll: (req, res) => {
     const { query: { institutionId, physicianId, status } } = req;
@@ -40,7 +58,7 @@ const controller = {
     return Billing
       .findByPk(id)
       .then(billing => billing.getBillingItems())
-      .then(respondWithResult(res))
+      .then(billingItems => res.send(billingItems.map(item => billingItemView(item))))
       .catch(handleError(res));
   },
   createBillingItem: (req, res) => {

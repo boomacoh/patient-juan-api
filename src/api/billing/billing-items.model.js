@@ -24,7 +24,7 @@ const BillingItem = sequelize.define('billing_items', {
       const discount = this.getDataValue('discount');
       const totalValue = this.price * this.qty;
       if (discount) {
-        if (this.discountType === 'amt') return totalValue - (this.discountValue + hmoValue);
+        if (this.discountType === 'amt') return totalValue - (this.discountValue - this.hmoValue);
         if (this.discountType === 'percent') return totalValue - (totalValue * (this.discountValue / 100));
       }
       return totalValue;
