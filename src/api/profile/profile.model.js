@@ -11,11 +11,11 @@ const Profile = sequelize.define('profile', {
   birthdate: { type: Sequelize.DATEONLY, allowNull: false },
   sex: Sequelize.STRING(50),
   civilStatus: Sequelize.STRING(20),
-  nationality: Sequelize.STRING(50),
-  citizenship: Sequelize.STRING(50),
-  religion: Sequelize.STRING,
-  bloodType: Sequelize.STRING(10),
-  philhealthId: Sequelize.STRING(12),
+  // nationality: Sequelize.STRING(50),
+  // citizenship: Sequelize.STRING(50),
+  // religion: Sequelize.STRING,
+  // bloodType: Sequelize.STRING(10),
+  // philhealthId: Sequelize.STRING(12),
   PRCLicenseNo: Sequelize.STRING,
   specialization: Sequelize.STRING,
   tinNo: Sequelize.STRING,
@@ -23,6 +23,8 @@ const Profile = sequelize.define('profile', {
   contactNo: Sequelize.STRING,
   address: Sequelize.STRING,
   title: Sequelize.STRING,
+  ptrNo: Sequelize.INTEGER,
+  s2No: Sequelize.STRING,
   type: { type: Sequelize.STRING }
 }, {
   setterMethods: {

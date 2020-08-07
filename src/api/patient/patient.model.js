@@ -1,10 +1,10 @@
 const Sequelize = require('sequelize');
 
 const Patient = sequelize.define('patient', {
+    fullName: Sequelize.VIRTUAL,
     firstName: { type: Sequelize.STRING(255), allowNull: false },
     middleName: Sequelize.STRING(255),
     lastName: { type: Sequelize.STRING(255), allowNull: false },
-    fullName: Sequelize.VIRTUAL,
     suffix: Sequelize.STRING(50),
     nickname: Sequelize.STRING(255),
     birthdate: { type: Sequelize.DATEONLY, allowNull: false },

@@ -14,7 +14,7 @@ router.get('/packages', jwtAuth.required, controller.getPackages);
 
 router.put('/profile', jwtAuth.required, controller.updateProfile);
 
-router.post('/change-password', jwtAuth.required, controller.changePassword);
+router.post('/update-password', jwtAuth.required, controller.updatePassword);
 router.post('/update/image', jwtAuth.required, upload.single('profileImage'), controller.updateProfileImage);
 router.post('/patients', jwtAuth.required, controller.createPatient);
 router.post('/billables', jwtAuth.required, controller.createBillable);

@@ -71,19 +71,19 @@ const controller = {
       .then(user => res.send(user.institutions[0].user_institution.access))
       .catch(handleError(res));
   },
-  changePassword: (req, res) => {
-    const { body: { currentPassword, newPassword, repeatNewPassword } } = req;
+  updatePassword: (req, res) => {
+    const { body: { currentPassword, newPassword, confirmNewPassword } } = req;
     const { payload: { userId } } = req;
 
-    if (!currentPassword) return handleErrorMsg(res, 403, 'Current Password must not be empty!');
-    if (!newPassword) return handleErrorMsg(res, 403, 'New password must not be empty!');
-    if (!repeatNewPassword) return handleErrorMsg(res, 403, 'Confirm your new password!');
-    if (newPassword !== repeatNewPassword) return handleErrorMsg(res, 403, 'Password does not match!');
+    if (!currentPassword) return handleErrorMsg(res, 500, 'Current Password must not be empty!');
+    if (!newPassword) return handleErrorMsg(res, 500, 'New password must not be empty!');
+    if (!confirmNewPassword) return handleErrorMsg(res, 500, 'Confirm your new password!');
+    if (newPassword !== confirmNewPassword) return handleErrorMsg(res, 500, 'Password does not match!');
 
     return User.
       findByPk(userId)
       .then(user => {
-        if (user.validatePassword(currentPassword)) return res.status(400).send('Current password is incorrect!');
+        if (!user.validatePassword(currentPassword)) return res.status(400).send('Current password is incorrect!');
         if (user.validatePassword(newPassword)) return res.status(400).send('New password must not be the same with the current password!');
 
         user.setPassword(newPassword);

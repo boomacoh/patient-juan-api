@@ -12,10 +12,8 @@ const controller = {
 
         return User
             .scope(scopes)
-            .findAll()
-            .then((users) => {
-                return res.status(200).send(users)
-            })
+            .findAll({ attributes: { exclude: ['hash', 'salt', 'verifyToken'] } })
+            .then((users) => res.status(200).send(users))
             .catch(handleError(res));
     },
     getOne: (req, res) => {
@@ -47,7 +45,7 @@ const controller = {
             .scope('verified')
             .findOne({ where: { email: email } })
             .then(user => {
-                if (!user) return res.status(404).send('User not found!');
+                if (!user) return res.status(404).json('User not found!');
 
                 const message = {
                     link: `${config.apiUrl}/request-reset-password/?email=${user.email}`,
@@ -58,7 +56,7 @@ const controller = {
                     .setTemplate('reset-password', message)
                     .setSubject('Password Reset Request')
                     .sendHtml();
-                return res.status(200).send('Email has been sent. Check your email for instructions!');
+                return res.status(200).json('Email has been sent. Check your email for instructions!');
             })
             .catch(handleError(res));
     },
