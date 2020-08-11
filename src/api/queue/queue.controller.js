@@ -14,7 +14,8 @@ const view = (data) => {
     status: data.status,
     reason: data.reason,
     patient: `${data.patient.firstName} ${data.patient.lastName}`,
-    createdAt: moment(data.createdAt).format('MMMM DD, YYYY')
+    createdAt: moment(data.createdAt).format('MMMM DD, YYYY'),
+    updatedAt: data.updatedAt
   }
 
   return queue;
