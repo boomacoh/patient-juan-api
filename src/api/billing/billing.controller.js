@@ -63,13 +63,32 @@ const controller = {
       .catch(handleError(res));
   },
   createBillingItem: (req, res) => {
+    const formData = req.body;
+    if (formData.discountType === 'amt' && formData.discountValue > (formData.price * formData.qty)) {
+      return handleErrorMsg(res, 400, 'Discount value cannot exceed price');
+    }
+    if ((formData.price) === 0 && formData.discountType === 'percent') {
+      formData.discount = 'N/A';
+      formData.discountType = null;
+      formData.discountValue = 0;
+    }
+    console.log(formData);
     return BillingItem
-      .create(req.body)
+      .create(formData)
       .then(respondWithResult(res, 201))
       .catch(handleError(res));
   },
   updateBillingItem: (req, res) => {
     const { params: { id } } = req;
+    const formData = req.body;
+    if (formData.discountType === 'amt' && formData.discountValue > (formData.price * formData.qty)) {
+      return handleErrorMsg(res, 400, 'Discount value cannot exceed price');
+    }
+    if ((formData.price) === 0 && formData.discountType === 'percent') {
+      formData.discount = 'N/A';
+      formData.discountType = null;
+      formData.discountValue = 0;
+    }
     return BillingItem
       .findByPk(id)
       .then(billingItem => billingItem.update(req.body))
