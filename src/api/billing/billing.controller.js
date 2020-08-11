@@ -10,6 +10,7 @@ const billingItemView = (data) => {
     tag: data.tag,
     qty: data.qty,
     discount: data.discount,
+    discountType: data.discountType,
     discountValue: data.discountValue,
     hmo: data.hmo,
     hmoValue: data.hmoValue,
