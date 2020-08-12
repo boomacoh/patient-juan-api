@@ -65,7 +65,7 @@ const controller = {
   createBillingItem: (req, res) => {
     const formData = req.body;
     if (formData.discountType === 'amt' && formData.discountValue > (formData.price * formData.qty)) {
-      return handleErrorMsg(res, 400, 'Discount value cannot exceed price');
+      return handleErrorMsg(res, 400, 'Discount value cannot exceed total price');
     }
     if ((formData.price) === 0 && formData.discountType === 'percent') {
       formData.discount = 'N/A';
@@ -82,7 +82,7 @@ const controller = {
     const { params: { id } } = req;
     const formData = req.body;
     if (formData.discountType === 'amt' && formData.discountValue > (formData.price * formData.qty)) {
-      return handleErrorMsg(res, 400, 'Discount value cannot exceed price');
+      return handleErrorMsg(res, 400, 'Discount value cannot exceed total price');
     }
     if ((formData.price) === 0 && formData.discountType === 'percent') {
       formData.discount = 'N/A';
