@@ -28,7 +28,7 @@ const controller = {
         console.log(Object.keys(user.__proto__));
         user
           .createOwnedInstitution(clinicInfo)
-          .then(institution => user.addInstitution(institution, { through: { access: ['sytem', 'clinic:doctor'], isDefault: true } }))
+          .then(institution => user.addInstitution(institution, { through: { access: ['admin', 'physician'], isDefault: true } }))
           .catch(handleError(res));
 
         user

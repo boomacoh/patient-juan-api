@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize');
 const { Op } = require('sequelize');
 const Patient = require('../patient/patient.model');
-const moment = require('moment');
 const User = require('../user/user/user.model');
 const Institution = require('../institution/institution.model');
 
