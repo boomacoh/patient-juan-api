@@ -1,5 +1,5 @@
 const Billing = require('./billing.model');
-const BillingItem = require('./billing-items.model');
+const BillingItem = require('./billing-item.model');
 const { handleEntityNotFound, respondWithResult, handleErrorMsg, handleError } = require('../../services/handlers');
 
 const billingItemView = (data) => {

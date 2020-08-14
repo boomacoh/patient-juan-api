@@ -1,5 +1,6 @@
 const Billable = require('./billlable.model');
 const Package = require('./package.model');
+const Discount = require('./discount.model');
 const User = require('../user/user/user.model');
 const { handleErrorMsg, respondWithResult, handleEntityNotFound, handleError } = require('../../services/handlers');
 
@@ -74,6 +75,37 @@ const controller = {
   deletePackage: (req, res) => {
     const { params: { id } } = req;
     return Package
+      .destroy({ where: { id: id } })
+      .then(respondWithResult(res, 204))
+      .catch(handleError(res));
+  },
+  getDiscounts: (req, res) => {
+    const { payload: { userId } } = req;
+    return User
+      .findByPk(userId)
+      .then(user => user.getDiscounts())
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  },
+  createDiscount: (req, res) => {
+    const { payload: { userId } } = req;
+    return User
+      .findByPk(userId)
+      .then(user => user.createDiscount(req.body))
+      .then(respondWithResult(res, 201))
+      .catch(handleError(res));
+  },
+  updateDiscount: (req, res) => {
+    const { params: { id } } = req;
+    return Discount
+      .findByPk(id)
+      .then(discount => discount.update(req.body))
+      .then(res.status(200).json('Discount Updated'))
+      .catch(handleError(res));
+  },
+  deleteDiscount: (req, res) => {
+    const { params: { id } } = req;
+    return Discount
       .destroy({ where: { id: id } })
       .then(respondWithResult(res, 204))
       .catch(handleError(res));

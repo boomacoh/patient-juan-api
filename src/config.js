@@ -12,7 +12,7 @@ getEnvBoolean = (entry) => {
   if (!process.env[entry]) {
     console.log(`VALUE at ${entry} is not set!`)
   }
-  if (process.env[entry].toLocaleLowerCase() === 'true') {
+  if (process.env[entry].toLowerCase() === 'true') {
     return true;
   } else {
     return false;

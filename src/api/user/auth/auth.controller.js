@@ -25,7 +25,7 @@ const controller = {
     newUser.save()
       .then(user => {
 
-        console.log(Object.keys(user.__proto__));
+        // console.log(Object.keys(user.__proto__));
         user
           .createOwnedInstitution(clinicInfo)
           .then(institution => user.addInstitution(institution, { through: { access: ['admin', 'physician'], isDefault: true } }))
@@ -132,7 +132,7 @@ const controller = {
 
         return res.status(200).send({ userId: user.id, token: user.generateToken() });
       }
-      return res.send(info.status, info.message);
+      return res.status(info.status).send(info.message);
     })(req, res, next);
   },
   validateEmail: (req, res) => {

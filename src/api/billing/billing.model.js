@@ -1,5 +1,5 @@
 const Datatypes = require('sequelize');
-const BillingItem = require('./billing-items.model');
+const BillingItem = require('./billing-item.model');
 const Patient = require('../patient/patient.model');
 const Institution = require('../institution/institution.model');
 const User = require('../user/user/user.model');

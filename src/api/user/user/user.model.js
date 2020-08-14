@@ -6,6 +6,7 @@ const Patient = require('../../patient/patient.model');
 const Profile = require('../../profile/profile.model');
 const Billable = require('../../billable/billlable.model');
 const Package = require('../../billable/package.model');
+const Discount = require('../../billable/discount.model');
 
 const User = sequelize.define('user', {
     id: { type: Sequelize.UUID, primaryKey: true, defaultValue: Sequelize.UUIDV1 },
@@ -66,6 +67,7 @@ User.belongsToMany(Patient, { through: 'physician_patient', freezeTableName: tru
 Patient.belongsToMany(User, { as: 'physicians', through: 'physician_patient', freezeTableName: true })
 User.hasMany(Package);
 User.hasMany(Billable);
+User.hasMany(Discount);
 
 
 module.exports = User;

@@ -1,6 +1,6 @@
 const Datatypes = require('sequelize');
 
-const BillingItem = sequelize.define('billing_items', {
+const BillingItem = sequelize.define('billing_item', {
   name: { type: Datatypes.STRING, allowNull: false },
   price: { type: Datatypes.FLOAT, allowNull: false },
   tag: { type: Datatypes.STRING, allowNull: false },
