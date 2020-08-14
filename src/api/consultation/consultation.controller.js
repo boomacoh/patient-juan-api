@@ -142,10 +142,13 @@ const controller = {
   },
   updateplan: (req, res) => {
     const { params: { id } } = req;
+    const updatePlanData = {};
+    Object.assign(updatePlanData, req.body.planData);
+    Object.assign(updatePlanData, req.body.followUpData);
     return Consultation
       .findByPk(id)
       .then(consultation => consultation.getPlan())
-      .then(plan => plan.update(req.body.planData))
+      .then(plan => plan.update(updatePlanData))
       .then(res.status(200).json('Plan Updated'))
       .catch(handleError(res));
   },

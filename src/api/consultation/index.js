@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const controller = require('./consultation.controller');
 const { jwtAuth, checkPermission } = require('../../services/auth/jwt');
-const { deleteLabsAndImaging } = require('./consultation.controller');
+
 
 router.get('/', jwtAuth.required, controller.getAll);
 router.get('/:id', jwtAuth.required, controller.getOne);
@@ -20,7 +20,7 @@ router.post('/:id/labs-and-imaging', jwtAuth.required, controller.addLabsAndImag
 router.post('/:id/plan/drugs', jwtAuth.required, controller.addPlanDrug);
 router.post('/:id/plan/diagnostic-tests', jwtAuth.required, controller.addPlanTest);
 
-router.delete('/:id/labs-and-imaging', jwtAuth.required, deleteLabsAndImaging);
+router.delete('/:id/labs-and-imaging', jwtAuth.required, controller.deleteLabsAndImaging);
 router.delete('/:id/plan/drugs', jwtAuth.required, controller.deletePlanDrug);
 router.delete('/:id/plan/diagnostic-tests', jwtAuth.required, controller.deletePlanTest)
 

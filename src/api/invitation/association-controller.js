@@ -11,7 +11,7 @@ const controller = {
   checkEmailInClinic: async (req, res, next) => {
     const { body: { email, institutionId } } = req;
 
-    await Institution.findOne({ where: { institutionId: institutionId }, attributes: ['registeredName'], include: [{ model: User, attributes: ['email'], where: { email: email } }] })
+    await Institution.findOne({ where: { id: institutionId }, attributes: ['registeredName'], include: [{ model: User, attributes: ['email'], where: { email: email } }] })
       .then(results => {
         if (!results) return next();
         next(res.status(500).send('User is already a member of this clinic'));

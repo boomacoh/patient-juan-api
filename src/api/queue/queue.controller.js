@@ -11,13 +11,13 @@ const view = (data) => {
     date: moment(data.date).format('MMMM DD, YYYY'),
     queueNumber: data.queueNumber,
     type: data.type,
+    time: moment(data.time, 'HH:mmA').format('LT') || null,
     status: data.status,
     reason: data.reason,
     patient: `${data.patient.firstName} ${data.patient.lastName}`,
     createdAt: moment(data.createdAt).format('MMMM DD, YYYY'),
     updatedAt: data.updatedAt
   }
-
   return queue;
 }
 
@@ -66,7 +66,7 @@ const controller = {
       .then(() => res.json('queue Updated'))
       .catch(handleError(res));
   },
-  create: async (req, res) => {
+  create: (req, res) => {
     const queueData = req.body;
     const { payload: { userId } } = req;
     queueData.physicianId = userId;
@@ -78,8 +78,7 @@ const controller = {
       })
       .then(respondWithResult(res))
       .catch(handleError(res));
-  },
-
+  }
 }
 
 module.exports = controller;
