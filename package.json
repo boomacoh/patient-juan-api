@@ -4,7 +4,7 @@
   "description": "mysql with nodejs using sequelize",
   "main": "./src/index.js",
   "scripts": {
-    "start": "npm ./src/index.js",
+    "start": "node ./src/index.js",
     "serve": "nodemon ./src/index.js"
   },
   "author": "Anthony D. Ballug Jr.",
