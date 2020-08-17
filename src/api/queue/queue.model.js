@@ -8,7 +8,7 @@ const Queue = sequelize.define('queue', {
   date: { type: Sequelize.DATEONLY, allowNull: false },
   queueNumber: Sequelize.INTEGER,
   type: { type: Sequelize.STRING, allowNull: false, validate: { isIn: { args: [['appointment', 'walk-in']], msg: 'That is not a valid type' } } },
-  time: Sequelize.TIME,
+  time: Sequelize.STRING,
   status: { type: Sequelize.STRING, allowNull: false, defaultValue: 'pending' },
   reason: { type: Sequelize.STRING, allowNull: false },
   institutionId: { type: Sequelize.UUID, references: { model: Institution, key: 'id' } },
@@ -23,10 +23,6 @@ const Queue = sequelize.define('queue', {
     patient: { include: [{ model: Patient, attributes: ['firstName', 'lastName'], required: true }] }
   },
   setterMethods: {
-    time(value) {
-      if (value) return this.setDataValue('time', value);
-      this.setDataValue('time', null);
-    },
     date(value) {
       if (value) return this.setDataValue('date', value);
       this.setDataValue('date', null);
